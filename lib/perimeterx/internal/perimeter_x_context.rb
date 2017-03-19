@@ -12,6 +12,9 @@ class PerimeterXContext
   attr_accessor :user_agent
   attr_accessor :uri
   attr_accessor :full_url
+  attr_accessor :score
+  attr_accessor :ip
+  attr_accessor :http_version
 
   def initialize(px_config, req)
     L.info("PerimeterXContext: initialize")
@@ -46,12 +49,31 @@ class PerimeterXContext
     @user_agent = req.headers['HTTP_USER_AGENT'] ? req.headers['HTTP_USER_AGENT'] : ''
     @uri = px_config[:custom_uri] ? px_config[:custom_uri]  : req.headers['REQUEST_URI']
     @full_url = self_url(req)
+    @score = 0
 
-    puts("config: #{@px_config}")
+    if px_config[:custom_user_ip]
+      @ip = px_config[:custom_user_ip]
+      #TODO: Custom function ip, php example: call_user_func('pxCustomUserIP', $this);
+    else
+      @ip = req.headers['REMOTE_ADDR'];
+    end
+
+    if req.headers['SERVER_PROTOCOL']
+        httpVer = req.headers['SERVER_PROTOCOL'].split("/")
+        if httpVer.size > 0
+            @http_version = httpVer[1];
+        end
+    end
+    @http_method = req.headers['REQUEST_METHOD'];
+
   end #end init
 
   def self_url(req)
-
+    s = req.headers['HTTPS'] && req.headers['HTTPS'] == on ? "s" : "" #check if HTTPS or HTTP
+    l = req.headers['SERVER_PROTOCOL'].downcase #get protocol and downcase it
+    protocol = "#{l[0,l.index('/')]}#{s}#{l[(l.index('/') ),l.size]}" #concat http{s}:/x.y
+    port = (req.headers["SERVER_PORT"] != "80") ? ":#{req.headers["SERVER_PORT"]}" : ""
+    return "#{l}://#{req.headers['HTTP_HOST']}#{port}#{@uri}" #concant str
   end
 
   private :self_url
