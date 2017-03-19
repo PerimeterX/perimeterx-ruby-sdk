@@ -1,6 +1,6 @@
 require 'perimeterx/configuration'
 
-module PerimterX
+module PerimeterX
   class << self
     attr_accessor :px_config
 

@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.description = "TODO: description"
   gem.licenses    = ['MIT']
   gem.homepage    = "https://www.perimeterx.com"
-  gem.version     = PXModule::VERSION
+  gem.version     = PerimeterX::VERSION
 
   gem.authors     = ["Nitzan Goldfeder"]
   gem.email       = "nitzan@perimeterx.com"
