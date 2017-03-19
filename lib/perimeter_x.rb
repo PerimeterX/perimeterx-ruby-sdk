@@ -21,20 +21,20 @@ module PerimeterX
       L.info("pxVerify started")
       req = ActionDispatch::Request.new(env)
 
-      if !px_config[:module_enabled]
+      if (@px_config[:module_enabled])
         L.warn("Module is disabled")
         return
       end
-      px_ctx = PerimeterXContext.new(px_config, req)
+      px_ctx = PerimeterXContext.new(@px_config, req)
 
-      captcha_validator = PerimeterxCaptchaValidator.new(px_ctx, px_config)
+      captcha_validator = PerimeterxCaptchaValidator.new(px_ctx, @px_config)
       if (captcha_validator.verify())
         return handle_verification(px_ctx)
       end
 
-      cookie_validator = PerimeterxCookieValidator.new(px_ctx, px_config)
+      cookie_validator = PerimeterxCookieValidator.new(px_ctx, @px_config)
       if (!cookie_validator.verify())
-        s2sValidator = PerimeterxS2SValidator.new(px_ctx, px_config)
+        s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config)
         s2sValidator.verify()
       end
 

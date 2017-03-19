@@ -26,7 +26,6 @@ class PerimeterX::Configuration
   # 'perimeterx_server_host' = 'https://sapi-' . strtolower($pxConfig['app_id']) . '.perimeterx.net',
 
   def initialize(params)
-    puts("params: #{params}")
     @configuration = PX_DEFAULT.merge(params);
   end
 

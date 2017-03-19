@@ -44,9 +44,10 @@ class PerimeterXContext
 
     @hostname = req.headers['HTTP_HOST']
     @user_agent = req.headers['HTTP_USER_AGENT'] ? req.headers['HTTP_USER_AGENT'] : ''
-    @uri = px_config.custom_uri ? px_config.custom_uri : req.headers['REQUEST_URI']
+    @uri = px_config[:custom_uri] ? px_config[:custom_uri]  : req.headers['REQUEST_URI']
     @full_url = self_url(req)
 
+    puts("config: #{@px_config}")
   end #end init
 
   def self_url(req)
