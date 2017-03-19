@@ -2,8 +2,8 @@ require './lib/perimeterx/version'
 
 Gem::Specification.new do |gem|
   gem.name        = "perimeter_x"
-  gem.summary     = "TODO: summary"
-  gem.description = "TODO: description"
+  gem.summary     = "PerimeterX ruby implmentation"
+  gem.description = "PerimeterX ruby module to monitor and block traffic according to PerimeterX risk score"
   gem.licenses    = ['MIT']
   gem.homepage    = "https://www.perimeterx.com"
   gem.version     = PerimeterX::VERSION
