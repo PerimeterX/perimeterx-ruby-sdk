@@ -1,4 +1,4 @@
-require 'version'
+require 'perimeterx/version'
 
 Gem::Specification.new do |gem|
   gem.name        = "perimeter_x"
@@ -12,6 +12,7 @@ Gem::Specification.new do |gem|
   gem.email       = "nitzan@perimeterx.com"
 
   gem.require_paths  = ["lib"]
+  gem.files          = `git ls-files`.split("\n")
 
 
   gem.extra_rdoc_files = ["readme.md", "changelog.md"]
