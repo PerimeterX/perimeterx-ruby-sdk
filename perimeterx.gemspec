@@ -1,4 +1,4 @@
-require 'perimeterx/version'
+require './lib/perimeterx/version'
 
 Gem::Specification.new do |gem|
   gem.name        = "perimeter_x"
