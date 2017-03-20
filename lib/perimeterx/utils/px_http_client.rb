@@ -12,11 +12,11 @@ class PxHttpClient
   end
 
   def post(path, body, headers, connection_timeout = 0, timeoute = 0)
+    L.info("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
     response = HTTParty.post("#{@px_config['perimeterx_server_host']}#{path}",
       :headers => headers,
       :body => body.to_json()
     )
-    puts(response)
     return response
   end
 

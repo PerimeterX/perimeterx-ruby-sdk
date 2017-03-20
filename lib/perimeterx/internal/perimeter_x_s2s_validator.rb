@@ -19,25 +19,25 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
       'request' => {
         'ip'      => @px_ctx.context[:ip],
         'headers' => format_headers(),
-        'uri'     => @px_ctx.context['uri'],
-        'url'     => @px_ctx.context['full_url']
+        'uri'     => @px_ctx.context[:uri],
+        'url'     => @px_ctx.context[:full_url]
       },
       'additional' => {
-        's2s_call_reason' => @px_ctx.context['s2s_call_reason'],
-        'module_version' => @px_config['sdk_name'],
-        'http_method' => @px_ctx.context['http_method'],
-        'http_version' => @px_ctx.context['http_method'],
+        's2s_call_reason' => @px_ctx.context[:s2s_call_reason],
+        'module_version' => @px_config[:sdk_name],
+        'http_method' => @px_ctx.context[:http_method],
+        'http_version' => @px_ctx.context[:http_method],
         'risk_mode' => risk_mode
       }
     }
 
-    if @px_ctx.context['vid']
-        request_body[:vid] = @px_ctx.context['vid'];
+    if @px_ctx.context[:vid]
+        request_body[:vid] = @px_ctx.context[:vid];
     end
 
 
-    if @px_ctx.context['uuid']
-        request_body[:uuid] = @px_ctx.context['uuid'];
+    if @px_ctx.context[:uuid]
+        request_body[:uuid] = @px_ctx.context[:uuid];
     end
 
     # if (in_array($this->pxCtx->getS2SCallReason(), ['cookie_expired', 'cookie_validation_failed'])) {
