@@ -31,13 +31,13 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
       }
     }
 
-    if @px_ctx.context[:vid]
+    if @px_ctx.context.key?("vid")
       L.info("PerimeterxS2SValidator[send_risk_request]: found vid")
       request_body[:vid] = @px_ctx.context[:vid];
     end
 
 
-    if @px_ctx.context[:uuid]
+    if @px_ctx.context.key?("uuid")
       L.info("PerimeterxS2SValidator[send_risk_request]: found uuid")
       request_body[:uuid] = @px_ctx.context[:uuid];
     end
@@ -52,6 +52,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
         "Authorization" => "Bearer #{@px_config['auth_token']}" ,
         "Content-Type" => "application/json"
     };
+    
     if (risk_mode != 2  && @px_config['custom_risk_handler'])
       L.info("PerimeterxS2SValidator[send_risk_request]: custom risk handler")
       # response = @px_config['custom_risk_handler'](origReq);

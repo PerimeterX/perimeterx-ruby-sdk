@@ -6,7 +6,6 @@ class PerimeterXContext
   attr_accessor :context
   attr_accessor :px_config
 
-
   def initialize(px_config, req)
     L.info("PerimeterXContext: initialize")
     @context = Hash.new

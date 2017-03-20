@@ -18,7 +18,6 @@ module PerimeterX
     def initialize(params)
       @px_config = Configuration.new(params).configuration
       @px_http_client = PxHttpClient.new(@px_config)
-
     end
 
     def pxVerify(env)
@@ -26,16 +25,16 @@ module PerimeterX
         L.info("pxVerify started")
         req = ActionDispatch::Request.new(env)
 
-        if (@px_config[:module_enabled])
+        if (@px_config['module_enabled'])
           L.warn("Module is disabled")
-          return
+          return true
         end
         px_ctx = PerimeterXContext.new(@px_config, req)
-        px_ctx.context[:s2s_call_reason] = "NO_COOKIE"
+        px_ctx.context[:s2s_call_reason] = "no_cookie"
 
         s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config, @px_http_client)
         px_ctx = s2sValidator.verify()
-        
+
         handle_verification(px_ctx)
       rescue Exception => e
         puts("#{e.backtrace.first}: #{e.message} (#{e.class})", e.backtrace.drop(1).map{|s| "\t#{s}"})
