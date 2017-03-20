@@ -40,10 +40,13 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
   def verify
     L.info("PerimeterxS2SValidator[verify]: started")
     response = send_risk_request()
+    if (!response)
+      return @px_ctx
+    end
     @px_ctx.context[:made_s2s_risk_api_call] = true
 
     # When success
-    if (response.code == 200 && response.key?("score") && response.key?("action"))
+    if (response && response.code == 200 && response.key?("score") && response.key?("action"))
       L.info("PerimeterxS2SValidator[verify]: response ok")
       score = response["score"]
       @px_ctx.context[:score] = score

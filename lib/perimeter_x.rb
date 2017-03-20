@@ -3,7 +3,6 @@ require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_http_client'
 require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
-
 #TODO: Make it a singleton instance
 module PerimeterX
   class PxModule
@@ -39,7 +38,7 @@ module PerimeterX
           return handle_verification(px_ctx)
         end
       rescue Exception => e
-        puts("#{e.backtrace.first}: #{e.message} (#{e.class})", e.backtrace.drop(1).map{|s| "\t#{s}"})
+        puts("#{e.backtrace.first}: #{e.message} (#{e.class})", e.backtrace.drop(1).map { |s| "\t#{s}" })
         return true
       end
     end
