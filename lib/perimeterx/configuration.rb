@@ -18,16 +18,14 @@ class PerimeterX::Configuration
     "encryption_enabled"       => true,
     "blocking_score"           => 70,
     "sensitive_headers"        => ["cookie", "cookies"],
-    "api_connect_timeout"      => 0,
-    "api_timeout"              => 0,
+    "api_connect_timeout"      => 1,
+    "api_timeout"              => 1,
     "max_buffer_len"           => 1,
     "send_page_activities"     => false,
     "send_block_activities"    => true,
     "sdk_name"                 => "RUBY SDK v1.0.0",
     "debug_mode"               => false,
     "module_mode"              => MONITOR_MODE,
-    "api_timeout"              => 1,
-    "api_connect_timeout"      => 1,
     "local_proxy"              => false
   }
 
