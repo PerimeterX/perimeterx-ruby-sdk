@@ -63,7 +63,7 @@ class PerimeterXContext
     l = req.headers['SERVER_PROTOCOL'].downcase #get protocol and downcase it
     protocol = "#{l[0,l.index('/')]}#{s}#{l[(l.index('/') ),l.size]}" #concat http{s}:/x.y
     port = (req.headers["SERVER_PORT"] != "80") ? ":#{req.headers["SERVER_PORT"]}" : ""
-    return "#{l}://#{req.headers['HTTP_HOST']}#{port}#{@uri}" #concant str
+    return "#{l}://#{req.headers['HTTP_HOST']}#{@uri}" #concant str
   end
 
   private :self_url
