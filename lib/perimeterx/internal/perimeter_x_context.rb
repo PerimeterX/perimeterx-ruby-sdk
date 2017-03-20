@@ -42,9 +42,10 @@ class PerimeterXContext
     @context[:full_url] = self_url(req)
     @context[:score] = 0
 
-    if px_config[:custom_user_ip]
-      @context[:ip] = px_config[:custom_user_ip]
-      #TODO: Custom function ip, php example: call_user_func('pxCustomUserIP', $this);
+    if px_config.key?('custom_user_ip')
+      @context[:ip] = px_config['custom_user_ip']
+    elsif px_config.key('px_custom_user_ip_method')
+      px_config['px_custom_user_ip_method'].call(req)
     else
       @context[:ip] = req.headers['REMOTE_ADDR'];
     end
