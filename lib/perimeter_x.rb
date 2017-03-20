@@ -35,7 +35,7 @@ module PerimeterX
 
         s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config, @px_http_client)
         px_ctx = s2sValidator.verify()
-
+        
         handle_verification(px_ctx)
       rescue Exception => e
         puts("#{e.backtrace.first}: #{e.message} (#{e.class})", e.backtrace.drop(1).map{|s| "\t#{s}"})
@@ -64,7 +64,7 @@ module PerimeterX
       end
 
       # End here if monitor mode
-      if (@p_config['module_mode'] == 1) #TODO: Make a constant
+      if (@px_config['module_mode'] == 1) #TODO: Make a constant
           return
       end
 

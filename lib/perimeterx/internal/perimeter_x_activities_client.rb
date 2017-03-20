@@ -40,7 +40,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
     };
 
     L.info("PerimeterxActivitiesClient[send_to_perimeter_x] sending request")
-    response = @http_client.async_post("/api/v1/collector/s2s", request_body, headers)
+    response = @http_client.post("/api/v1/collector/s2s", request_body, headers)
     puts(response)
   end
 

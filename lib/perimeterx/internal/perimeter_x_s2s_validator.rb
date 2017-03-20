@@ -24,7 +24,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
       },
       'additional' => {
         's2s_call_reason' => @px_ctx.context[:s2s_call_reason],
-        'module_version' => @px_config[:sdk_name],
+        'module_version' => @px_config["sdk_name"],
         'http_method' => @px_ctx.context[:http_method],
         'http_version' => @px_ctx.context[:http_method],
         'risk_mode' => risk_mode
@@ -79,7 +79,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
         L.info("PerimeterxS2SValidator[verify]: using challange")
         @px_ctx.context[:blocking_action_data] = response["action_data"]["body"]
         @px_ctx.context[:blocking_reason] = "challenge"
-      elseif(score >= @px_config["blocking_score"])
+      elsif (score >= @px_config["blocking_score"])
         L.info("PerimeterxS2SValidator[verify]: s2s high score found")
         @px_ctx.context[:blocking_reason] = "s2s_high_score"
       end #end if challange or blocking score
