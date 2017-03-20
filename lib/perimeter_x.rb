@@ -1,15 +1,15 @@
 require 'perimeterx/configuration'
 require 'perimeterx/utils/px_logger'
 require 'perimeterx/internal/perimeter_x_context'
-require 'perimeterx/internal/captcha_validator'
-require 'perimeterx/internal/cookie_validator'
-require 'perimeterx/internal/s2s_validator'
+require 'perimeterx/internal/perimeter_x_captcha_validator'
+require 'perimeterx/internal/perimeter_x_cookie_validator'
+require 'perimeterx/internal/perimeter_x_s2s_validator'
 
 module PerimeterX
   class PxModule
     L = PxLogger.instance
 
-    attr_accessor :px_config
+    attr_reader :px_config
     attr_accessor :px_client
     attr_accessor :instance
 
