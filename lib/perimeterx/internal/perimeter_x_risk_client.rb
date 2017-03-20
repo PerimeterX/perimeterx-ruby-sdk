@@ -16,7 +16,6 @@ class PerimeterxRiskClient
   def format_headers()
       formated_headers = []
       @px_ctx.context[:headers].each do |k,v|
-        puts(k)
         if (!@px_config['sensitive_headers'].include? k)
           formated_headers.push({k => v})
         end #end if

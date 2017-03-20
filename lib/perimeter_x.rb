@@ -5,6 +5,7 @@ require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_captcha_validator'
 require 'perimeterx/internal/perimeter_x_cookie_validator'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
+require 'perimeterx/internal/perimeter_x_activities_client'
 
 #TODO: Make it a singleton instance
 module PerimeterX
@@ -17,6 +18,7 @@ module PerimeterX
     def initialize(params)
       @px_config = Configuration.new(params).configuration
       @px_http_client = PxHttpClient.new(@px_config)
+
     end
 
     def pxVerify(env)
@@ -42,7 +44,32 @@ module PerimeterX
 
     # private methods
     def handle_verification(px_ctx)
-      L.info("handle_verification")
+      L.info("PxModule[handle_verification]: started")
+      px_activities_client = PerimeterxActivitiesClient.new(px_ctx, @px_config, @px_http_client)
+      score = px_ctx.context[:score]
+
+      # Passing request
+      if ( score < @px_config["blocking_score"] )
+        L.info("PxModule[handle_verification]: passing request")
+        px_activities_client.send_page_requested_activity(px_ctx);
+        return
+      end
+
+      #Block request
+      L.info("PxModule[handle_verification]: blocking request")
+      px_activities_client.send_block_activity(px_ctx)
+      if (!@px_config.key?("custom_block_handler"))
+        #TODO: Use custom block handler
+        return
+      end
+
+      # End here if monitor mode
+      if (@p_config['module_mode'] == 1) #TODO: Make a constant
+          return
+      end
+
+      #TODO: add block logic
+
     end
 
     private :handle_verification

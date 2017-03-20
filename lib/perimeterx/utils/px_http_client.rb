@@ -12,7 +12,19 @@ class PxHttpClient
   end
 
   def post(path, body, headers, connection_timeout = 0, timeoute = 0)
+    s = Time.now
     L.info("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
+    response = HTTParty.post("#{@px_config['perimeterx_server_host']}#{path}",
+      :headers => headers,
+      :body => body.to_json()
+    )
+    e = Time.now
+    L.info("PxHttpClient[post]: runtime: #{e-s}")
+    return response
+  end
+
+  def async_post(path, body, headers, connection_timeout = 0, timeoute = 0)
+    L.info("PxHttpClient[async_post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
     response = HTTParty.post("#{@px_config['perimeterx_server_host']}#{path}",
       :headers => headers,
       :body => body.to_json()

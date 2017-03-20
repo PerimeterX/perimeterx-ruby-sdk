@@ -76,9 +76,11 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
       @px_ctx.context[:uuid] = response["uuid"]
       @px_ctx.context[:block_action] = response["action"]
       if(response["action"] == "j" && response.key?("action_data") && response["action_data"].key?("body"))
+        L.info("PerimeterxS2SValidator[verify]: using challange")
         @px_ctx.context[:blocking_action_data] = response["action_data"]["body"]
         @px_ctx.context[:blocking_reason] = "challenge"
-      elseif( score >= @px_config[:blocking_score])
+      elseif(score >= @px_config["blocking_score"])
+        L.info("PerimeterxS2SValidator[verify]: s2s high score found")
         @px_ctx.context[:blocking_reason] = "s2s_high_score"
       end #end if challange or blocking score
 
@@ -89,6 +91,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
       L.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
       @px_ctx.context[:s2s_error_msg] = response["message"]
     end
+
     L.info("PerimeterxS2SValidator[verify]: done")
     return @px_ctx
   end #end method
