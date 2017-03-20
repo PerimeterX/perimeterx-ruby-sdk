@@ -5,11 +5,12 @@ class PerimeterxRiskClient
 
   attr_accessor :px_ctx
   attr_accessor :px_config
+  attr_accessor :http_client
 
-  def initialize(px_ctx, px_config)
+  def initialize(px_ctx, px_config, http_client)
     @px_ctx = px_ctx
     @px_config = px_config
-    # @httpClient = http_client;
+    @http_client = http_client;
   end
 
   def format_headers()
@@ -21,7 +22,7 @@ class PerimeterxRiskClient
         end #end if
 
       end #end forech
-
+      return formated_headers
   end #end method
 
 end #end class

@@ -3,30 +3,21 @@ require 'perimeterx/utils/px_logger'
 class PxHttpClient
   L = PxLogger.instance
 
-  attr_accessor :client
   attr_accessor :px_config
+  attr_accessor :BASE_URL
 
   def initialize(px_config)
+    L.info("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config['perimeterx_server_host']}")
     @px_config = px_config
-    http_client_config = {
-      base_uri => px_config[:perimeterx_server_host]
-    }
-    @client = HTTPClient.new(http_client_config)
   end
 
-  def send(url, method, json, headers, timeout = 0, connect_timeout = 0)
-
-
-
-    raw_response = @client(method, url,
-      {
-        'json' => $json,
-        'headers' => $headers,
-        'timeout' => $timeout,
-        'connect_timeout' => $connect_timeout
-      }
-    );
-
+  def post(path, body, headers, connection_timeout = 0, timeoute = 0)
+    response = HTTParty.post("#{@px_config['perimeterx_server_host']}#{path}",
+      :headers => headers,
+      :body => body.to_json()
+    )
+    puts(response)
+    return response
   end
 
 end

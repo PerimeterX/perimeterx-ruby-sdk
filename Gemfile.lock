@@ -1,0 +1,23 @@
+PATH
+  remote: .
+  specs:
+    perimeter_x (1.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    httparty (0.14.0)
+      multi_xml (>= 0.5.2)
+    httpclient (2.8.3)
+    multi_xml (0.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  httparty (= 0.14.0)
+  httpclient (= 2.8.3)
+  perimeter_x!
+
+BUNDLED WITH
+   1.14.4

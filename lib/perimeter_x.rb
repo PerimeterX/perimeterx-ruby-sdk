@@ -1,20 +1,22 @@
 require 'perimeterx/configuration'
 require 'perimeterx/utils/px_logger'
+require 'perimeterx/utils/px_http_client'
 require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_captcha_validator'
 require 'perimeterx/internal/perimeter_x_cookie_validator'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
 
+#TODO: Make it a singleton instance
 module PerimeterX
   class PxModule
     L = PxLogger.instance
 
     attr_reader :px_config
-    attr_accessor :px_client
-    attr_accessor :instance
+    attr_accessor :px_http_client
 
     def initialize(params)
       @px_config = Configuration.new(params).configuration
+      @px_http_client = PxHttpClient.new(@px_config)
     end
 
     def pxVerify(env)
@@ -27,9 +29,8 @@ module PerimeterX
           return
         end
         px_ctx = PerimeterXContext.new(@px_config, req)
-
         px_ctx.context[:s2s_call_reason] = "NO_COOKIE"
-        s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config)
+        s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config, @px_http_client)
         s2sValidator.verify()
 
         return handle_verification(px_ctx)
