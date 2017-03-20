@@ -15,11 +15,40 @@ Table of Contents
 <a name="dependencies"></a> Dependencies
 ----------------------------------------
 
--   Ruby v2.4
--  [httparty](https://github.com/jnunemaker/httparty)
+- Ruby version 2.4+
+- Rails version 5.1
+- [httparty](https://github.com/jnunemaker/httparty)
 
 <a name="installation"></a> Installation
 ----------------------------------------
 1. Clone the repository into your environment
-2. Add to the Gemfile the following dependency
-``gem "perimeter_x", :path => "<path_to_px_sdk>/perimeterx-ruby-sdk"``
+2. CD into cloned repository and install gem
+`` gem install --local perimeter_x``
+
+<a name=basic-usage></a> Basic Usage Example
+----------------------------------------
+1. On the rails controller controller include PerimeterX sdk use it with before_action
+
+```
+class HomeController < ApplicationController
+  include PerimeterX
+  attr_accessor :px
+  ...
+  ...
+  before_action :px_middleware
+  ...
+  ...
+  initialize()
+    configuration = {
+      "app_id" => <APP_ID>
+      "auth_token" => <AUTH_TOKEN>
+    }
+    @px = PxModule.new(params)
+  end
+  ...
+  ...
+  def px_middleware
+    px.px_erify(request.env)
+  end
+
+```

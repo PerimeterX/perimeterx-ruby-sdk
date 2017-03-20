@@ -17,7 +17,7 @@ module PerimeterX
       @px_http_client = PxHttpClient.new(@px_config)
     end
 
-    def pxVerify(env)
+    def px_verify(env)
       begin
         L.info("pxVerify started")
         req = ActionDispatch::Request.new(env)
