@@ -18,27 +18,24 @@ module PerimeterX
     end
 
     def pxVerify(env)
-      L.info("pxVerify started")
-      req = ActionDispatch::Request.new(env)
+      begin
+        L.info("pxVerify started")
+        req = ActionDispatch::Request.new(env)
 
-      if (@px_config[:module_enabled])
-        L.warn("Module is disabled")
-        return
-      end
-      px_ctx = PerimeterXContext.new(@px_config, req)
+        if (@px_config[:module_enabled])
+          L.warn("Module is disabled")
+          return
+        end
+        px_ctx = PerimeterXContext.new(@px_config, req)
 
-      captcha_validator = PerimeterxCaptchaValidator.new(px_ctx, @px_config)
-      if (captcha_validator.verify())
-        return handle_verification(px_ctx)
-      end
-
-      cookie_validator = PerimeterxCookieValidator.new(px_ctx, @px_config)
-      if (!cookie_validator.verify())
+        px_ctx.context[:s2s_call_reason] = "NO_COOKIE"
         s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config)
         s2sValidator.verify()
-      end
 
-      return handle_verification(px_ctx)
+        return handle_verification(px_ctx)
+      rescue Exception => e
+        puts("#{e.backtrace.first}: #{e.message} (#{e.class})", e.backtrace.drop(1).map{|s| "\t#{s}"})
+      end
     end
 
     # private methods

@@ -3,68 +3,59 @@ require 'perimeterx/utils/px_logger'
 class PerimeterXContext
   L = PxLogger.instance
 
-  attr_accessor :px_cookies
-  attr_accessor :px_captcha
-  attr_accessor :start_time
-  attr_accessor :headers
+  attr_accessor :context
   attr_accessor :px_config
-  attr_accessor :hostname
-  attr_accessor :user_agent
-  attr_accessor :uri
-  attr_accessor :full_url
-  attr_accessor :score
-  attr_accessor :ip
-  attr_accessor :http_version
+
 
   def initialize(px_config, req)
     L.info("PerimeterXContext: initialize")
+    @context = Hash.new
 
-    @px_config = px_config
-    @px_cookies = Hash.new
-    @headers = Hash.new
+    @context[:px_cookies] = Hash.new
+    @context[:headers] = Hash.new
     cookies = req.cookies
     if (!cookies.empty?)
       # Prepare hashed cookies
       cookies.each do |k,v|
         case k
           when"_px3"
-            @px_cookies[:v3] = v
+            @context[:px_cookies] = v
           when "_px"
-            @px_cookies[:v1] = v
+            @context[:px_cookies] = v
           when "_pxCaptcha"
-            @px_captcha = v
+            @context[:px_captcha] = v
         end
       end #end case
     end#end empty cookies
 
-    @start_time = Time.now
+    @context[:start_time] = Time.now
     req.headers.each do |k,v|
       if(k.start_with? "HTTP_")
         header = k.gsub("_","-").downcase
-        @headers[header] = v
+        @context[:headers[header]] = v
       end
     end#end headers foreach
 
-    @hostname = req.headers['HTTP_HOST']
-    @user_agent = req.headers['HTTP_USER_AGENT'] ? req.headers['HTTP_USER_AGENT'] : ''
-    @uri = px_config[:custom_uri] ? px_config[:custom_uri]  : req.headers['REQUEST_URI']
-    @full_url = self_url(req)
-    @score = 0
+    @context[:hostname]= req.headers['HTTP_HOST']
+    @context[:user_agent] = req.headers['HTTP_USER_AGENT'] ? req.headers['HTTP_USER_AGENT'] : ''
+    @context[:uri] = px_config[:custom_uri] ? px_config[:custom_uri]  : req.headers['REQUEST_URI']
+    @context[:full_url] = self_url(req)
+    @context[:score] = 0
 
     if px_config[:custom_user_ip]
-      @ip = px_config[:custom_user_ip]
+      @context[:ip] = px_config[:custom_user_ip]
       #TODO: Custom function ip, php example: call_user_func('pxCustomUserIP', $this);
     else
-      @ip = req.headers['REMOTE_ADDR'];
+      @context[:ip] = req.headers['REMOTE_ADDR'];
     end
 
     if req.headers['SERVER_PROTOCOL']
         httpVer = req.headers['SERVER_PROTOCOL'].split("/")
         if httpVer.size > 0
-            @http_version = httpVer[1];
+            @context[:http_version] = httpVer[1];
         end
     end
-    @http_method = req.headers['REQUEST_METHOD'];
+    @context[:http_method] = req.headers['REQUEST_METHOD'];
 
   end #end init
 

@@ -13,30 +13,30 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
 
   def send_risk_request
     L.info("PerimeterxS2SValidator: send_risk_request")
-    risk_mode = @px_config[:module_mode] == 2 ? 'active_blocking' : 'monitor'
+    risk_mode = @px_config[:module_mode] == 2 ? 'active_blocking' : 'monitor' #TODO: Make a constant instead of 2
     request_body = {
       'request' => {
-        'ip'      => px_ctx.ip,
+        'ip'      => @px_ctx.context[:ip],
         'headers' => format_headers(),
-        'uri'     => px_ctx.uri,
-        'url'     => px_ctx.full_url
+        'uri'     => px_ctx.context[:uri],
+        'url'     => px_ctx.context[:full_url]
       },
       'additional' => {
-        's2s_call_reason' => @px_ctx.s2s_call_reason,
-        'module_version' => px_config['sdk_name'],
-        'http_method' => px_ctx.http_method,
-        'http_version' => px_ctx.http_method,
+        's2s_call_reason' => @px_ctx.context[:s2s_call_reason],
+        'module_version' => @px_config['sdk_name'],
+        'http_method' => @px_ctx.context[:http_method],
+        'http_version' => @px_ctx.context[:http_method],
         'risk_mode' => risk_mode
       }
     }
 
-    if !@px_ctx.vid.nil?
-        request_body[:vid] = @px_ctx.vid;
+    if @px_ctx.context[:vid]
+        request_body[:vid] = @px_ctx.context[:vid];
     end
 
 
-    if @px_ctx.uuid.nil?
-        request_body[:uuid] = @px_ctx.uuid;
+    if @px_ctx.context[:uuid]
+        request_body[:uuid] = @px_ctx.context[:uuid];
     end
 
     # if (in_array($this->pxCtx->getS2SCallReason(), ['cookie_expired', 'cookie_validation_failed'])) {
@@ -46,7 +46,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
     # }
 
     headers = {
-        'Authorization' => "Bearer #{px_config[:auth_token]}" ,
+        'Authorization' => "Bearer #{@px_config[:auth_token]}" ,
         'Content-Type' => "application/json"
     };
 
@@ -62,10 +62,12 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
         #   @px_config['api_connect_timeout']
         # );
     # }
-    return @response;
+    return response;
   end
 
   def verify
+    response = send_risk_request()
+
 
   end
 
