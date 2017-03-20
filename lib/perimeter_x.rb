@@ -22,11 +22,11 @@ module PerimeterX
         L.info("pxVerify started")
         req = ActionDispatch::Request.new(env)
 
-        # TODO: Fix module enabled flag
-        # if (@px_config['module_enabled'])
-        #   L.warn("Module is disabled")
-        #   return true
-        # end
+        if (!@px_config['module_enabled'])
+          L.warn("Module is disabled")
+          return true
+        end
+
         px_ctx = PerimeterXContext.new(@px_config, req)
         px_ctx.context[:s2s_call_reason] = "no_cookie"
 
@@ -34,9 +34,7 @@ module PerimeterX
         px_ctx = s2sValidator.verify()
 
         if (px_config.key?('custom_verification_handler'))
-          return true
-          # TODO: add support for custom verification handler
-          # return px_config['custom_verification_handler'](px_ctx)
+          return px_config['custom_verification_handler'].call(px_ctx)
         else
           return handle_verification(px_ctx)
         end
