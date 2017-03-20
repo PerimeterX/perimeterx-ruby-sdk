@@ -1,4 +1,3 @@
-require 'perimeterx/utils/px_logger'
 require 'perimeterx/internal/perimeter_x_risk_client'
 
 class PerimeterxS2SValidator < PerimeterxRiskClient
@@ -54,14 +53,14 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
     # if (@px_config[:module_mode] != 2  && px_config['custom_risk_handler']) {
     #     response = px_config['custom_risk_handler']($this->pxConfig['perimeterx_server_host'] . self::RISK_API_ENDPOINT, 'POST', $requestBody, $headers);
     # } else {
-        @response = @httpClient.send(
-          RISK_API_ENDPOINT,
-          'POST',
-          request_body,
-          headers,
-          @px_config['api_timeout'],
-          @px_config['api_connect_timeout']
-        );
+        # @response = @httpClient.send(
+        #   RISK_API_ENDPOINT,
+        #   'POST',
+        #   request_body,
+        #   headers,
+        #   @px_config['api_timeout'],
+        #   @px_config['api_connect_timeout']
+        # );
     # }
     return @response;
   end
