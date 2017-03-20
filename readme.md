@@ -15,5 +15,11 @@ Table of Contents
 <a name="dependencies"></a> Dependencies
 ----------------------------------------
 
--   Ruby >= v2.4
--   [httparty](https://github.com/jnunemaker/httparty)
+-   Ruby v2.4
+-  [httparty](https://github.com/jnunemaker/httparty)
+
+<a name="installation"></a> Installation
+----------------------------------------
+1. Clone the repository into your environment
+2. Add to the Gemfile the following dependency
+``gem "perimeter_x", :path => "<path_to_px_sdk>/perimeterx-ruby-sdk"``
