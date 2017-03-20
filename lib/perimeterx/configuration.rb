@@ -17,7 +17,7 @@ class PerimeterX::Configuration
     "challenge_enabled"        => true,
     "encryption_enabled"       => true,
     "blocking_score"           => 70,
-    "sensitive_headers"        => ["http-cookie", "http-cookies"],
+    "sensitive_headers"        => ["cookie", "cookies"],
     "api_connect_timeout"      => 0,
     "api_timeout"              => 0,
     "max_buffer_len"           => 1,
@@ -27,13 +27,13 @@ class PerimeterX::Configuration
     "debug_mode"               => false,
     "module_mode"              => MONITOR_MODE,
     "api_timeout"              => 1,
-    "perimeterx_server_host"   => "https://sapi.perimeterx.net",
     "api_connect_timeout"      => 1,
     "local_proxy"              => false
   }
 
 
   def initialize(params)
+    PX_DEFAULT["perimeterx_server_host"] = "https://sapi-#{params['app_id'].downcase}.perimeterx.net"
     @configuration = PX_DEFAULT.merge(params);
   end
 

@@ -30,7 +30,8 @@ class PerimeterXContext
     @context[:start_time] = DateTime.now.strftime('%Q')
     req.headers.each do |k,v|
       if(k.start_with? "HTTP_")
-        header = k.gsub("_","-").downcase
+        header = k.to_s.gsub("HTTP_","")
+        header = header.gsub("_","-").downcase
         @context[:headers][header.to_sym] = v
       end
     end#end headers foreach
