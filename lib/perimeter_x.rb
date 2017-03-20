@@ -30,10 +30,11 @@ module PerimeterX
         end
         px_ctx = PerimeterXContext.new(@px_config, req)
         px_ctx.context[:s2s_call_reason] = "NO_COOKIE"
-        s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config, @px_http_client)
-        s2sValidator.verify()
 
-        return handle_verification(px_ctx)
+        s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config, @px_http_client)
+        px_ctx = s2sValidator.verify()
+
+        handle_verification(px_ctx)
       rescue Exception => e
         puts("#{e.backtrace.first}: #{e.message} (#{e.class})", e.backtrace.drop(1).map{|s| "\t#{s}"})
       end
