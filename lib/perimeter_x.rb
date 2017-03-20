@@ -34,7 +34,7 @@ module PerimeterX
         px_ctx = s2sValidator.verify()
 
         if (px_config.key?('custom_verification_handler'))
-          return px_config['custom_verification_handler'].call(px_ctx)
+          return px_config['custom_verification_handler'].call(px_ctx.context)
         else
           return handle_verification(px_ctx)
         end

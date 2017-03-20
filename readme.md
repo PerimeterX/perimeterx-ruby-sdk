@@ -27,7 +27,7 @@ Table of Contents
 
 <a name=basic-usage></a> Basic Usage Example
 ----------------------------------------
-1. On the rails controller controller include PerimeterX sdk use it with before_action
+On the rails controller controller include PerimeterX sdk use it with before_action
 
 ```
 class HomeController < ApplicationController
@@ -48,7 +48,28 @@ class HomeController < ApplicationController
   ...
   ...
   def px_middleware
-    px.px_erify(request.env)
+    px.px_verify(request.env)
   end
+```
 
+<a name="configuration"></a> Configuration
+----------------------------------------
+
+** Custom Verification Handler **
+Custom verification handler will replace default handle_verification method
+
+If implemented, this method received a hash variable as input
+To replace the default verification behavior, add the configuration a lambda member as in the example below
+
+The method must return boolen value at the end
+
+```ruby
+configuration = {
+  "app_id" => <APP_ID>,
+  "auth_token" => <AUTH_TOKEN>,
+  "custom_verification_handler" => -> (px_ctx) {
+    # Method body
+    return true
+  }
+}
 ```
