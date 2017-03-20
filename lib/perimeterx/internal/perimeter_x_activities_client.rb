@@ -19,7 +19,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
     end
 
     details[:module_version] = @px_config["sdk_name"];
-    request_body = {
+    request_body = [{
       "type" => activity_type,
       "headers" => format_headers(),
       "timestamp" => DateTime.now.strftime('%Q'),
@@ -27,7 +27,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
       "px_app_id" => @px_config["app_id"],
       "url" => px_ctx.context[:full_url],
       "details" => details
-    };
+    }];
 
     if(px_ctx.context.key?("vid"))
       L.info("PerimeterxActivitiesClient[send_to_perimeter_x] found vid in context")

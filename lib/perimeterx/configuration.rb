@@ -17,7 +17,7 @@ class PerimeterX::Configuration
     "challenge_enabled"        => true,
     "encryption_enabled"       => true,
     "blocking_score"           => 70,
-    "sensitive_headers"        => ['cookie', 'cookies'],
+    "sensitive_headers"        => ["http-cookie", "http-cookies"],
     "api_connect_timeout"      => 0,
     "api_timeout"              => 0,
     "max_buffer_len"           => 1,
