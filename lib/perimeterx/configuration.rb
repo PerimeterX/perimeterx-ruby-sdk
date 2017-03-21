@@ -19,7 +19,7 @@ class PerimeterX::Configuration
     "blocking_score"           => 70,
     "sensitive_headers"        => ["cookie", "cookies"],
     "api_connect_timeout"      => 1,
-    "api_timeout"              => 0.1,
+    "api_timeout"              => 1,
     "max_buffer_len"           => 1,
     "send_page_activities"     => false,
     "send_block_activities"    => true,
