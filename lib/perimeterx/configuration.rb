@@ -23,7 +23,7 @@ class PerimeterX::Configuration
     "max_buffer_len"           => 1,
     "send_page_activities"     => false,
     "send_block_activities"    => true,
-    "sdk_name"                 => "RUBY SDK v1.0.0",
+    "sdk_name"                 => "RUBY SLIM SDK v1.0.0",
     "debug_mode"               => false,
     "module_mode"              => MONITOR_MODE,
     "local_proxy"              => false
