@@ -28,9 +28,6 @@ class PxHttpClient
     end
     e = Time.now
     L.info("PxHttpClient[post]: runtime: #{e-s}")
-    puts'(-----------------------------)'
-    puts(response.content)
-    puts'(---------------------)'
     return response
   end
 
