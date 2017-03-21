@@ -15,8 +15,8 @@ Table of Contents
 <a name="dependencies"></a> Dependencies
 ----------------------------------------
 
-- Ruby version 2.4+
-- Rails version 5.1
+- Ruby version 2.3+
+- Rails version 4.2
 - [httparty](https://github.com/jnunemaker/httparty)
 
 <a name="installation"></a> Installation

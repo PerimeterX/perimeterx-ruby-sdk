@@ -19,4 +19,6 @@ Gem::Specification.new do |gem|
   gem.rdoc_options     = ["--line-numbers", "--inline-source", "--title", "PerimeterX"]
 
   gem.required_ruby_version = '>= 2.3'
+
+  gem.add_dependency('httparty')
 end

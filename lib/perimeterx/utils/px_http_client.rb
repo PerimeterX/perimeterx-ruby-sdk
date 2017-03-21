@@ -1,4 +1,5 @@
-require 'perimeterx/utils/px_logger'
+require "perimeterx/utils/px_logger"
+require "httparty"
 
 class PxHttpClient
   L = PxLogger.instance
