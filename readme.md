@@ -43,7 +43,7 @@ class HomeController < ApplicationController
       "app_id" => <APP_ID>
       "auth_token" => <AUTH_TOKEN>
     }
-    @px = PxModule.new(params)
+    @px = PxModule.instance(params)
   end
   ...
   ...
