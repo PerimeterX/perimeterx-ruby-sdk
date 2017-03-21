@@ -12,23 +12,21 @@ class PxHttpClient
   end
 
   def post(path, body, headers, connection_timeout = 0, timeoute = 0)
+    s = Time.now
     begin
-      s = Time.now
       L.info("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
       response = HTTParty.post("#{@px_config['perimeterx_server_host']}#{path}",
-                               :headers => headers,
-                               :body => body.to_json(),
-                               :timeout => @px_config['api_timeout']
-      )
+                  :headers => headers,
+                  :body => body.to_json(),
+                  :timeout => @px_config['api_timeout']
+                )
     rescue Net::OpenTimeout, Net::ReadTimeout => error
       L.warn("PerimeterxS2SValidator[verify]: request timedout")
       return false
-
-
+    end
     e = Time.now
     L.info("PxHttpClient[post]: runtime: #{e-s}")
     return response
-    end
   end
 
 end

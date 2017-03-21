@@ -8,17 +8,31 @@ module PerimeterX
   class PxModule
     L = PxLogger.instance
 
+    @@singleton__instance__ = nil
+    @@singleton__mutex__ = Mutex.new
+
     attr_reader :px_config
     attr_accessor :px_http_client
 
-    def initialize(params)
+    def self.instance(params)
+      return @@singleton__instance__ if @@singleton__instance__
+      @@singleton__mutex__.synchronize {
+        return @@singleton__instance__ if @@singleton__instance__
+        @@singleton__instance__ = new(params)
+      }
+      @@singleton__instance__
+    end
+
+
+    private def initialize(params)
+      L.info("PerimeterX[initialize]")
       @px_config = Configuration.new(params).configuration
       @px_http_client = PxHttpClient.new(@px_config)
     end
 
     def px_verify(env)
       begin
-        L.info("pxVerify started")
+        L.info("PerimeterX[pxVerify]")
         req = ActionDispatch::Request.new(env)
 
         if (!@px_config['module_enabled'])
@@ -44,12 +58,12 @@ module PerimeterX
     end
 
     # private methods
-    def handle_verification(px_ctx)
+    private def handle_verification(px_ctx)
       L.info("perimeterx processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
       return true
     end
 
-    private :handle_verification
+    private_class_method :new
   end
 
 end
