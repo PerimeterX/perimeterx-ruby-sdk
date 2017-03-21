@@ -18,5 +18,5 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = ["readme.md", "changelog.md"]
   gem.rdoc_options     = ["--line-numbers", "--inline-source", "--title", "PerimeterX"]
 
-  gem.required_ruby_version = '>= 2.4'
+  gem.required_ruby_version = '>= 2.3'
 end
