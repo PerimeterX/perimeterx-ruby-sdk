@@ -41,7 +41,7 @@ RUN /bin/bash -l -c "rails new webapp"
 WORKDIR /tmp/ruby_sandbox/webapp
 RUN /bin/bash -l -c "rails generate controller home index"
 RUN mkdir /tmp/ruby_sandbox/perimeterx-ruby-sdk
-COPY ./ /tmp/ruby_sandbox/perimeterx-ruby-sdk
+ADD ./ /tmp/ruby_sandbox/perimeterx-ruby-sdk
 WORKDIR /tmp/ruby_sandbox/perimeterx-ruby-sdk
 RUN /bin/bash -l -c "gem build perimeter_x.gemspec"
 RUN /bin/bash -l -c "bundler install"
