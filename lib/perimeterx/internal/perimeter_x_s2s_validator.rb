@@ -44,21 +44,21 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
       return @px_ctx
     end
     @px_ctx.context[:made_s2s_risk_api_call] = true
-
+    response_body = eval(response.content);
     # When success
-    if (response && response.code == 200 && response.key?("score") && response.key?("action"))
+    if (response.status == 200 && response_body.key?(:score) && response_body.key?(:action))
       L.info("PerimeterxS2SValidator[verify]: response ok")
-      score = response["score"]
+      score = response_body[:score]
       @px_ctx.context[:score] = score
-      @px_ctx.context[:uuid] = response["uuid"]
-      @px_ctx.context[:block_action] = response["action"]
+      @px_ctx.context[:uuid] = response_body[:uuid]
+      @px_ctx.context[:block_action] = response_body[:action]
     end #end success response
 
     # When error
-    if(response.code != 200)
+    if(response.status != 200)
       L.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
       @px_ctx.context[:uuid] = ""
-      @px_ctx.context[:s2s_error_msg] = response["message"]
+      @px_ctx.context[:s2s_error_msg] = response_body[:message]
     end
 
     L.info("PerimeterxS2SValidator[verify]: done")

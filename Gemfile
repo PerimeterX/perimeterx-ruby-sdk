@@ -1,2 +1,2 @@
 source "https://rubygems.org"
-gem 'httparty', '0.14.0'
+gem 'httpclient', '2.8.3'

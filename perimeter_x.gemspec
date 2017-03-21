@@ -20,5 +20,5 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 2.3'
 
-  gem.add_dependency('httparty')
+  gem.add_dependency('httpclient')
 end
