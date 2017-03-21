@@ -11,7 +11,7 @@ class HomeController < ApplicationController
       "cookie_key" => <COOKIE_KEY>,
       "auth_token" => <AUTH_TOKEN>
     }
-    @px = PxModule.new(params)
+    @px = PxModule.instance(params)
   end
 
   def index

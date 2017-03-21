@@ -23,7 +23,10 @@ Table of Contents
 ----------------------------------------
 1. Clone the repository into your environment
 2. CD into cloned repository and install gem
-`` gem install --local perimeter_x``
+3. Build gem ```gem build perimeter_x.gemspec```
+4. Install using bundler ```bundler install```
+5. Install locally ```gem install --local perimeter_x```
+6. On Gemfile, add it as a local dependency ```gem 'perimeter_x', :path => '<ACTUAL_PATH>'``` 
 
 <a name=basic-usage></a> Basic Usage Example
 ----------------------------------------
