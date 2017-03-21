@@ -1,0 +1,23 @@
+class HomeController < ApplicationController
+  include PerimeterX
+
+  before_action :px_middleware
+
+  attr_accessor :px
+
+  def initialize()
+    params = {
+      "app_id" => <APP_ID>,
+      "cookie_key" => <COOKIE_KEY>,
+      "auth_token" => <AUTH_TOKEN>
+    }
+    @px = PxModule.new(params)
+  end
+
+  def index
+  end
+
+  def px_middleware
+    px.px_verify(request.env)
+  end
+end

@@ -37,7 +37,6 @@ RUN /bin/bash -l -c "gem install bundler"
 RUN /bin/bash -l -c "gem install rails -v 4.2.0"
 RUN mkdir -p /tmp/ruby_sandbox
 WORKDIR /tmp/ruby_sandbox
-WORKDIR /tmp/ruby_sandbox
 RUN /bin/bash -l -c "rails new webapp"
 WORKDIR /tmp/ruby_sandbox/webapp
 RUN /bin/bash -l -c "rails generate controller home index"
@@ -48,6 +47,6 @@ RUN /bin/bash -l -c "gem build perimeter_x.gemspec"
 RUN /bin/bash -l -c "bundler install"
 RUN /bin/bash -l -c "gem install --local perimeter_x"
 WORKDIR /tmp/ruby_sandbox/webapp
-RUN sed -i "2i gem 'perimeter_x', :path => '/tmp/ruby_sandbox/perimeterx-ruby-sdk'" /tmp/ruby_sandbox/webapp/Gemfile
 EXPOSE 3000
-CMD /bin/bash -l -c "rails s"
+RUN sed -i "2i gem 'perimeter_x', :path => '/tmp/ruby_sandbox/perimeterx-ruby-sdk'" /tmp/ruby_sandbox/webapp/Gemfile
+CMD ["/bin/bash", "-l", "-c", "rails server -b 0.0.0.0;"]

@@ -9,6 +9,7 @@ capybara-*.html
 /public/system
 /coverage/
 /spec/tmp
+examples/home_controller.rb
 **.orig
 *.gem
 rerun.txt
