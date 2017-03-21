@@ -61,7 +61,7 @@ class PerimeterXContext
   end #end init
 
   def self_url(req)
-    s = req.headers['HTTPS'] && req.headers['HTTPS'] == on ? "s" : "" #check if HTTPS or HTTP
+    s = req.headers.key?('HTTPS') && req.headers['HTTPS'] == "on" ? "s" : "" #check if HTTPS or HTTP
     l = req.headers['SERVER_PROTOCOL'].downcase #get protocol and downcase it
     protocol = "#{l[0,l.index('/')]}#{s}#{l[(l.index('/') ),l.size]}" #concat http{s}:/x.y
     port = (req.headers["SERVER_PORT"] != "80") ? ":#{req.headers["SERVER_PORT"]}" : ""
