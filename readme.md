@@ -30,7 +30,9 @@ Table of Contents
 
 <a name=basic-usage></a> Basic Usage Example
 ----------------------------------------
-On the rails controller controller include PerimeterX sdk use it with before_action
+On the Rails controller include the PerimeterX SDK via the before_action which will call your defined middleware function. This function is a wrapper for the px_verify method which takes a request and processes it. The verify method can return true if verified, or false if not verified.
+
+The default condition is to always return true for monitoring mode.
 
 ```
 class HomeController < ApplicationController
@@ -59,19 +61,27 @@ class HomeController < ApplicationController
 ----------------------------------------
 
 ** Custom Verification Handler **
-Custom verification handler will replace default handle_verification method
+A custom verification handler replaces the default handle_verification method and allows you to take a custom action based on the risk score returned by PerimeterX.
 
-If implemented, this method received a hash variable as input
-To replace the default verification behavior, add the configuration a lambda member as in the example below
+When implemented, this method receives  a hash variable as input which represents data from the PerimeterX context of the request (px_ctx).
 
-The method must return boolen value at the end
+- `px_ctx[:score] ` contains the risk score 
+- `px_ctx[:uuid] ` contains the request UUID 
+
+To replace the default verification behavior, add the configuration a lambda member as shown in the example below.
+
+The method must return boolen value.
+
+
 
 ```ruby
 configuration = {
   "app_id" => <APP_ID>,
   "auth_token" => <AUTH_TOKEN>,
   "custom_verification_handler" => -> (px_ctx) {
-    # Method body
+    if px_ctx[:score] >= 60
+        # take your action and retun a message or JSON with a status code of 403 and option UUID of the request. Can return false and include action in the px_middleware method.  
+    end
     return true
   }
 }
