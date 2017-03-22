@@ -3,6 +3,7 @@ require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_http_client'
 require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
+require 'perimeterx/internal/perimeter_x_activity_client'
 
 module PerimeterX
   class PxModule
@@ -29,11 +30,10 @@ module PerimeterX
       L.debug("PerimeterX[initialize]")
       @px_config = Configuration.new(params).configuration
       @px_http_client = PxHttpClient.new(@px_config)
-      
+
       @px_activity_client = PerimeterxActivitiesClient.new(@px_config, @px_http_client)
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config, @px_http_client)
       @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
-
     end
 
     def px_verify(env)
