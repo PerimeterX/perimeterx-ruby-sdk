@@ -16,11 +16,11 @@ Gem::Specification.new do |gem|
 
   gem.require_paths  = ["lib"]
   gem.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
+    f.match(%r{^(test|spec|gem|features)/})
   end
 
   gem.bindir        = "exe"
-  gem.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  gem.executables   = gem.files.grep(%r{^exe/}) { |f| File.basename(f) }
   gem.require_paths = ["lib"]
   gem.add_development_dependency "bundler", "~> 1.14"
   gem.add_development_dependency "rake", "~> 10.0"
