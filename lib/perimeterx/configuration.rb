@@ -26,7 +26,7 @@ module PerimeterX
       "send_block_activities"    => true,
       "sdk_name"                 => "RUBY SDK v1.0.0",
       "debug_mode"               => false,
-      "module_mode"              => MONITOR_MODE,
+      "module_mode"              => ACTIVE_MODE,
       "local_proxy"              => false
     }
 
