@@ -1,8 +1,14 @@
 class PerimeterxCookieValidator
 
   L = PxLogger.instance
+  attr_accessor :px_config
 
-  def verify(px_ctx, px_config)
+  def initialize(px_config)
+    @px_config = px_config
+  end
+
+
+  def verify(px_ctx)
     begin
       # Case no cookie
       if !px_ctx.context.key?("px_cookie")
@@ -12,7 +18,7 @@ class PerimeterxCookieValidator
       end
 
       # Deserialize cookie start
-      cookie = PerimeterXCookie(px_ctx, px_config)
+      cookie = PerimeterXCookie(px_ctx, @px_config)
       if (!cookie.deserialize())
         L.warn("PerimeterxCookieValidator:[verify]: invalid cookie")
         px_ctx.context[:s2s_call_reason] = 'invalid cookie' #TODO: replace to constant
@@ -46,7 +52,7 @@ class PerimeterxCookieValidator
 
       L.debug("PerimeterxCookieValidator:[verify]: cookie validation passed succesfully")
 
-      return true, px_ctx  
+      return true, px_ctx
     rescue Exception => e
       L.error("PerimeterxCookieValidator:[verify]: exception while verifying cookie")
       px_ctx.context[:s2s_call_reason] = 'cookie_decryption_failed' #TODO: replace to constant

@@ -4,6 +4,7 @@ require 'perimeterx/utils/px_http_client'
 require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
 require 'perimeterx/internal/perimeter_x_activity_client'
+require 'perimeterx/internal/perimeter_x_cookie_validator'
 
 module PerimeterX
   class PxModule
@@ -32,8 +33,10 @@ module PerimeterX
       @px_http_client = PxHttpClient.new(@px_config)
 
       @px_activity_client = PerimeterxActivitiesClient.new(@px_config, @px_http_client)
-      @px_cookie_validator = PerimeterxCookieValidator.new(@px_config, @px_http_client)
-      @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
+
+      @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
+      @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
+      @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config)
     end
 
     def px_verify(env)
@@ -53,9 +56,9 @@ module PerimeterX
         end
 
         # Cookie phase
-        if (!@px_cookie_validator.verify(px_ctx))
-          s2sValidator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
-          s2sValidator.verify(px_ctx)
+        cookie_verified, px_ctx = @px_cookie_validator.verify(px_ctx)
+        if (!cookie_verified)
+          px_s2s_validator.verify(px_ctx)
         end
 
       return handle_verification(px_ctx)
