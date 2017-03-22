@@ -8,7 +8,7 @@ class PxHttpClient
   attr_accessor :http_client
 
   def initialize(px_config)
-    L.info("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config['perimeterx_server_host']}")
+    L.debug("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config['perimeterx_server_host']}")
     @px_config = px_config
     @http_client = HTTPClient.new(:base_url => px_config['perimeterx_server_host'])
   end
@@ -16,7 +16,7 @@ class PxHttpClient
   def post(path, body, headers, connection_timeout = 0, timeoute = 0)
     s = Time.now
     begin
-      L.info("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
+      L.debug("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
       response = @http_client.post(path,
                   :header => headers,
                   :body => body.to_json(),
@@ -27,7 +27,7 @@ class PxHttpClient
       return false
     end
     e = Time.now
-    L.info("PxHttpClient[post]: runtime: #{e-s}")
+    L.debug("PxHttpClient[post]: runtime: #{e-s}")
     return response
   end
 

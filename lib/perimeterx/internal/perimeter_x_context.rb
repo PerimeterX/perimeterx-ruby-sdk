@@ -7,7 +7,7 @@ class PerimeterXContext
   attr_accessor :px_config
 
   def initialize(px_config, req)
-    L.info("PerimeterXContext: initialize")
+    L.debug("PerimeterXContext[initialize] ")
     @context = Hash.new
 
     @context[:px_cookies] = Hash.new
@@ -45,7 +45,6 @@ class PerimeterXContext
     if px_config.key?('custom_user_ip')
       @context[:ip] = px_config['custom_user_ip']
     elsif px_config.key?('px_custom_user_ip_method')
-      puts "px_custom_user_ip_method triggered"
       @context[:ip] = px_config['px_custom_user_ip_method'].call(req)
     else
       @context[:ip] = req.headers['REMOTE_ADDR'];
