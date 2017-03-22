@@ -3,19 +3,17 @@ require 'perimeterx/utils/px_logger'
 class PerimeterxRiskClient
   L = PxLogger.instance
 
-  attr_accessor :px_ctx
   attr_accessor :px_config
   attr_accessor :http_client
 
-  def initialize(px_ctx, px_config, http_client)
-    @px_ctx = px_ctx
+  def initialize(px_config, http_client)
     @px_config = px_config
     @http_client = http_client;
   end
 
-  def format_headers()
+  def format_headers(px_ctx)
       formated_headers = []
-      @px_ctx.context[:headers].each do |k,v|
+      px_ctx.context[:headers].each do |k,v|
         if (!@px_config["sensitive_headers"].include? k.to_s)
           formated_headers.push({
             :name => k.to_s,

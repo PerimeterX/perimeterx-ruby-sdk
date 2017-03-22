@@ -13,6 +13,7 @@ module PerimeterX
 
     attr_reader :px_config
     attr_accessor :px_http_client
+    attr_accessor :px_activity_client
 
     def self.instance(params)
       return @@singleton__instance__ if @@singleton__instance__
@@ -28,6 +29,9 @@ module PerimeterX
       L.debug("PerimeterX[initialize]")
       @px_config = Configuration.new(params).configuration
       @px_http_client = PxHttpClient.new(@px_config)
+      @px_cookie_validator = PerimeterxCookieValidator.new(@px_config, @px_http_client)
+      @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
+
     end
 
     def px_verify(env)
@@ -41,18 +45,15 @@ module PerimeterX
         end
 
         px_ctx = PerimeterXContext.new(@px_config, req)
-
         # Captcha phase
-        captcha_validator = PerimeterxCaptchaValidator.new(px_ctx, @px_config)
-        if (captcha_validator.verify())
+        if (px_captcha_validator.verify(px_ctx))
           return handle_verification(px_ctx)
         end
 
         # Cookie phase
-        cookie_validator = PerimeterxCookieValidator.new(px_ctx, @px_config)
-        if (!cookie_validator.verify())
-          s2sValidator = PerimeterxS2SValidator.new(px_ctx, @px_config, @px_http_client)
-          s2sValidator.verify()
+        if (!@px_cookie_validator.verify(px_ctx))
+          s2sValidator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
+          s2sValidator.verify(px_ctx)
         end
 
       return handle_verification(px_ctx)
@@ -70,8 +71,34 @@ module PerimeterX
 
     # private methods
     private def handle_verification(px_ctx)
-      L.debug("perimeterx processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
-      return true
+      L.debug("PerimeterX[handle_verification]")
+      L.debug("PerimeterX[handle_verification]: processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
+
+      score = px_ctx.context[:score]
+      # Case PASS request
+      if (score < @px_config["blocking_score"])
+        L.debug("PerimeterX[handle_verification]: score:#{score} < blocking score, passing request")
+        @px_activity_client.send_page_requested_activity(px_ctx)
+        return true
+      end
+
+      # Case blocking activity
+      @px_activity_client.send_block_activity(px_ctx)
+
+      # custom_block_handler - custom block handler defined by the user
+      if(@px_config.key?('custom_block_handler'))
+        @px_config['custom_block_handler'].call(px_ctx)
+      end
+
+      # In case were in monitor mode, end here
+      if(@px_config["module_mode"] == 1) #TODO: reaplce with constatn
+        return true
+      end
+
+      #TODO: Render HTML from here
+
+      return false
+
     end
 
     private_class_method :new
