@@ -40,13 +40,15 @@ WORKDIR /tmp/ruby_sandbox
 RUN /bin/bash -l -c "rails new webapp"
 WORKDIR /tmp/ruby_sandbox/webapp
 RUN /bin/bash -l -c "rails generate controller home index"
-RUN mkdir /tmp/ruby_sandbox/perimeterx-ruby-sdk
-ADD ./ /tmp/ruby_sandbox/perimeterx-ruby-sdk
-WORKDIR /tmp/ruby_sandbox/perimeterx-ruby-sdk
-RUN /bin/bash -l -c "gem build perimeter_x.gemspec"
-RUN /bin/bash -l -c "bundler install"
-RUN /bin/bash -l -c "gem install --local perimeter_x"
+#RUN mkdir /tmp/ruby_sandbox/perimeterx-ruby-sdk
+#ADD ./ /tmp/ruby_sandbox/perimeterx-ruby-sdk
+#WORKDIR /tmp/ruby_sandbox/perimeterx-ruby-sdk
+#RUN /bin/bash -l -c "gem build perimeter_x.gemspec"
+#RUN /bin/bash -l -c "bundler install"
+#RUN /bin/bash -l -c "gem install --local perimeter_x"
 WORKDIR /tmp/ruby_sandbox/webapp
 EXPOSE 3000
-RUN sed -i "2i gem 'perimeter_x', :path => '/tmp/ruby_sandbox/perimeterx-ruby-sdk'" /tmp/ruby_sandbox/webapp/Gemfile
+RUN sed -i "2i gem 'perimeter_x', '~> 1.0.1.pre.alpha'" /tmp/ruby_sandbox/webapp/Gemfile
+RUN /bin/bash -l -c "bundler update"
+RUN /bin/bash -l -c "gem list|grep peri"
 CMD ["/bin/bash", "-l", "-c", "rails server -b 0.0.0.0;"]
