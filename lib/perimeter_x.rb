@@ -34,9 +34,9 @@ module PerimeterX
 
       @px_activity_client = PerimeterxActivitiesClient.new(@px_config, @px_http_client)
 
-      @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
-      @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config)
+      @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
+      @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
     end
 
     def px_verify(env)

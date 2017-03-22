@@ -12,16 +12,16 @@ class PerimeterxRiskClient
   end
 
   def format_headers(px_ctx)
-      formated_headers = []
-      px_ctx.context[:headers].each do |k,v|
-        if (!@px_config["sensitive_headers"].include? k.to_s)
-          formated_headers.push({
-            :name => k.to_s,
-            :value => v
-            })
+    L.debug("PerimeterxRiskClient[format_headers]")
+    formated_headers = []
+    px_ctx.context[:headers].each do |k,v|
+      if (!@px_config["sensitive_headers"].include? k.to_s)
+        formated_headers.push({
+          :name => k.to_s,
+          :value => v
+          })
         end #end if
       end #end forech
       return formated_headers
-  end #end method
-
-end #end class
+    end #end method
+  end #end class
