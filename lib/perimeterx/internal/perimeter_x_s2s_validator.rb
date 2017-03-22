@@ -59,7 +59,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
 
     # Custom risk handler
     if (risk_mode == 2 && @px_config.key?("custom_risk_handler")) #TODO: replace to constant
-      response = @px_config["custom_risk_handler"].call("/api/v2/risk", request_body, headers) #TODO: replace to constant
+      response = @px_config["custom_risk_handler"].call("/api/v2/risk", request_body, headers, @px_config['api_timeout']) #TODO: replace to constant
     else
       response = @http_client.post("/api/v2/risk", request_body, headers)#TODO: replace to constant
     end

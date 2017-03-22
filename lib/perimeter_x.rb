@@ -50,8 +50,10 @@ module PerimeterX
         end
 
         px_ctx = PerimeterXContext.new(@px_config, req)
+        
         # Captcha phase
-        if (px_captcha_validator.verify(px_ctx))
+        captcha_verified, px_ctx = px_captcha_validator.verify(px_ctx)
+        if (captcha_verified)
           return handle_verification(px_ctx)
         end
 
