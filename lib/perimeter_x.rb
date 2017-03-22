@@ -3,7 +3,7 @@ require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_http_client'
 require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
-#TODO: Make it a singleton instance
+
 module PerimeterX
   class PxModule
     L = PxLogger.instance
