@@ -31,4 +31,8 @@ class PxHttpClient
     return response
   end
 
+  def async_post(path, body, headers, connection_timeout = 0, timeoute = 0)
+    L.debug("PxHttpClient[async_post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
+  end
+
 end

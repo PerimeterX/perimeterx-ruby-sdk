@@ -29,6 +29,8 @@ module PerimeterX
       L.debug("PerimeterX[initialize]")
       @px_config = Configuration.new(params).configuration
       @px_http_client = PxHttpClient.new(@px_config)
+      
+      @px_activity_client = PerimeterxActivitiesClient.new(@px_config, @px_http_client)
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config, @px_http_client)
       @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
 
