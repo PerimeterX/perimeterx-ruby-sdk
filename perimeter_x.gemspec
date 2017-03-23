@@ -30,5 +30,5 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 2.3'
 
-  gem.add_dependency('httpclient', '2.8.3')
+  gem.add_dependency('httpclient', '2.8.2.4')
 end
