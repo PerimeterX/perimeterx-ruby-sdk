@@ -40,18 +40,20 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
         "Content-Type" => "application/json"
     };
 
-    activities.push(px_data)
-    if (activities.size == @px_config.max_buffer_len)
-      L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: max buffer length reached, sending activites")
-      @http_client.async_send("/api/v1/collector/s2s", activities, headers) #TODO: replace to constant
+    @activities.push(px_data)
+    puts("#{activities.size == @px_config[:max_buffer_len]} // #{activities.size} == #{@px_config["max_buffer_len"]}")
+    if (@activities.size == @px_config["max_buffer_len"])
+      L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: max buffer length reached, sending activities")
+      @http_client.async_post("/api/v1/collector/s2s", @activities, headers) #TODO: replace to constant
 
-      activites.clear
+      @activities.clear
     end
   end
 
   def send_block_activity(px_ctx)
     L.debug("PerimeterxActivitiesClients[send_block_activity]")
     if (!@px_config["send_page_acitivites"])
+      L.debug("PerimeterxActivitiesClients[send_block_activity]: sending activites is disabled")
       return
     end
 

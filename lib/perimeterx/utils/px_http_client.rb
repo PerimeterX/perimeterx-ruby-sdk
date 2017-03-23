@@ -33,6 +33,21 @@ class PxHttpClient
 
   def async_post(path, body, headers, api_timeout = 0, timeoute = 0)
     L.debug("PxHttpClient[async_post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
+    s = Time.now
+    begin
+      L.debug("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
+      response = @http_client.post_async(path,
+                  :header => headers,
+                  :body => body.to_json(),
+                  :timeout => api_timeout
+                )
+    rescue Net::OpenTimeout, Net::ReadTimeout => error
+      L.warn("PerimeterxS2SValidator[verify]: request timedout")
+      return false
+    end
+    e = Time.now
+    L.debug("PxHttpClient[post]: runtime: #{e-s}")
+    return response
   end
 
 end

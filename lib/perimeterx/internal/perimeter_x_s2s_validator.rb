@@ -28,10 +28,15 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
         'module_version' => @px_config["sdk_name"],
         'http_method' => px_ctx.context[:http_method],
         'http_version' => px_ctx.context[:http_version],
-        'risk_mode' => risk_mode,
-        'px_cookie_hmac' => px_ctx[:cookie_hmac]
+        'risk_mode' => risk_mode
       }
     }
+
+    #Check for hmac
+    if px_ctx.context.key?("cookie_hmac")
+      request_body[:additional][:px_cookie_hmac] = px_ctx[:cookie_hmac]
+    end
+
 
     #Check for VID
     if px_ctx.context.key?("vid")

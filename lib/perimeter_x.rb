@@ -5,6 +5,7 @@ require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
 require 'perimeterx/internal/perimeter_x_activity_client'
 require 'perimeterx/internal/perimeter_x_cookie_validator'
+require 'perimeterx/internal/perimeter_x_captcha_validator'
 
 module PerimeterX
   class PxModule
@@ -50,9 +51,9 @@ module PerimeterX
         end
 
         px_ctx = PerimeterXContext.new(@px_config, req)
-        
+
         # Captcha phase
-        captcha_verified, px_ctx = px_captcha_validator.verify(px_ctx)
+        captcha_verified, px_ctx = @px_captcha_validator.verify(px_ctx)
         if (captcha_verified)
           return handle_verification(px_ctx)
         end
@@ -60,7 +61,7 @@ module PerimeterX
         # Cookie phase
         cookie_verified, px_ctx = @px_cookie_validator.verify(px_ctx)
         if (!cookie_verified)
-          px_s2s_validator.verify(px_ctx)
+          @px_s2s_validator.verify(px_ctx)
         end
 
       return handle_verification(px_ctx)

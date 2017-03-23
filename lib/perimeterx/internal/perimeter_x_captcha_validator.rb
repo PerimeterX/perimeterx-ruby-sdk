@@ -52,7 +52,7 @@ class PerimeterxCaptchaValidator < PerimeterxRiskClient
 
       return captcha_validated
 
-    rescue Exception e
+    rescue Exception => e
       L.error("PerimeterxCaptchaValidator[verify]: failed, returning false")
       return captcha_validated, px_ctx
     end
