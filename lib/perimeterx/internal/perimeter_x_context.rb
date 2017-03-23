@@ -16,11 +16,11 @@ class PerimeterXContext
     if (!cookies.empty?)
       # Prepare hashed cookies
       cookies.each do |k,v|
-        case k
-          when"_px3"
-            @context[:px_cookies] = v
+        case k.to_s
+          when "_px3"
+            @context[:px_cookie][:v3] = v
           when "_px"
-            @context[:px_cookies] = v
+            @context[:px_cookie][:v1] = v
           when "_pxCaptcha"
             @context[:px_captcha] = v
         end

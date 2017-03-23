@@ -13,6 +13,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
 
   def send_to_perimeterx(activity_type, px_ctx, details = [])
     L.debug("PerimeterxActivitiesClients[send_to_perimeterx]")
+    L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: new activity #{activity_type} logged")
 
     if (@px_config.key?("additional_activity_handler"))
       @px_config["additional_activity_handler"].call(activity_type, px_ctx, details)
@@ -41,7 +42,6 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
     };
 
     @activities.push(px_data)
-    puts("#{activities.size == @px_config[:max_buffer_len]} // #{activities.size} == #{@px_config["max_buffer_len"]}")
     if (@activities.size == @px_config["max_buffer_len"])
       L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: max buffer length reached, sending activities")
       @http_client.async_post("/api/v1/collector/s2s", @activities, headers) #TODO: replace to constant
