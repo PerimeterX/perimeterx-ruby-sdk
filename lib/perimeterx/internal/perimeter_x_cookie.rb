@@ -1,11 +1,15 @@
+require 'base64'
+require 'openssl'
+require 'active_support'
+
 class PerimeterxCookie
   attr_accessor :px_cookie, :px_config, :px_ctx, :cookie_secret, :decoded_cookie
 
   def self.px_cookie_factory(px_ctx, px_config)
     if (px_ctx.context[:px_cookie].key?('v3'))
-      return CookieV3.new(px_ctx, px_config)
+      return PerimeterxCookieV3.new(px_config, px_ctx)
     end
-    return CookieV1.new(px_ctx, px_config)
+    return PerimeterxCookieV1.new(px_config, px_ctx)
   end
 
   def cookie_score
@@ -59,7 +63,7 @@ class PerimeterxCookie
 
 
   def deserialize
-    if (@decoded_cookie.nil?)
+    if (!@decoded_cookie.nil?)
       return true
     end
 
@@ -74,7 +78,7 @@ class PerimeterxCookie
       return false
     end
 
-    if (!validate_cookie_format(cookie))
+    if (!valid_format?(cookie))
       return false
     end
 
@@ -85,28 +89,28 @@ class PerimeterxCookie
 
 
   def decrypt(px_cookie)
-    if (px_cookie.nil?)
-      return
-    end
+    begin
+      if (px_cookie.nil?)
+        return
+      end
 
-    px_cookie = px_cookie.gsub(' ', '+')
-    salt, iterations, cipher_text = px_cookie.split(':')
-    iterations = iterations.to_i
-    salt = Base64.decode64(salt)
-    cipher_text = Base64.decode64(cipher_text)
-    digest = OpenSSL::Digest::SHA256.new
-    value = OpenSSL::PKCS5.pbkdf2_hmac(@px_config[:cookie_key], salt, iterations, 48, digest)
-    key = value[0..31]
-    iv = value[32..-1]
-    cipher = OpenSSL::Cipher::AES256.new(:CBC)
-    cipher.decrypt
-    cipher.key = key
-    cipher.iv = iv
-    plaintext = cipher.update(cipher_text) + cipher.final
+      px_cookie = px_cookie.gsub(' ', '+')
+      salt, iterations, cipher_text = px_cookie.split(':')
+      iterations = iterations.to_i
+      salt = Base64.decode64(salt)
+      cipher_text = Base64.decode64(cipher_text)
+      digest = OpenSSL::Digest::SHA256.new
+      value = OpenSSL::PKCS5.pbkdf2_hmac(@px_config[:cookie_key], salt, iterations, 48, digest)
+      key = value[0..31]
+      iv = value[32..-1]
+      cipher = OpenSSL::Cipher::AES256.new(:CBC)
+      cipher.decrypt
+      cipher.key = key
+      cipher.iv = iv
+      plaintext = cipher.update(cipher_text) + cipher.final
 
-    return eval(Oj.load(plaintext))
-
-    rescue
+      return eval(plaintext)
+    rescue Exceptoin => e
       raise Exception.new("Cookie decrypt fail"); #TODO: replace exception & constant
     end
   end
@@ -120,8 +124,8 @@ class PerimeterxCookie
     hmac = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, @cookie_secret, hmac_str)
     # ref: https://thisdata.com/blog/timing-attacks-against-string-comparison/
     password_correct = ActiveSupport::SecurityUtils.secure_compare(
-      ::Digest::SHA256.hexdigest(cookie_hmac),
-      ::Digest::SHA256.hexdigest(hmac)
+    ::Digest::SHA256.hexdigest(cookie_hmac),
+    ::Digest::SHA256.hexdigest(hmac)
     )
 
   end

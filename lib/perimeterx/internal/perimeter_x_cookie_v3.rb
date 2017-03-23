@@ -1,8 +1,8 @@
-class PerimeterxCookieV3
+class PerimeterxCookieV3 < PerimeterxCookie
 
   attr_accessor :px_config, :px_ctx, :cookie_hash
 
-  def initialize(px_ctx, px_config)
+  def initialize(px_config, px_ctx)
     hash, cookie = px_ctx.get_px_cookie().split(':', 3)
     @px_cookie = cookie
     @cookie_hash = hash
@@ -12,7 +12,7 @@ class PerimeterxCookieV3
   end
 
   def cookie_score
-    return @decoded_cookie[:3]
+    return @decoded_cookie[:v3]
   end
 
   def cookie_hmac
@@ -20,7 +20,8 @@ class PerimeterxCookieV3
   end
 
   def valid_format?(cookie)
-    return cookie.key?("t") && cookie.key?("s") && cookie.key?("u") && cookie.key?("v") && cookie.key?("a")
+    debugger
+    return cookie.key?(:t) && cookie.key?(:s) && cookie.key?(:u) && cookie.key?(:u) && cookie.key?(:a)
   end
 
   def cookie_block_action

@@ -1,3 +1,7 @@
+require 'perimeterx/internal/perimeter_x_cookie'
+require 'perimeterx/internal/perimeter_x_cookie_v1'
+require 'perimeterx/internal/perimeter_x_cookie_v3'
+
 class PerimeterxCookieValidator
 
   L = PxLogger.instance
@@ -10,7 +14,6 @@ class PerimeterxCookieValidator
 
   def verify(px_ctx)
     begin
-      debugger
       # Case no cookie
       if !px_ctx.context.key?(:px_cookie)
         L.warn("PerimeterxCookieValidator:[verify]: cookie not found")

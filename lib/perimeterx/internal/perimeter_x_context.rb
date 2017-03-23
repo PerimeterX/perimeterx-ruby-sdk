@@ -27,7 +27,6 @@ class PerimeterXContext
       end #end case
     end#end empty cookies
 
-    @context[:start_time] = DateTime.now.strftime('%Q')
     req.headers.each do |k,v|
       if(k.start_with? "HTTP_")
         header = k.to_s.gsub("HTTP_","")
@@ -60,6 +59,11 @@ class PerimeterXContext
 
   end #end init
 
+
+  def get_px_cookie
+    return @context[:px_cookie].key(:v3) ? @context[:px_cookie][:v3] : @context[:px_cookie][:v1]
+  end
+
   def self_url(req)
     s = req.headers.key?('HTTPS') && req.headers['HTTPS'] == "on" ? "s" : "" #check if HTTPS or HTTP
     l = req.headers['SERVER_PROTOCOL'].downcase #get protocol and downcase it
@@ -68,8 +72,5 @@ class PerimeterXContext
     return "#{l}://#{req.headers['HTTP_HOST']}#{@uri}" #concant str
   end
 
-  def get_px_cookie
-    return @context.key(:v3) ? @context[:v3] : @context[:v1]
-  end
   private :self_url
 end
