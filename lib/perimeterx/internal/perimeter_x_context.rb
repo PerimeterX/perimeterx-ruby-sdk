@@ -69,7 +69,7 @@ class PerimeterXContext
   end
 
   def get_px_cookie
-    return @context.key("v3") ? @context[:v3] : @context[:v1]
+    return @context.key(:v3) ? @context[:v3] : @context[:v1]
   end
   private :self_url
 end

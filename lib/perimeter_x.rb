@@ -65,8 +65,8 @@ module PerimeterX
         end
 
       return handle_verification(px_ctx)
-        if (px_config.key?('custom_verification_handler'))
-          return px_config['custom_verification_handler'].call(px_ctx.context)
+        if (@px_config.key?(:custom_verification_handler))
+          return @px_config[:custom_verification_handler].call(px_ctx.context)
         else
           return handle_verification(px_ctx)
         end
@@ -84,7 +84,7 @@ module PerimeterX
 
       score = px_ctx.context[:score]
       # Case PASS request
-      if (score < @px_config["blocking_score"])
+      if (score < @px_config[:blocking_score])
         L.debug("PerimeterX[handle_verification]: score:#{score} < blocking score, passing request")
         @px_activity_client.send_page_requested_activity(px_ctx)
         return true

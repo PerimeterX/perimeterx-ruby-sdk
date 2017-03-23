@@ -12,7 +12,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
     L.debug("PerimeterxS2SValidator[send_risk_request]: send_risk_request")
 
     risk_mode = 'active_blocking' #TODO: replace to constant
-    if @px_config["module_mode"] == 1 #TODO: replace to constant
+    if @px_config[:module_mode] == 1 #TODO: replace to constant
       risk_mode = 'monitor'#TODO: replace to constant
     end
 
@@ -58,7 +58,7 @@ class PerimeterxS2SValidator < PerimeterxRiskClient
 
     # Prepare request
     headers = {
-        "Authorization" => "Bearer #{@px_config['auth_token']}" ,
+        "Authorization" => "Bearer #{@px_config[:auth_token]}" ,
         "Content-Type" => "application/json"
     };
 

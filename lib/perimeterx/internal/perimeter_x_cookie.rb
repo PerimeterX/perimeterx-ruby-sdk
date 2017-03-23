@@ -50,7 +50,7 @@ class PerimeterxCookie
   end
 
   def is_hight_score?
-    return cookie_score >= @px_config["blocking_score"]
+    return cookie_score >= @px_config[:blocking_score]
   end
 
   def expired?
@@ -64,7 +64,7 @@ class PerimeterxCookie
     end
 
     # Decode or decrypt, depends on configuration
-    if (@px_config["encryption_enabled"])
+    if (@px_config[:encryption_enabled])
       cookie = decrypt(@px_cookie)
     else
       cookie = decode(@px_cookie)

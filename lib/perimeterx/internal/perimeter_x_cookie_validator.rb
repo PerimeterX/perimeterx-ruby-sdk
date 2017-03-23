@@ -12,7 +12,7 @@ class PerimeterxCookieValidator
     begin
       debugger
       # Case no cookie
-      if !px_ctx.context.key?("px_cookie")
+      if !px_ctx.context.key?(:px_cookie)
         L.warn("PerimeterxCookieValidator:[verify]: cookie not found")
         px_ctx.context[:s2s_call_reason] = 'no_cookie' #TODO: replace to constant
         return false, px_ctx

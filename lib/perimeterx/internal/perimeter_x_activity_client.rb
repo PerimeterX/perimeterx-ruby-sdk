@@ -16,21 +16,21 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
     L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: new activity #{activity_type} logged")
 
     if (@px_config.key?(:additional_activity_handler))
-      @px_config["additional_activity_handler"].call(activity_type, px_ctx, details)
+      @px_config[:additional_activity_handler].call(activity_type, px_ctx, details)
     end
 
-    details[:module_version] = @px_config["sdk_name"]
+    details[:module_version] = @px_config[:sdk_name]
     px_data = {
       :type       => activity_type,
       :headers    => format_headers(px_ctx),
       :timestamp  => DateTime.now.strftime('%Q'),
       :socket_ip  => px_ctx.context[:ip],
-      :px_app_id  => @px_config["app_id"],
+      :px_app_id  => @px_config[:app_id],
       :url        => px_ctx.context[:full_url],
       :details    => details,
     }
 
-    if (px_ctx.context.key("vid"))
+    if (px_ctx.context.key(:vid))
       L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: found vid in ctx")
       px_data[:vid] = px_ctx.context[:vid]
     end
@@ -42,7 +42,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
     };
 
     @activities.push(px_data)
-    if (@activities.size == @px_config["max_buffer_len"])
+    if (@activities.size == @px_config[:max_buffer_len])
       L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: max buffer length reached, sending activities")
       @http_client.async_post("/api/v1/collector/s2s", @activities, headers) #TODO: replace to constant
 
@@ -52,7 +52,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
 
   def send_block_activity(px_ctx)
     L.debug("PerimeterxActivitiesClients[send_block_activity]")
-    if (!@px_config["send_page_acitivites"])
+    if (!@px_config[:send_page_acitivites])
       L.debug("PerimeterxActivitiesClients[send_block_activity]: sending activites is disabled")
       return
     end
@@ -69,7 +69,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
 
   def send_page_requested_activity(px_ctx)
     L.debug("PerimeterxActivitiesClients[send_page_requested_activity]")
-    if (!@px_config["send_page_acitivites"])
+    if (!@px_config[:send_page_acitivites])
       return
     end
 
