@@ -18,7 +18,7 @@ class PerimeterxCookie
     raise Exceptoin.new("Unimplemented method")
   end
 
-  def valid_format?
+  def valid_format?(cookie)
     #abstract, must be implemented
     raise Exceptoin.new("Unimplemented method")
   end
