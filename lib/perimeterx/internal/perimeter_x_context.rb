@@ -68,6 +68,8 @@ class PerimeterXContext
     return "#{l}://#{req.headers['HTTP_HOST']}#{@uri}" #concant str
   end
 
+  def get_px_cookie
+    return @context.key("v3") ? @context[:v3] : @context[:v1]
+  end
   private :self_url
-
-end #end class
+end
