@@ -23,7 +23,7 @@ module PerimeterX
       :api_timeout              => 0,
       :max_buffer_len           => 1,
       :send_page_activities     => false,
-      :send_block_activities    => true,  
+      :send_block_activities    => true,
       :sdk_name                 => "RUBY SDK v1.0.0",
       :debug_mode               => false,
       :module_mode              => ACTIVE_MODE,
@@ -31,7 +31,7 @@ module PerimeterX
     }
 
     def initialize(params)
-      PX_DEFAULT["perimeterx_server_host"] = "https://sapi-#{params['app_id'].downcase}.perimeterx.net"
+      PX_DEFAULT[:perimeterx_server_host] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
       @configuration = PX_DEFAULT.merge(params);
     end
   end
