@@ -95,7 +95,7 @@ class PerimeterxCookie
     salt = Base64.decode64(salt)
     cipher_text = Base64.decode64(cipher_text)
     digest = OpenSSL::Digest::SHA256.new
-    value = OpenSSL::PKCS5.pbkdf2_hmac(@px_config['cookie_key'], salt, iterations, 48, digest)
+    value = OpenSSL::PKCS5.pbkdf2_hmac(@px_config[:cookie_key], salt, iterations, 48, digest)
     key = value[0..31]
     iv = value[32..-1]
     cipher = OpenSSL::Cipher::AES256.new(:CBC)

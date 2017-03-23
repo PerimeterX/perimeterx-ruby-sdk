@@ -15,7 +15,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
     L.debug("PerimeterxActivitiesClients[send_to_perimeterx]")
     L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: new activity #{activity_type} logged")
 
-    if (@px_config.key?("additional_activity_handler"))
+    if (@px_config.key?(:additional_activity_handler))
       @px_config["additional_activity_handler"].call(activity_type, px_ctx, details)
     end
 
@@ -37,7 +37,7 @@ class PerimeterxActivitiesClient < PerimeterxRiskClient
 
     # Prepare request
     headers = {
-        "Authorization" => "Bearer #{@px_config['auth_token']}" ,
+        "Authorization" => "Bearer #{@px_config[:auth_token]}" ,
         "Content-Type" => "application/json"
     };
 

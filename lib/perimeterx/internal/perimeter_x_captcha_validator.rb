@@ -21,11 +21,11 @@ class PerimeterxCaptchaValidator < PerimeterxRiskClient
 
     # Prepare request
     headers = {
-        "Authorization" => "Bearer #{@px_config['auth_token']}" ,
+        "Authorization" => "Bearer #{@px_config[:auth_token]}" ,
         "Content-Type" => "application/json"
     };
 
-    return @http_client.post('/api/v1/risk/captcha', request_body, @px_config['api_timeout']) #TODO: replace to constant
+    return @http_client.post('/api/v1/risk/captcha', request_body, @px_config[:api_timeout]) #TODO: replace to constant
 
   end
 

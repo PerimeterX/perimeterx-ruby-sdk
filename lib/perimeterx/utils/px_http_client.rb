@@ -8,9 +8,9 @@ class PxHttpClient
   attr_accessor :http_client
 
   def initialize(px_config)
-    L.debug("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config['perimeterx_server_host']}")
+    L.debug("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config[:perimeterx_server_host]}")
     @px_config = px_config
-    @http_client = HTTPClient.new(:base_url => px_config['perimeterx_server_host'])
+    @http_client = HTTPClient.new(:base_url => px_config[:perimeterx_server_host])
   end
 
   def post(path, body, headers, api_timeout = 0, timeoute = 0)

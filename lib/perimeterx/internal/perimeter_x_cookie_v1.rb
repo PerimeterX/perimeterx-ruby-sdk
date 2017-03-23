@@ -6,7 +6,7 @@ class PerimeterxCookieV1 < PerimeterxCookie
     @px_config = px_config
     @px_ctx = px_ctx
     @px_cookie = px_ctx.get_px_cookie
-    @px_secret = px_config['cookie_key']
+    @px_secret = px_config[:cookie_key]
   end
 
   def cookie_score

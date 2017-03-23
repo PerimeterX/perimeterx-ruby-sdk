@@ -10,6 +10,7 @@ class PerimeterxCookieValidator
 
   def verify(px_ctx)
     begin
+      debugger
       # Case no cookie
       if !px_ctx.context.key?("px_cookie")
         L.warn("PerimeterxCookieValidator:[verify]: cookie not found")

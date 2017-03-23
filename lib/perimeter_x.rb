@@ -45,7 +45,7 @@ module PerimeterX
         L.debug("PerimeterX[pxVerify]")
         req = ActionDispatch::Request.new(env)
 
-        if (!@px_config['module_enabled'])
+        if (!@px_config[:module_enabled])
           L.warn("Module is disabled")
           return true
         end
@@ -94,12 +94,12 @@ module PerimeterX
       @px_activity_client.send_block_activity(px_ctx)
 
       # custom_block_handler - custom block handler defined by the user
-      if(@px_config.key?('custom_block_handler'))
-        @px_config['custom_block_handler'].call(px_ctx)
+      if(@px_config.key?(:custom_block_handler))
+        @px_config[custom_block_handler].call(px_ctx)
       end
 
       # In case were in monitor mode, end here
-      if(@px_config["module_mode"] == 1) #TODO: reaplce with constatn
+      if(@px_config[:module_mode] == 1) #TODO: reaplce with constatn
         return true
       end
 
