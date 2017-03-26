@@ -1,4 +1,4 @@
-module PerimeterX
+module PxModule
   class Configuration
 
     attr_accessor :configuration

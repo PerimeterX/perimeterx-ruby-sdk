@@ -7,8 +7,8 @@ require 'perimeterx/internal/perimeter_x_activity_client'
 require 'perimeterx/internal/perimeter_x_cookie_validator'
 require 'perimeterx/internal/perimeter_x_captcha_validator'
 
-module PerimeterX
-  class PxModule
+module PxModule
+  class PerimeterX
     L = PxLogger.instance
 
     @@singleton__instance__ = nil

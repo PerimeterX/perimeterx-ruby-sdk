@@ -1,13 +1,15 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    httpclient (2.8.3)
+    httpclient (2.8.2.4)
+    mustache (1.0.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  httpclient (= 2.8.3)
+  httpclient (= 2.8.2.4)
+  mustache (= 1.0.4)
 
 BUNDLED WITH
    1.14.6

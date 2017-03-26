@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.description = "PerimeterX ruby module to monitor and block traffic according to PerimeterX risk score"
   gem.licenses    = ['MIT']
   gem.homepage    = "https://www.perimeterx.com"
-  gem.version     = PerimeterX::VERSION
+  gem.version     = PxModule::VERSION
 
   gem.authors     = ["Nitzan Goldfeder"]
   gem.email       = "nitzan@perimeterx.com"
@@ -31,4 +31,5 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 2.3'
 
   gem.add_dependency('httpclient', '2.8.2.4')
+  gem.add_dependency('mustache', '1.0.4')
 end
