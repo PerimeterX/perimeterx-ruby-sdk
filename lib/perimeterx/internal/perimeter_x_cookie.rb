@@ -53,12 +53,12 @@ class PerimeterxCookie
     return @decoded_cookie[:v]
   end
 
-  def is_hight_score?
+  def high_score?
     return cookie_score >= @px_config[:blocking_score]
   end
 
   def expired?
-    return Time.now.to_i < cookie_time
+    return cookie_time < (Time.now.to_f*1000).floor
   end
 
 

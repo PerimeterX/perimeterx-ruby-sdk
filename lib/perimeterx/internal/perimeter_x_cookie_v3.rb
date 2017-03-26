@@ -20,7 +20,6 @@ class PerimeterxCookieV3 < PerimeterxCookie
   end
 
   def valid_format?(cookie)
-    debugger
     return cookie.key?(:t) && cookie.key?(:s) && cookie.key?(:u) && cookie.key?(:u) && cookie.key?(:a)
   end
 

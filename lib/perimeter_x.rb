@@ -64,7 +64,6 @@ module PerimeterX
           @px_s2s_validator.verify(px_ctx)
         end
 
-      return handle_verification(px_ctx)
         if (@px_config.key?(:custom_verification_handler))
           return @px_config[:custom_verification_handler].call(px_ctx.context)
         else

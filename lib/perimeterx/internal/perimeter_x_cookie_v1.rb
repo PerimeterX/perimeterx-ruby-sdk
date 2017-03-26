@@ -6,7 +6,7 @@ class PerimeterxCookieV1 < PerimeterxCookie
     @px_config = px_config
     @px_ctx = px_ctx
     @px_cookie = px_ctx.get_px_cookie
-    @px_secret = px_config[:cookie_key]
+    @cookie_secret = px_config[:cookie_key]
   end
 
   def cookie_score
@@ -18,7 +18,7 @@ class PerimeterxCookieV1 < PerimeterxCookie
   end
 
   def valid_format?(cookie)
-    return cookie.key?("t") && cookie.key?("s") && cookie[:s].key?("b") && cookie.key?("u") && cookie.key?("v") && cookie.key?("h")
+    return cookie.key?(:t) && cookie.key?(:s) && cookie[:s].key?(:b) && cookie.key?(:s) && cookie.key?(:v) && cookie.key?(:h)
   end
 
   def cookie_block_action
