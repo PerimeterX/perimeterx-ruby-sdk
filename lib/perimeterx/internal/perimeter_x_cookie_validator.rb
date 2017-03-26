@@ -42,7 +42,6 @@ class PerimeterxCookieValidator
         return false, px_ctx
       end
 
-      debugger
       if (cookie.high_score?)
         L.warn("PerimeterxCookieValidator:[verify]: cookie high score")
         px_ctx.context[:s2s_call_reason] = 'cookie_high_score' #TODO: replace to constant

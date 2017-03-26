@@ -94,17 +94,28 @@ module PxModule
 
       # custom_block_handler - custom block handler defined by the user
       if(@px_config.key?(:custom_block_handler))
+        L.debug("PerimeterX[handle_verification]: custom block handler triggered")
         @px_config[custom_block_handler].call(px_ctx)
       end
 
       # In case were in monitor mode, end here
       if(@px_config[:module_mode] == 1) #TODO: reaplce with constatn
+        L.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
         return true
       end
 
+      L.debug("PerimeterX[handle_verification]: sending block page")
       #TODO: Render HTML from here
 
-      return false
+      full_url = px_ctx.context[:full_url]
+      ref_str = px_ctx.context[:uuid]
+      html = "<html lang='en'>\n<head>\n    <link type='text/css' rel='stylesheet' media='screen, print'\n          href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'>\n    <meta charset='UTF-8'>\n    <title>Access to This Page Has Been Blocked</title>\n    <style> p {\n        width: 60%;\n        margin: 0 auto;\n        font-size: 35px;\n    }\n\n    body {\n        background-color: #a2a2a2;\n        font-family: 'Open Sans';\n        margin: 5%;\n    }\n\n    img {\n        widht: 180px;\n    }\n\n    a {\n        color: #2020B1;\n        text-decoration: blink;\n    }\n\n    a:hover {\n        color: #2b60c6;\n    } </style>\n    <style type='text/css'></style>\n</head>\n<body cz-shortcut-listen='true'>\n<div><img\n        src='https://s.perimeterx.net/logo.png'>\n</div>\n<span style='color: white; font-size: 34px;'>Access to This Page Has Been Blocked</span>\n<div style='font-size: 24px;color: #000042;'><br> Access to #{full_url} is blocked according to the site security policy.\n    <br> Your browsing behaviour fingerprinting made us think you may be a bot. <br> <br> This may happen as a result of\n    the following:\n    <ul>\n        <li>JavaScript is disabled or not running properly.</li>\n        <li>Your browsing behaviour fingerprinting are not likely to be a regular user.</li>\n    </ul>\n    To read more about the bot defender solution: <a href='https://www.perimeterx.com/bot-defender'>https://www.perimeterx.com/bot-defender</a>\n    <br> If you think the blocking was done by mistake, contact the site administrator. <br> <br>\n\n    <span style='font-size: 20px;'>Block Reference: <span\n            style='color: #525151;'># #{ref_str}</span></span></div>\n</body>\n</html>".html_safe
+      if @px_config[:captcha_enabled]
+        html =" <html lang='en'>\n<head>\n    <link type='text/css' rel='stylesheet' media='screen, print'\n          href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'>\n    <meta charset='UTF-8'>\n    <title>Access to This Page Has Been Blocked</title>\n    <style> p {\n        width: 60%;\n        margin: 0 auto;\n        font-size: 35px;\n    }\n\n    body {\n        background-color: #a2a2a2;\n        font-family: 'Open Sans';\n        margin: 5%;\n    }\n\n    img {\n        widht: 180px;\n    }\n\n    a {\n        color: #2020B1;\n        text-decoration: blink;\n    }\n\n    a:hover {\n        color: #2b60c6;\n    } </style>\n    <style type='text/css'></style>\n    <script src=\'https://www.google.com/recaptcha/api.js\'></script>\n    <script>\n        window.px_vid = '#{px_ctx.context[:vid]}' ; \n        function handleCaptcha(response) {\n            var name = \'_pxCaptcha\';\n            var expiryUtc = new Date( Date.now() + 1000 * 10 ).toUTCString();\n            var cookieParts = [name, \'=\', response + \':\' + window.px_vid + \':#{px_ctx.context[:uuid]}\', \'; expires=\', expiryUtc, \'; path=/\'];\n            document.cookie = cookieParts.join(\'\');\n            location.reload();\n        }\n    </script>\n</head>\n<body cz-shortcut-listen='true'>\n<div><img\n        src='https://s.perimeterx.net/logo.png'>\n</div>\n<span style='color: white; font-size: 34px;'>Access to This Page Has Been Blocked</span>\n<div style='font-size: 24px;color: #000042;'><br> Access to #{ full_url } is blocked according to the site security policy.\n    <br> Your browsing behaviour fingerprinting made us think you may be a bot. <br> <br> This may happen as a result of\n    the following:\n    <ul>\n        <li>JavaScript is disabled or not running properly.</li>\n        <li>Your browsing behaviour fingerprinting are not likely to be a regular user.</li>\n    </ul>\n    To read more about the bot defender solution: <a href='https://www.perimeterx.com/bot-defender'>https://www.perimeterx.com/bot-defender</a>\n    <br> If you think the blocking was done by mistake, contact the site administrator. <br> <br><div class='g-recaptcha' data-sitekey='6Lcj-R8TAAAAABs3FrRPuQhLMbp5QrHsHufzLf7b' data-callback='handleCaptcha' data-theme='dark'></div>\n\n    <span style='font-size: 20px;'>Block Reference: <span\n            style='color: #525151;'># #{ref_str}</span></span></div>\n</body>\n</html>".html_safe
+      end
+
+
+      return false, html
 
     end
 
