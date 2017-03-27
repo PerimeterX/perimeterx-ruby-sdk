@@ -1,13 +1,10 @@
+
+require 'perimeterx/utils/px_constants'
 module PxModule
   class Configuration
 
     attr_accessor :configuration
     attr_accessor :PX_DEFAULT
-    attr_accessor :MONITOR_MODE
-    attr_accessor :ACTIVE_MODE
-
-    MONITOR_MODE = 1
-    ACTIVE_MODE = 2
 
     PX_DEFAULT = {
       :app_id                   => nil,
@@ -21,12 +18,12 @@ module PxModule
       :sensitive_headers        => ["http-cookie", "http-cookies"],
       :api_connect_timeout      => 0,
       :api_timeout              => 0,
-      :max_buffer_len           => 1,
+      :max_buffer_len           => 30,
       :send_page_activities     => false,
       :send_block_activities    => true,
-      :sdk_name                 => "RUBY SDK v1.0.0",
+      :sdk_name                 => PxModule::SDK_NAME,
       :debug_mode               => false,
-      :module_mode              => ACTIVE_MODE,
+      :module_mode              => PxModule::ACTIVE_MODE,
       :local_proxy              => false
     }
 

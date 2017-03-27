@@ -1,5 +1,6 @@
 require 'perimeterx/configuration'
 require 'perimeterx/utils/px_logger'
+require 'perimeterx/utils/px_constants'
 require 'perimeterx/utils/px_http_client'
 require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/perimeter_x_s2s_validator'
@@ -99,7 +100,7 @@ module PxModule
       end
 
       # In case were in monitor mode, end here
-      if(@px_config[:module_mode] == 1) #TODO: reaplce with constatn
+      if(@px_config[:module_mode] == PxModule::ACTIVE_MODE)
         L.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
         return true
       end
