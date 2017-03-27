@@ -22,4 +22,21 @@ module PxModule
   COOKIE_HIGH_SCORE = "cookie_high_score"
   COOKIE_VALIDATION_FAILED = "cookie_validation_failed"
   COOKIE_DECRYPTION_FAILED = "cookie_decryption_failed"
+
+  # Templates
+  BLOCK_TEMPLATE = "block.mustache"
+  CAPTCHA_TEMPLATE = "captcha.mustache"
+
+  # Tempalte Props
+  PROP_REF_ID = :refId
+  PROP_APP_ID = :appId
+  PROP_VID = :vid
+  PROP_UUID = :uuid
+  PROP_LOGO_VISIBILITY = :logoVisibility
+  PROP_CUSTOM_LOGO = :customLogo
+  PROP_CSS_REF = :cssRef
+  PROP_JS_REF = :jsRef
+
+  VISIBLE = 'visible'
+  HIDDEN = 'hidden'
 end

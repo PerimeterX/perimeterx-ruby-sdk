@@ -60,7 +60,6 @@ module PxModule
 
         return true, px_ctx
       rescue Exception => e
-        debugger
         L.error("PerimeterxCookieValidator:[verify]: exception while verifying cookie => #{e.message}")
         px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_DECRYPTION_FAILED
         return false, px_ctx
