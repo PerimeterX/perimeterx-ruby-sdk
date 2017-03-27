@@ -6,7 +6,7 @@ class PerimeterxCookie
   attr_accessor :px_cookie, :px_config, :px_ctx, :cookie_secret, :decoded_cookie
 
   def self.px_cookie_factory(px_ctx, px_config)
-    if (px_ctx.context[:px_cookie].key?('v3'))
+    if (px_ctx.context[:px_cookie].key?(:v3))
       return PerimeterxCookieV3.new(px_config, px_ctx)
     end
     return PerimeterxCookieV1.new(px_config, px_ctx)
@@ -111,6 +111,7 @@ class PerimeterxCookie
 
       return eval(plaintext)
     rescue Exceptoin => e
+      L.debug("PerimeterxCookie[decrypt]: Cookie decrypt fail #{e.message}")
       raise Exception.new("Cookie decrypt fail"); #TODO: replace exception & constant
     end
   end

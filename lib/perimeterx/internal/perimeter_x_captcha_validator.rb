@@ -24,7 +24,6 @@ class PerimeterxCaptchaValidator < PerimeterxRiskClient
         "Authorization" => "Bearer #{@px_config[:auth_token]}" ,
         "Content-Type" => "application/json"
     };
-    debugger
 
     return @http_client.post('/api/v1/risk/captcha', request_body, headers, @px_config[:api_timeout]) #TODO: replace to constant
 
@@ -36,7 +35,6 @@ class PerimeterxCaptchaValidator < PerimeterxRiskClient
       if(!px_ctx.context.key?(:px_captcha))
         return captcha_validated, px_ctx
       end
-      debugger
       #TODO: set _pxCaptcha cookie to be invalid
       captcha, vid, uuid = px_ctx.context[:px_captcha].split(':', 3)
       if captcha.nil? || vid.nil? || uuid.nil?

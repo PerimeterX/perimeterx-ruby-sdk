@@ -3,7 +3,7 @@ class PerimeterxCookieV3 < PerimeterxCookie
   attr_accessor :px_config, :px_ctx, :cookie_hash
 
   def initialize(px_config, px_ctx)
-    hash, cookie = px_ctx.get_px_cookie().split(':', 3)
+    hash, cookie = px_ctx.get_px_cookie().split(':', 2)
     @px_cookie = cookie
     @cookie_hash = hash
     @px_config = px_config
