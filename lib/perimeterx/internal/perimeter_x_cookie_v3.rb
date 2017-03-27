@@ -29,9 +29,7 @@ module PxModule
     end
 
     def secured?
-      debugger
       hmac_string = "#{@px_cookie}#{@px_ctx.context[:user_agent]}"
-
       return hmac_valid?(hmac_string, cookie_hmac)
     end
   end

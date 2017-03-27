@@ -113,7 +113,7 @@ module PxModule
         return eval(plaintext)
       rescue Exceptoin => e
         L.debug("PerimeterxCookie[decrypt]: Cookie decrypt fail #{e.message}")
-        raise Exception.new("Cookie decrypt fail"); #TODO: replace exception & constant
+        raise PxCookieDecryptionException.new("Cookie decrypt fail => #{e.message}");
       end
     end
 
