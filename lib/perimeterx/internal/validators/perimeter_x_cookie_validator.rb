@@ -35,7 +35,7 @@ module PxModule
         px_ctx.context[:score] = cookie.cookie_score()
         px_ctx.context[:uuid] = cookie.decoded_cookie[:u]
         px_ctx.context[:vid] = cookie.decoded_cookie[:v]
-        px_ctx.context[:block_action] = cookie.cookie_block_action()
+        px_ctx.context[:block_action] = px_ctx.set_block_action_type(cookie.cookie_block_action())
         px_ctx.context[:cookie_hmac] = cookie.cookie_hmac()
 
         if (cookie.expired?)

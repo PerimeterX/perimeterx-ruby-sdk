@@ -15,13 +15,17 @@ module PxModule
   def px_verify_request
     verified, px_ctx = PerimeterX.instance.verify(env)
 
-    # In case custon block handler exists
-    if (!verified && PerimeterX.instance.px_config.key?(:custom_block_handler))
-      PerimeterX.instance.px_config[:custom_block_handler].call(px_ctx)
-    elsif (!verified)
-      # Generate template
-      html = PxTemplateFactory.get_template(px_ctx, PerimeterX.instance.px_config)
-      render :html => html
+    if (!verified)
+      # In case custon block handler exists
+      if (PerimeterX.instance.px_config.key?(:custom_block_handler))
+        PerimeterX.instance.px_config[:custom_block_handler].call(px_ctx)
+      elsif (!verified)
+        # Generate template
+        html = PxTemplateFactory.get_template(px_ctx, PerimeterX.instance.px_config)
+        response.headers["Content-Type"] = "text/html"
+        response.status = 403
+        render :html => html
+      end
     end
 
     return verified

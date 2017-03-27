@@ -2,7 +2,15 @@ require 'mustache'
 require 'perimeterx/utils/px_constants'
 module PxModule
   module PxTemplateFactory
+    L = PxLogger.instance
+
     def self.get_template(px_ctx, px_config)
+      if (px_config[:challenge_enabled] && px_ctx.context[:block_action] == "challenge")
+        L.debug("PxTemplateFactory[get_template]: px challange triggered")
+        return px_ctx.context[:block_action_data].html_safe
+      end
+
+      L.debug("PxTemplateFactory[get_template]: rendering template")
       template_type = px_config[:captcha_enabled] ? PxModule::CAPTCHA_TEMPLATE : BLOCK_TEMPLATE
 
       Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}"

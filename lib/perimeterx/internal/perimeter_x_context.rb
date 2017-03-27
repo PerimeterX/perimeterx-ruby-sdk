@@ -60,6 +60,19 @@ module PxModule
 
     end #end init
 
+    def set_block_action_type(action)
+      debugger
+      @context[:block_action] = case action
+        when "c"
+          "captcha"
+        when "b"
+          return "block"
+        when "j"
+          return "challenge"
+        else
+          return "captcha"
+        end
+    end
 
     def get_px_cookie
       return @context[:px_cookie].key?(:v3) ? @context[:px_cookie][:v3] : @context[:px_cookie][:v1]

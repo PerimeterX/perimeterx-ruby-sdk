@@ -88,7 +88,7 @@ module PxModule
         score = response_body[:score]
         px_ctx.context[:score] = score
         px_ctx.context[:uuid] = response_body[:uuid]
-        px_ctx.context[:block_action] = response_body[:action]
+        px_ctx.context[:block_action] = px_ctx.set_block_action_type(response_body[:action])
         if (response_body[:action] == 'j' && response_body.key?("action_data") && response_body[:action_data].key?("body"))
           px_ctx.context[:block_action_data] = response_body[:action_data][:body]
           px_ctx.context[:blocking_reason] = 'challenge'
