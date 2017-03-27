@@ -3,10 +3,10 @@ require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_constants'
 require 'perimeterx/utils/px_http_client'
 require 'perimeterx/internal/perimeter_x_context'
-require 'perimeterx/internal/perimeter_x_s2s_validator'
 require 'perimeterx/internal/perimeter_x_activity_client'
-require 'perimeterx/internal/perimeter_x_cookie_validator'
-require 'perimeterx/internal/perimeter_x_captcha_validator'
+require 'perimeterx/internal/validators/perimeter_x_s2s_validator'
+require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
+require 'perimeterx/internal/validators/perimeter_x_captcha_validator'
 
 module PxModule
   class PerimeterX
