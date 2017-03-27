@@ -1,4 +1,4 @@
-require 'perimeterx/internal/perimeter_x_risk_client'
+require 'perimeterx/internal/clients/perimeter_x_risk_client'
 
 module PxModule
   class PerimeterxS2SValidator < PerimeterxRiskClient
