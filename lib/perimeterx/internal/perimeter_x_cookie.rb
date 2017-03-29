@@ -1,9 +1,11 @@
 require 'base64'
 require 'openssl'
 require 'active_support'
+require 'perimeterx/internal/exceptions/px_cookie_decryption_exception'
 
 module PxModule
   class PerimeterxCookie
+    L = PxLogger.instance
     attr_accessor :px_cookie, :px_config, :px_ctx, :cookie_secret, :decoded_cookie
 
     def self.px_cookie_factory(px_ctx, px_config)
@@ -15,27 +17,27 @@ module PxModule
 
     def cookie_score
       #abstract, must be implemented
-      raise Exceptoin.new("Unimplemented method")
+      raise Exception.new("Unimplemented method")
     end
 
     def cookie_hmac
       #abstract, must be implemented
-      raise Exceptoin.new("Unimplemented method")
+      raise Exception.new("Unimplemented method")
     end
 
     def valid_format?(cookie)
       #abstract, must be implemented
-      raise Exceptoin.new("Unimplemented method")
+      raise Exception.new("Unimplemented method")
     end
 
     def cookie_block_action
       #abstract, must be implemented
-      raise Exceptoin.new("Unimplemented method")
+      raise Exception.new("Unimplemented method")
     end
 
     def secured?
       #abstract, must be implemented
-      raise Exceptoin.new("Unimplemented method")
+      raise Exception.new("Unimplemented method")
     end
 
     def is_valid?
@@ -94,7 +96,6 @@ module PxModule
         if (px_cookie.nil?)
           return
         end
-
         px_cookie = px_cookie.gsub(' ', '+')
         salt, iterations, cipher_text = px_cookie.split(':')
         iterations = iterations.to_i
@@ -111,7 +112,7 @@ module PxModule
         plaintext = cipher.update(cipher_text) + cipher.final
 
         return eval(plaintext)
-      rescue Exceptoin => e
+      rescue Exception => e
         L.debug("PerimeterxCookie[decrypt]: Cookie decrypt fail #{e.message}")
         raise PxCookieDecryptionException.new("Cookie decrypt fail => #{e.message}");
       end

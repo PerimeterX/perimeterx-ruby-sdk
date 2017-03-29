@@ -15,6 +15,9 @@ module PxModule
   def px_verify_request
     verified, px_ctx = PerimeterX.instance.verify(env)
 
+    # Invalidate _pxCaptcha, can be done only on the controller level
+    cookies[:_pxCaptcha] = { value: "", expires: -1.minutes.from_now }
+
     if (!verified)
       # In case custon block handler exists
       if (PerimeterX.instance.px_config.key?(:custom_block_handler))
@@ -71,7 +74,6 @@ module PxModule
           L.warn("Module is disabled")
           return true
         end
-
         px_ctx = PerimeterXContext.new(@px_config, req)
 
         # Captcha phase

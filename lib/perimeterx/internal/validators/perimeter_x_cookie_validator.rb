@@ -17,7 +17,7 @@ module PxModule
     def verify(px_ctx)
       begin
         # Case no cookie
-        if !px_ctx.context.key?(:px_cookie)
+        if px_ctx.context[:px_cookie].empty?
           L.warn("PerimeterxCookieValidator:[verify]: cookie not found")
           px_ctx.context[:s2s_call_reason] = PxModule::NO_COOKIE
           return false, px_ctx
@@ -30,7 +30,6 @@ module PxModule
           px_ctx.context[:s2s_call_reason] =  PxModule::NO_COOKIE
           return false, px_ctx
         end
-
         px_ctx.context[:decoded_cookie] = cookie.decoded_cookie
         px_ctx.context[:score] = cookie.cookie_score()
         px_ctx.context[:uuid] = cookie.decoded_cookie[:u]

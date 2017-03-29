@@ -61,7 +61,6 @@ module PxModule
     end #end init
 
     def set_block_action_type(action)
-      debugger
       @context[:block_action] = case action
         when "c"
           "captcha"
