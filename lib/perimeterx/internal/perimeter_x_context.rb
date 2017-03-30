@@ -38,7 +38,7 @@ module PxModule
 
       @context[:hostname]= req.headers['HTTP_HOST']
       @context[:user_agent] = req.headers['HTTP_USER_AGENT'] ? req.headers['HTTP_USER_AGENT'] : ''
-      @context[:uri] = px_config[:custom_uri] ? px_config[:custom_uri]  : req.headers['REQUEST_URI']
+      @context[:uri] = px_config[:custom_uri] ? px_config[:custom_uri].call(req)  : req.headers['REQUEST_URI']
       @context[:full_url] = self_url(req)
       @context[:score] = 0
 

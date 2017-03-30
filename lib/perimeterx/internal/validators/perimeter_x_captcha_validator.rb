@@ -37,7 +37,6 @@ module PxModule
         if(!px_ctx.context.key?(:px_captcha))
           return captcha_validated, px_ctx
         end
-        #TODO: set _pxCaptcha cookie to be invalid
         captcha, vid, uuid = px_ctx.context[:px_captcha].split(':', 3)
         if captcha.nil? || vid.nil? || uuid.nil?
           return captcha_validated, px_ctx
