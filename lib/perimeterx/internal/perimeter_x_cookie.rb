@@ -5,8 +5,12 @@ require 'perimeterx/internal/exceptions/px_cookie_decryption_exception'
 
 module PxModule
   class PerimeterxCookie
-    L = PxLogger.instance
     attr_accessor :px_cookie, :px_config, :px_ctx, :cookie_secret, :decoded_cookie
+
+    def initialize(px_config)
+      @px_config = px_config
+      @logger = px_config[:logger]
+    end
 
     def self.px_cookie_factory(px_ctx, px_config)
       if (px_ctx.context[:px_cookie].key?(:v3))
@@ -113,7 +117,7 @@ module PxModule
 
         return eval(plaintext)
       rescue Exception => e
-        L.debug("PerimeterxCookie[decrypt]: Cookie decrypt fail #{e.message}")
+        @logger.debug("PerimeterxCookie[decrypt]: Cookie decrypt fail #{e.message}")
         raise PxCookieDecryptionException.new("Cookie decrypt fail => #{e.message}");
       end
     end

@@ -6,11 +6,11 @@ require 'perimeterx/internal/perimeter_x_cookie_v3'
 module PxModule
   class PerimeterxCookieValidator
 
-    L = PxLogger.instance
     attr_accessor :px_config
 
     def initialize(px_config)
       @px_config = px_config
+      @logger = px_config[:logger]
     end
 
 
@@ -18,7 +18,7 @@ module PxModule
       begin
         # Case no cookie
         if px_ctx.context[:px_cookie].empty?
-          L.warn("PerimeterxCookieValidator:[verify]: cookie not found")
+          @logger.warn("PerimeterxCookieValidator:[verify]: cookie not found")
           px_ctx.context[:s2s_call_reason] = PxModule::NO_COOKIE
           return false, px_ctx
         end
@@ -26,7 +26,7 @@ module PxModule
         # Deserialize cookie start
         cookie = PerimeterxCookie.px_cookie_factory(px_ctx, @px_config)
         if (!cookie.deserialize())
-          L.warn("PerimeterxCookieValidator:[verify]: invalid cookie")
+          @logger.warn("PerimeterxCookieValidator:[verify]: invalid cookie")
           px_ctx.context[:s2s_call_reason] =  PxModule::NO_COOKIE
           return false, px_ctx
         end
@@ -38,28 +38,28 @@ module PxModule
         px_ctx.context[:cookie_hmac] = cookie.cookie_hmac()
 
         if (cookie.expired?)
-          L.warn("PerimeterxCookieValidator:[verify]: cookie expired")
+          @logger.warn("PerimeterxCookieValidator:[verify]: cookie expired")
           px_ctx.context[:s2s_call_reason] = PxModule::EXPIRED_COOKIE
           return false, px_ctx
         end
 
         if (cookie.high_score?)
-          L.warn("PerimeterxCookieValidator:[verify]: cookie high score")
+          @logger.warn("PerimeterxCookieValidator:[verify]: cookie high score")
           px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_HIGH_SCORE
           return false, px_ctx
         end
 
         if (cookie.secured?)
-          L.warn("PerimeterxCookieValidator:[verify]: cookie invalid hmac")
+          @logger.warn("PerimeterxCookieValidator:[verify]: cookie invalid hmac")
           px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_VALIDATION_FAILED
           return false, px_ctx
         end
 
-        L.debug("PerimeterxCookieValidator:[verify]: cookie validation passed succesfully")
+        @logger.debug("PerimeterxCookieValidator:[verify]: cookie validation passed succesfully")
 
         return true, px_ctx
       rescue Exception => e
-        L.error("PerimeterxCookieValidator:[verify]: exception while verifying cookie => #{e.message}")
+        @logger.error("PerimeterxCookieValidator:[verify]: exception while verifying cookie => #{e.message}")
         px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_DECRYPTION_FAILED
         return false, px_ctx
       end

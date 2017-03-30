@@ -41,8 +41,6 @@ module PxModule
 
   # PerimtereX Module
   class PerimeterX
-    L = PxLogger.instance
-
     @@__instance = nil
     @@mutex = Mutex.new
 
@@ -68,10 +66,10 @@ module PxModule
     #Instance Methods
     def verify(env)
       begin
-        L.debug("PerimeterX[pxVerify]")
+        @logger.debug("PerimeterX[pxVerify]")
         req = ActionDispatch::Request.new(env)
         if (!@px_config[:module_enabled])
-          L.warn("Module is disabled")
+          @logger.warn("Module is disabled")
           return true
         end
         px_ctx = PerimeterXContext.new(@px_config, req)
@@ -94,15 +92,15 @@ module PxModule
           return handle_verification(px_ctx)
         end
       rescue Exception => e
-        L.error("#{e.backtrace.first}: #{e.message} (#{e.class})")
-        e.backtrace.drop(1).map { |s| L.error("\t#{s}") }
+        @logger.error("#{e.backtrace.first}: #{e.message} (#{e.class})")
+        e.backtrace.drop(1).map { |s| @logger.error("\t#{s}") }
         return true
       end
     end
 
     private def initialize(params)
-      L.debug("PerimeterX[initialize]")
       @px_config = Configuration.new(params).configuration
+      @logger = @px_config[:logger]
       @px_http_client = PxHttpClient.new(@px_config)
 
       @px_activity_client = PerimeterxActivitiesClient.new(@px_config, @px_http_client)
@@ -110,16 +108,17 @@ module PxModule
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
       @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
       @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
+      @logger.debug("PerimeterX[initialize]")
     end
 
     private def handle_verification(px_ctx)
-      L.debug("PerimeterX[handle_verification]")
-      L.debug("PerimeterX[handle_verification]: processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
+      @logger.debug("PerimeterX[handle_verification]")
+      @logger.debug("PerimeterX[handle_verification]: processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
 
       score = px_ctx.context[:score]
       # Case PASS request
       if (score < @px_config[:blocking_score])
-        L.debug("PerimeterX[handle_verification]: score:#{score} < blocking score, passing request")
+        @logger.debug("PerimeterX[handle_verification]: score:#{score} < blocking score, passing request")
         @px_activity_client.send_page_requested_activity(px_ctx)
         return true
       end
@@ -129,17 +128,17 @@ module PxModule
 
       # custom_block_handler - custom block handler defined by the user
       if(@px_config.key?(:custom_block_handler))
-        L.debug("PerimeterX[handle_verification]: custom block handler triggered")
+        @logger.debug("PerimeterX[handle_verification]: custom block handler triggered")
         @px_config[custom_block_handler].call(px_ctx)
       end
 
       # In case were in monitor mode, end here
       if(@px_config[:module_mode] == PxModule::MONITOR_MODE)
-        L.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
+        @logger.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
         return true
       end
 
-      L.debug("PerimeterX[handle_verification]: sending block page")
+      @logger.debug("PerimeterX[handle_verification]: sending block page")
 
       return false, px_ctx
     end

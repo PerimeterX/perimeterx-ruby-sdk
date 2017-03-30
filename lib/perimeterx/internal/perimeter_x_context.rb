@@ -2,13 +2,13 @@ require 'perimeterx/utils/px_logger'
 
 module PxModule
   class PerimeterXContext
-    L = PxLogger.instance
 
     attr_accessor :context
     attr_accessor :px_config
 
     def initialize(px_config, req)
-      L.debug("PerimeterXContext[initialize] ")
+      @logger = px_config[:logger];
+      @logger.debug("PerimeterXContext[initialize] ")
       @context = Hash.new
 
       @context[:px_cookie] = Hash.new

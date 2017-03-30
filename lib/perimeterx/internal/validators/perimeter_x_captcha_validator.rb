@@ -4,8 +4,7 @@ module PxModule
   class PerimeterxCaptchaValidator < PerimeterxRiskClient
 
     def initialize(px_config, http_client)
-      @px_config = px_config
-      @http_client = http_client
+      super(px_config, http_client)
     end
 
     def send_captcha_request(vid, uuid, captcha, px_ctx)
@@ -58,7 +57,7 @@ module PxModule
         return captcha_validated, px_ctx
 
       rescue Exception => e
-        L.error("PerimeterxCaptchaValidator[verify]: failed, returning false")
+        @logger.error("PerimeterxCaptchaValidator[verify]: failed, returning false")
         return captcha_validated, px_ctx
       end
     end

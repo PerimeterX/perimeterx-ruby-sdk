@@ -1,5 +1,6 @@
-
+require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_constants'
+
 module PxModule
   class Configuration
 
@@ -30,6 +31,7 @@ module PxModule
     def initialize(params)
       PX_DEFAULT[:perimeterx_server_host] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
       @configuration = PX_DEFAULT.merge(params);
+      @configuration[:logger] = PxLogger.new(@configuration[:debug])
     end
   end
 end

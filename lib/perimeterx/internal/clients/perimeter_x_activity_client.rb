@@ -6,15 +6,14 @@ module PxModule
     attr_accessor :activities
 
     def initialize(px_config, http_client)
-      L.debug("PerimeterxActivitiesClients[initialize]")
-      @px_config = px_config
-      @http_client = http_client
+      super(px_config, http_client)
+      @logger.debug("PerimeterxActivitiesClients[initialize]")
       @activities = [];
     end
 
     def send_to_perimeterx(activity_type, px_ctx, details = [])
-      L.debug("PerimeterxActivitiesClients[send_to_perimeterx]")
-      L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: new activity #{activity_type} logged")
+      @logger.debug("PerimeterxActivitiesClients[send_to_perimeterx]")
+      @logger.debug("PerimeterxActivitiesClients[send_to_perimeterx]: new activity #{activity_type} logged")
 
       if (@px_config.key?(:additional_activity_handler))
         @px_config[:additional_activity_handler].call(activity_type, px_ctx, details)
@@ -32,7 +31,7 @@ module PxModule
       }
 
       if (px_ctx.context.key?(:vid))
-        L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: found vid in ctx")
+        @logger.debug("PerimeterxActivitiesClients[send_to_perimeterx]: found vid in ctx")
         px_data[:vid] = px_ctx.context[:vid]
       end
 
@@ -44,7 +43,7 @@ module PxModule
 
       @activities.push(px_data)
       if (@activities.size == @px_config[:max_buffer_len])
-        L.debug("PerimeterxActivitiesClients[send_to_perimeterx]: max buffer length reached, sending activities")
+        @logger.debug("PerimeterxActivitiesClients[send_to_perimeterx]: max buffer length reached, sending activities")
         @http_client.async_post(PxModule::API_V1_S2S, @activities, headers)
 
         @activities.clear
@@ -52,9 +51,9 @@ module PxModule
     end
 
     def send_block_activity(px_ctx)
-      L.debug("PerimeterxActivitiesClients[send_block_activity]")
+      @logger.debug("PerimeterxActivitiesClients[send_block_activity]")
       if (!@px_config[:send_page_acitivites])
-        L.debug("PerimeterxActivitiesClients[send_block_activity]: sending activites is disabled")
+        @logger.debug("PerimeterxActivitiesClients[send_block_activity]: sending activites is disabled")
         return
       end
 
@@ -69,7 +68,7 @@ module PxModule
     end
 
     def send_page_requested_activity(px_ctx)
-      L.debug("PerimeterxActivitiesClients[send_page_requested_activity]")
+      @logger.debug("PerimeterxActivitiesClients[send_page_requested_activity]")
       if (!@px_config[:send_page_acitivites])
         return
       end

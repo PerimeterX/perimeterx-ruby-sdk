@@ -4,13 +4,12 @@ module PxModule
   class PerimeterxS2SValidator < PerimeterxRiskClient
 
     def initialize(px_config, http_client)
-      L.debug("PerimeterxS2SValidator[initialize]")
-      @px_config = px_config
-      @http_client = http_client
+      super(px_config, http_client)
+      @logger.debug("PerimeterxS2SValidator[initialize]")
     end
 
     def send_risk_request(px_ctx)
-      L.debug("PerimeterxS2SValidator[send_risk_request]: send_risk_request")
+      @logger.debug("PerimeterxS2SValidator[send_risk_request]: send_risk_request")
 
       risk_mode = PxModule::RISK_MODE_ACTIVE
       if @px_config[:module_mode] == PxModule::MONITOR_MODE
@@ -72,7 +71,7 @@ module PxModule
     end
 
     def verify(px_ctx)
-      L.debug("PerimeterxS2SValidator[verify]")
+      @logger.debug("PerimeterxS2SValidator[verify]")
       response = send_risk_request(px_ctx)
       if (!response)
         return px_ctx
@@ -83,7 +82,7 @@ module PxModule
       response_body = eval(response.content);
       # When success
       if (response.status == 200 && response_body.key?(:score) && response_body.key?(:action))
-        L.debug("PerimeterxS2SValidator[verify]: response ok")
+        @logger.debug("PerimeterxS2SValidator[verify]: response ok")
         score = response_body[:score]
         px_ctx.context[:score] = score
         px_ctx.context[:uuid] = response_body[:uuid]
@@ -98,12 +97,12 @@ module PxModule
 
       # When error
       if(response.status != 200)
-        L.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
+        @logger.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
         px_ctx.context[:uuid] = ""
         px_ctx.context[:s2s_error_msg] = response_body[:message]
       end
 
-      L.debug("PerimeterxS2SValidator[verify]: done")
+      @logger.debug("PerimeterxS2SValidator[verify]: done")
       return px_ctx
     end #end method
 

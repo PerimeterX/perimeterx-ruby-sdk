@@ -4,11 +4,11 @@ module PxModule
     attr_accessor :px_config, :px_ctx
 
     def initialize(px_config, px_ctx)
-      L.debug("PerimeterxCookieV1[initialize]")
-      @px_config = px_config
+      super(px_config)
       @px_ctx = px_ctx
       @px_cookie = px_ctx.get_px_cookie
       @cookie_secret = px_config[:cookie_key]
+      @logger.debug("PerimeterxCookieV1[initialize]")
     end
 
     def cookie_score
