@@ -23,7 +23,7 @@ module PxModule
       :send_page_activities     => false,
       :send_block_activities    => true,
       :sdk_name                 => PxModule::SDK_NAME,
-      :debug_mode               => false,
+      :debug                    => false,
       :module_mode              => PxModule::ACTIVE_MODE,
       :local_proxy              => false
     }

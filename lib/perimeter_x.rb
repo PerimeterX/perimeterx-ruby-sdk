@@ -59,7 +59,8 @@ module PxModule
     end
 
     def self.instance
-      return @@__instance if !@@__instance.nil? else raise Exception.new("Please initialize perimeter x first")
+      return @@__instance if !@@__instance.nil?
+      raise Exception.new("Please initialize perimeter x first")
     end
 
 
