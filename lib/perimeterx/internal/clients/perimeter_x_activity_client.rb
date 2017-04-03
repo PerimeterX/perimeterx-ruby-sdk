@@ -23,7 +23,7 @@ module PxModule
       px_data = {
         :type       => activity_type,
         :headers    => format_headers(px_ctx),
-        :timestamp  => DateTime.now.strftime('%Q'),
+        :timestamp  => (Time.now.to_f*1000).floor,
         :socket_ip  => px_ctx.context[:ip],
         :px_app_id  => @px_config[:app_id],
         :url        => px_ctx.context[:full_url],
