@@ -1,6 +1,6 @@
+require 'active_support/security_utils'
 require 'base64'
 require 'openssl'
-require 'active_support'
 require 'perimeterx/internal/exceptions/px_cookie_decryption_exception'
 
 module PxModule

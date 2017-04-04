@@ -32,4 +32,8 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency('httpclient', '2.8.2.4')
   gem.add_dependency('mustache', '1.0.4')
+  gem.add_dependency('activesupport', '>= 4.2.0')
+
+  gem.add_development_dependency 'rspec', '~> 3.0'
+  gem.add_development_dependency 'mocha', '~> 1.2', '>= 1.2.1'
 end

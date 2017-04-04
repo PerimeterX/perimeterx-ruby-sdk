@@ -49,7 +49,7 @@ module PxModule
           return false, px_ctx
         end
 
-        if (cookie.secured?)
+        if (!cookie.secured?)
           @logger.warn("PerimeterxCookieValidator:[verify]: cookie invalid hmac")
           px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_VALIDATION_FAILED
           return false, px_ctx
