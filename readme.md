@@ -84,7 +84,7 @@ All parameters are obtainable via the PerimeterX Portal. (Applications and Polic
 ```ruby
 params = {
   ...
-  blocking_score = 100
+  :blocking_score => 100
   ...
 }
 ```
