@@ -74,7 +74,8 @@ module PxModule
     end
 
     def get_px_cookie
-      return @context[:px_cookie].key?(:v3) ? @context[:px_cookie][:v3] : @context[:px_cookie][:v1]
+      cookie = @context[:px_cookie].key?(:v3) ? @context[:px_cookie][:v3] : @context[:px_cookie][:v1]
+      return cookie.tr(' ','+') if !cookie.nil?
     end
 
   end

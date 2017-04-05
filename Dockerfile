@@ -42,7 +42,9 @@ WORKDIR /tmp/ruby_sandbox/webapp
 RUN /bin/bash -l -c "rails generate controller home index"
 WORKDIR /tmp/ruby_sandbox/webapp
 EXPOSE 3000
-RUN sed -i "2i gem 'perimeter_x', '~> 1.0.3.pre.alpha'" /tmp/ruby_sandbox/webapp/Gemfile
+# TODO: make it take the files from git
+ADD ./ /tmp/ruby_sandbox/perimeterx-ruby-sdk
+RUN sed -i '2i gem "perimeter_x", :path => "/tmp/ruby_sandbox/perimeterx-ruby-sdk"' /tmp/ruby_sandbox/webapp/Gemfile
 RUN /bin/bash -l -c "bundler update"
-RUN /bin/bash -l -c "gem list|grep peri"
+COPY ./examples/ /tmp/ruby_sandbox/webapp
 CMD ["/bin/bash", "-l", "-c", "rails server -b 0.0.0.0;"]

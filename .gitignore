@@ -10,7 +10,8 @@ capybara-*.html
 /public/system
 /coverage/
 /spec/tmp
-examples/home_controller.rb
+examples/config/initializers/perimeterx.rb
+examples/app/views/home/index.html.erb
 **.orig
 *.gem
 rerun.txt

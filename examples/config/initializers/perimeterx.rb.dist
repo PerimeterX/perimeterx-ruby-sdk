@@ -1,0 +1,8 @@
+params = {
+  :app_id => "APP_ID",
+  :cookie_key => "COOKIE_KEY",
+  :auth_token => "AUTH_TOKEN"
+}
+
+
+PxModule.configure(params)

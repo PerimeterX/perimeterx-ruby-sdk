@@ -6,7 +6,7 @@ module PxModule
     def initialize(px_config, px_ctx)
       super(px_config)
       hash, cookie = px_ctx.get_px_cookie().split(':', 2)
-      @px_cookie = cookie.tr(' ','+')
+      @px_cookie = cookie
       @cookie_hash = hash
       @px_ctx = px_ctx
       @cookie_secret = px_config[:cookie_key]
