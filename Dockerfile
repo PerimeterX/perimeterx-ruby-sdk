@@ -37,13 +37,13 @@ RUN /bin/bash -l -c "gem install bundler"
 RUN /bin/bash -l -c "gem install rails -v 4.2.0"
 RUN mkdir -p /tmp/ruby_sandbox
 WORKDIR /tmp/ruby_sandbox
+RUN git clone https://github.com/PerimeterX/perimeterx-ruby-sdk.git
 RUN /bin/bash -l -c "rails new webapp"
 WORKDIR /tmp/ruby_sandbox/webapp
 RUN /bin/bash -l -c "rails generate controller home index"
 WORKDIR /tmp/ruby_sandbox/webapp
 EXPOSE 3000
 # TODO: make it take the files from git
-ADD ./ /tmp/ruby_sandbox/perimeterx-ruby-sdk
 RUN sed -i '2i gem "perimeter_x", :path => "/tmp/ruby_sandbox/perimeterx-ruby-sdk"' /tmp/ruby_sandbox/webapp/Gemfile
 RUN /bin/bash -l -c "bundler update"
 COPY ./examples/ /tmp/ruby_sandbox/webapp

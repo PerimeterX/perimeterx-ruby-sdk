@@ -33,7 +33,7 @@ module PxModule
       }
       #Check for hmac
       if px_ctx.context.key?(:cookie_hmac)
-        request_body[:additional][:px_cookie_hmac] = px_ctx[:cookie_hmac]
+        request_body[:additional][:px_cookie_hmac] = px_ctx.context[:cookie_hmac]
       end
 
 
