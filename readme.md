@@ -31,7 +31,8 @@ Table of Contents
 
 - Ruby version 2.3+
 - Rails version 4.2
-- [httparty](https://github.com/jnunemaker/httparty)
+- [httpclient](https://rubygems.org/gems/httpclient/versions/2.8.3)
+- [mustache](https://rubygems.org/gems/mustache)
 
 <a name="installation"></a> Installation
 ----------------------------------------
