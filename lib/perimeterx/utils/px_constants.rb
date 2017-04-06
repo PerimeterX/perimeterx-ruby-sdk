@@ -1,3 +1,5 @@
+require 'perimeterx/version'
+
 module PxModule
   # Misc
   MONITOR_MODE = 1
