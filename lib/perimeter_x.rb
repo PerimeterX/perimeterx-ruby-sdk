@@ -21,7 +21,7 @@ module PxModule
     if (!verified)
       # In case custon block handler exists
       if (PerimeterX.instance.px_config.key?(:custom_block_handler))
-        return PerimeterX.instance.px_config[:custom_block_handler].call(px_ctx)
+        return instance_exec(px_ctx, &PerimeterX.instance.px_config[:custom_block_handler])
       elsif (!verified)
         # Generate template
         html = PxTemplateFactory.get_template(px_ctx, PerimeterX.instance.px_config)
@@ -126,12 +126,6 @@ module PxModule
 
       # Case blocking activity
       @px_activity_client.send_block_activity(px_ctx)
-
-      # custom_block_handler - custom block handler defined by the user
-      if(@px_config.key?(:custom_block_handler))
-        @logger.debug("PerimeterX[handle_verification]: custom block handler triggered")
-        @px_config[custom_block_handler].call(px_ctx)
-      end
 
       # In case were in monitor mode, end here
       if(@px_config[:module_mode] == PxModule::MONITOR_MODE)
