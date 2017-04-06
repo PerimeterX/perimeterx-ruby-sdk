@@ -21,9 +21,11 @@ module PxModule
     if (!verified)
       # In case custon block handler exists
       if (PerimeterX.instance.px_config.key?(:custom_block_handler))
+        PerimeterX.instance.px_config[:logger].debug("PxModule[px_verify_request]: custom_block_handler triggered")
         return instance_exec(px_ctx, &PerimeterX.instance.px_config[:custom_block_handler])
       else
         # Generate template
+        PerimeterX.instance.px_config[:logger].debug("PxModule[px_verify_request]: sending default block page")
         html = PxTemplateFactory.get_template(px_ctx, PerimeterX.instance.px_config)
         response.headers["Content-Type"] = "text/html"
         response.status = 403
@@ -133,7 +135,7 @@ module PxModule
         return true
       end
 
-      @logger.debug("PerimeterX[handle_verification]: sending block page")
+      @logger.debug("PerimeterX[handle_verification]: verification ended, the request should be blocked")
 
       return false, px_ctx
     end
