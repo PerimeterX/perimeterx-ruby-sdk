@@ -22,7 +22,7 @@ module PxModule
       # In case custon block handler exists
       if (PerimeterX.instance.px_config.key?(:custom_block_handler))
         return instance_exec(px_ctx, &PerimeterX.instance.px_config[:custom_block_handler])
-      elsif (!verified)
+      else
         # Generate template
         html = PxTemplateFactory.get_template(px_ctx, PerimeterX.instance.px_config)
         response.headers["Content-Type"] = "text/html"
