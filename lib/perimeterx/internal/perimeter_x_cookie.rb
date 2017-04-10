@@ -100,6 +100,7 @@ module PxModule
         if (px_cookie.nil?)
           return
         end
+        debugger
         px_cookie = px_cookie.gsub(' ', '+')
         salt, iterations, cipher_text = px_cookie.split(':')
         iterations = iterations.to_i

@@ -48,10 +48,13 @@ module PxModule
       end
 
       #S2S Call reason
-      decode_cookie_reasons = ['cookie_expired', 'cookie_validation_failed']
-      if decode_cookie_reasons.include? (px_ctx.context[:s2s_call_reason])
+      decode_cookie_reasons = [PxModule::EXPIRED_COOKIE, PxModule::COOKIE_VALIDATION_FAILED]
+      if ( px_ctx.context[:s2s_call_reason] == PxModule::COOKIE_DECRYPTION_FAILED )
+        @logger.debug("PerimeterxS2SValidator[send_risk_request]: attaching px_orig_cookie to request")
+        request_body['additional']['px_orig_cookie'] = px_ctx.context[:px_orig_cookie]
+      elsif decode_cookie_reasons.include? (px_ctx.context[:s2s_call_reason])
         if (px_ctx.context.key?(:decoded_cookie))
-          request_body[:additional][:px_cookie] = px_ctx.context[:decoded_cookie]
+          request_body['additional']['px_cookie'] = px_ctx.context[:decoded_cookie]
         end
       end
 
