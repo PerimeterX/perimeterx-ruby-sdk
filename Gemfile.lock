@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    perimeter_x (1.0.0)
+    perimeter_x (1.0.3)
       activesupport (>= 4.2.0)
       httpclient (= 2.8.2.4)
       mustache (~> 1.0, >= 1.0.3)
