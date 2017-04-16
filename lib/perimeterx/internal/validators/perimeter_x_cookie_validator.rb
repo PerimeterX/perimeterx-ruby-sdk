@@ -23,7 +23,7 @@ module PxModule
           return false, px_ctx
         end
 
-        # Deserialize cookie starta
+        # Deserialize cookie start
         cookie = PerimeterxCookie.px_cookie_factory(px_ctx, @px_config)
         if (!cookie.deserialize())
           @logger.warn("PerimeterxCookieValidator:[verify]: invalid cookie")
