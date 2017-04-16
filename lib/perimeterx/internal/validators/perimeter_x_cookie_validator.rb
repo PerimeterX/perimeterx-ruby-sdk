@@ -27,7 +27,7 @@ module PxModule
         cookie = PerimeterxCookie.px_cookie_factory(px_ctx, @px_config)
         if (!cookie.deserialize())
           @logger.warn("PerimeterxCookieValidator:[verify]: invalid cookie")
-          px_ctx.context[:s2s_call_reason] =  PxModule::NO_COOKIE
+          px_ctx.context[:s2s_call_reason] =  PxModule::COOKIE_DECRYPTION_FAILED
           return false, px_ctx
         end
         px_ctx.context[:decoded_cookie] = cookie.decoded_cookie
@@ -60,6 +60,7 @@ module PxModule
         return true, px_ctx
       rescue Exception => e
         @logger.error("PerimeterxCookieValidator:[verify]: exception while verifying cookie => #{e.message}")
+        px_ctx.context[:px_orig_cookie] = cookie.px_cookie
         px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_DECRYPTION_FAILED
         return false, px_ctx
       end
