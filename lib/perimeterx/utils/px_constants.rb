@@ -19,7 +19,7 @@ module PxModule
 
   # PxContext
   NO_COOKIE = "no_cookie"
-  INVALID_COOKIE = "invalid cookie"
+  INVALID_COOKIE = "invalid_cookie"
   EXPIRED_COOKIE = "cookie_expired"
   COOKIE_HIGH_SCORE = "cookie_high_score"
   COOKIE_VALIDATION_FAILED = "cookie_validation_failed"

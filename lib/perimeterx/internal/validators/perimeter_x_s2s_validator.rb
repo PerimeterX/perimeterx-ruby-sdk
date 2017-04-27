@@ -17,21 +17,22 @@ module PxModule
       end
 
       request_body = {
-        'request' => {
-          'ip'      => px_ctx.context[:ip],
-          'headers' => format_headers(px_ctx),
-          'uri'     => px_ctx.context[:uri],
-          'url'     => px_ctx.context[:full_url]
+        :request => {
+          :ip      => px_ctx.context[:ip],
+          :headers => format_headers(px_ctx),
+          :uri     => px_ctx.context[:uri],
+          :url     => px_ctx.context[:full_url]
         },
-        'additional' => {
-          's2s_call_reason' => px_ctx.context[:s2s_call_reason],
-          'module_version' => @px_config[:sdk_name],
-          'http_method' => px_ctx.context[:http_method],
-          'http_version' => px_ctx.context[:http_version],
-          'risk_mode' => risk_mode
+        :additional => {
+          :s2s_call_reason => px_ctx.context[:s2s_call_reason],
+          :module_version => @px_config[:sdk_name],
+          :http_method => px_ctx.context[:http_method],
+          :http_version => px_ctx.context[:http_version],
+          :risk_mode => risk_mode
         }
       }
       #Check for hmac
+      @logger.debug("px_ctx cookie_hmac key = #{px_ctx.context.key?(:cookie_hmac)}, value is: #{px_ctx.context[:cookie_hmac]}")
       if px_ctx.context.key?(:cookie_hmac)
         request_body[:additional][:px_cookie_hmac] = px_ctx.context[:cookie_hmac]
       end
@@ -48,8 +49,11 @@ module PxModule
       end
 
       #S2S Call reason
-      decode_cookie_reasons = ['cookie_expired', 'cookie_validation_failed']
-      if decode_cookie_reasons.include? (px_ctx.context[:s2s_call_reason])
+      decode_cookie_reasons = [PxModule::EXPIRED_COOKIE, PxModule::COOKIE_VALIDATION_FAILED]
+      if ( px_ctx.context[:s2s_call_reason] == PxModule::COOKIE_DECRYPTION_FAILED )
+        @logger.debug("PerimeterxS2SValidator[send_risk_request]: attaching px_orig_cookie to request")
+        request_body[:additional][:px_orig_cookie] = px_ctx.context[:px_orig_cookie]
+      elsif decode_cookie_reasons.include? (px_ctx.context[:s2s_call_reason])
         if (px_ctx.context.key?(:decoded_cookie))
           request_body[:additional][:px_cookie] = px_ctx.context[:decoded_cookie]
         end
