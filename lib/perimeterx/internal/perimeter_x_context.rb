@@ -40,6 +40,7 @@ module PxModule
       @context[:user_agent] = req.user_agent ? req.user_agent : ''
       @context[:uri] = px_config[:custom_uri] ? px_config[:custom_uri].call(req)  : req.headers['REQUEST_URI']
       @context[:full_url] = req.original_url
+      @context[:format] = req.format.symbol
       @context[:score] = 0
 
       if px_config.key?(:custom_user_ip)
