@@ -100,6 +100,8 @@ When implemented, this method receives  a hash variable as input which represent
 - `px_ctx[:score] ` contains the risk score
 - `px_ctx[:uuid] ` contains the request UUID
 
+>> Note: to determine whether to return a captcha/block page (HTML) or block JSON payload a reference key on the context will be available:  ```px_ctx.context[:format]```
+
 To replace the default verification behavior, add the configuration a lambda member as shown in the example below.
 
 The method must return boolen value.
