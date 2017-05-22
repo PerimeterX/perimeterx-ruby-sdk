@@ -16,6 +16,8 @@ RSpec.describe PxModule::PerimeterxS2SValidator, "S2S Validator Tests" do
       :server_name => "MockServer",
       :user_agent => "MockUserAgent",
       :original_url => "http://moch.url.com/",
+	  :fullpath => '/',
+      :format => double("format", { :symbol => nil } ),
       :ip => "1.2.3.4",
       :server_protocol => "HTTP://1.1",
       :method => "GET"
