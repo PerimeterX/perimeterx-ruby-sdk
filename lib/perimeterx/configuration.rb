@@ -25,7 +25,8 @@ module PxModule
       :sdk_name                 => PxModule::SDK_NAME,
       :debug                    => false,
       :module_mode              => PxModule::ACTIVE_MODE,
-      :local_proxy              => false
+      :local_proxy              => false,
+      :sensitive_routes         => []
     }
 
     def initialize(params)

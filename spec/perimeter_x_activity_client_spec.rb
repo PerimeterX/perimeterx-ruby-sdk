@@ -16,6 +16,8 @@ RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" d
       :server_name => "MockServer",
       :user_agent => "MockUserAgent",
       :original_url => "http://moch.url.com/",
+	  :fullpath => '/',
+	  :format => double("format", { :symbol => nil } ),
       :ip => "1.2.3.4",
       :server_protocol => "HTTP://1.1",
       :method => "GET"

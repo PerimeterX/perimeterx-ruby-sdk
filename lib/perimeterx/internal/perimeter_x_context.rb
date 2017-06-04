@@ -38,7 +38,7 @@ module PxModule
 
       @context[:hostname]= req.server_name
       @context[:user_agent] = req.user_agent ? req.user_agent : ''
-      @context[:uri] = px_config[:custom_uri] ? px_config[:custom_uri].call(req)  : req.headers['REQUEST_URI']
+      @context[:uri] = px_config[:custom_uri] ? px_config[:custom_uri].call(req)  : req.fullpath 
       @context[:full_url] = req.original_url
       @context[:format] = req.format.symbol
       @context[:score] = 0
@@ -58,8 +58,15 @@ module PxModule
           end
       end
       @context[:http_method] = req.method
-
+	  @context[:sensitive_route] = check_sensitive_route(px_config[:sensitive_routes], @context[:uri]) 
     end #end init
+
+	def check_sensitive_route(sensitive_routes, uri)
+		sensitive_routes.each do |sensitive_route|
+			return true if uri.start_with? sensitive_route
+		end
+		return false
+	end
 
     def set_block_action_type(action)
       @context[:block_action] = case action
