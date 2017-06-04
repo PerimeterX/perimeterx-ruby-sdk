@@ -24,6 +24,7 @@ module PxModule
   COOKIE_HIGH_SCORE = "cookie_high_score"
   COOKIE_VALIDATION_FAILED = "cookie_validation_failed"
   COOKIE_DECRYPTION_FAILED = "cookie_decryption_failed"
+  SENSITIVE_ROUTE = "sensitive_route"
 
   # Templates
   BLOCK_TEMPLATE = "block.mustache"
