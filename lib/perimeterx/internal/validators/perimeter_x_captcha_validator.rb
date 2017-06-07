@@ -27,7 +27,7 @@ module PxModule
           "Content-Type" => "application/json"
       };
 
-      return @http_client.post(PxModule::API_V1_CAPTCHA, request_body, headers, @px_config[:api_timeout])
+      return @http_client.post(PxModule::API_V1_CAPTCHA, request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
 
     end
 

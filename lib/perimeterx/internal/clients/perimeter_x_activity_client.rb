@@ -3,12 +3,10 @@ require 'perimeterx/internal/clients/perimeter_x_risk_client'
 module PxModule
   class PerimeterxActivitiesClient < PerimeterxRiskClient
 
-    attr_accessor :activities
 
     def initialize(px_config, http_client)
       super(px_config, http_client)
       @logger.debug("PerimeterxActivitiesClients[initialize]")
-      @activities = [];
     end
 
     def send_to_perimeterx(activity_type, px_ctx, details = [])
@@ -41,13 +39,10 @@ module PxModule
           "Content-Type" => "application/json"
       };
 
-      @activities.push(px_data)
-      if (@activities.size == @px_config[:max_buffer_len])
-        @logger.debug("PerimeterxActivitiesClients[send_to_perimeterx]: max buffer length reached, sending activities")
-        @http_client.async_post(PxModule::API_V1_S2S, @activities, headers)
-
-        @activities.clear
-      end
+      s = Time.now
+      @http_client.async.post(PxModule::API_V1_S2S, px_data, headers)
+      e = Time.now
+      @logger.debug("PerimeterxActivitiesClients[send_to_perimeterx]: post runtime #{(e-s)*1000}")
     end
 
     def send_block_activity(px_ctx)

@@ -67,9 +67,9 @@ module PxModule
 
       # Custom risk handler
       if (risk_mode == PxModule::ACTIVE_MODE && @px_config.key?(:custom_risk_handler))
-        response = @px_config[:custom_risk_handler].call(PxModule::API_V2_RISK, request_body, headers, @px_config[:api_timeout])
+        response = @px_config[:custom_risk_handler].call(PxModule::API_V2_RISK, request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
       else
-        response = @http_client.post(PxModule::API_V2_RISK , request_body, headers)
+        response = @http_client.post(PxModule::API_V2_RISK , request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
       end
       return response
     end
@@ -83,9 +83,9 @@ module PxModule
       px_ctx.context[:made_s2s_risk_api_call] = true
 
       # From here response should be valid, if success or error
-      response_body = eval(response.content);
+      response_body = eval(response.body);
       # When success
-      if (response.status == 200 && response_body.key?(:score) && response_body.key?(:action))
+      if (response.code == 200 && response_body.key?(:score) && response_body.key?(:action))
         @logger.debug("PerimeterxS2SValidator[verify]: response ok")
         score = response_body[:score]
         px_ctx.context[:score] = score
@@ -100,7 +100,7 @@ module PxModule
       end #end success response
 
       # When error
-      if(response.status != 200)
+      if(response.code != 200)
         @logger.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
         px_ctx.context[:uuid] = ""
         px_ctx.context[:s2s_error_msg] = response_body[:message]
