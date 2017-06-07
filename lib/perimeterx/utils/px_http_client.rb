@@ -1,53 +1,47 @@
-require "perimeterx/utils/px_logger"
-require "httpclient"
+require 'perimeterx/utils/px_logger'
+require 'typhoeus'
+require 'concurrent'
 
 module PxModule
   class PxHttpClient
+    include Concurrent::Async
+
     attr_accessor :px_config
-    attr_accessor :BASE_URL
-    attr_accessor :http_client
+    attr_accessor :px_client
 
     def initialize(px_config)
       @px_config = px_config
-      @http_client = HTTPClient.new(:base_url => px_config[:perimeterx_server_host])
       @logger = px_config[:logger]
       @logger.debug("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config[:perimeterx_server_host]}")
     end
 
-    def post(path, body, headers, api_timeout = 0, timeoute = 0)
-      s = Time.now
-      begin
-        @logger.debug("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
-        response = @http_client.post(path,
-                    :header => headers,
-                    :body => body.to_json(),
-                    :timeout => api_timeout
-                  )
-      rescue Net::OpenTimeout, Net::ReadTimeout => error
-        @logger.warn("PerimeterxS2SValidator[verify]: request timedout")
-        return false
-      end
-      e = Time.now
-      @logger.debug("PxHttpClient[post]: runtime: #{e-s}")
-      return response
-    end
+    # Runs a POST commant to Perimeter X servers
+    # Params:
+    # +path+:: string containing uri
+    # +body+:: hash object, containing the request body, must be converted to json format
+    # +headers+:: hash object, hold headers
+    # +api_timeout+:: int, sets the timeout for a request
+    # +connection_timeout+:: int, sets the timeout for opening a connection
 
-    def async_post(path, body, headers, api_timeout = 0, timeoute = 0)
-      @logger.debug("PxHttpClient[async_post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
+    def post(path, body, headers, api_timeout = 1, connection_timeout = 1)
       s = Time.now
       begin
         @logger.debug("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
-        response = @http_client.post_async(path,
-                    :header => headers,
-                    :body => body.to_json(),
-                    :timeout => api_timeout
-                  )
-      rescue Net::OpenTimeout, Net::ReadTimeout => error
-        @logger.warn("PerimeterxS2SValidator[verify]: request timedout")
-        return false
+        response = Typhoeus.post(
+            "#{px_config[:perimeterx_server_host]}#{path}",
+            headers: headers,
+            body: body.to_json,
+            timeout: api_timeout,
+            connecttimeout: connection_timeout
+        )
+        if response.timed_out?
+          @logger.warn('PerimeterxS2SValidator[verify]: request timed out')
+          return false
+        end
+      ensure
+        e = Time.now
+        @logger.debug("PxHttpClient[post]: runtime: #{(e-s) * 1000.0}")
       end
-      e = Time.now
-      @logger.debug("PxHttpClient[post]: runtime: #{e-s}")
       return response
     end
 
