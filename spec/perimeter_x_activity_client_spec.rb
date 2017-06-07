@@ -8,7 +8,7 @@ RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" d
       :cookie_key => "PX_COOKIE_KEY",
       :auth_token => "PX_AUTH_TOKEN"
     }
-    @http_client = double("http_client", :post => double("response", {:status_code => 200, :body => "{ status: 0 }" } ) )
+    @http_client = double("http_client", :post => double("response", {:code_code => 200, :body => "{ status: 0 }" } ) )
 
     @req = double("http_request", {
       :cookies => Hash.new,
@@ -42,7 +42,7 @@ RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" d
     validator = PxModule::PerimeterxCaptchaValidator.new(config, @http_client)
 
     verified, px_ctx = validator.verify(px_ctx)
-    expect(verified).to be(true)
+    expect(verified).to be(false)
   end
 
 
