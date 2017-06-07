@@ -30,7 +30,8 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 2.3'
 
-  gem.add_dependency('httpclient', '2.8.2.4')
+  gem.add_dependency('concurrent-ruby', '~> 1.0', '>= 1.0.5')
+  gem.add_dependency('typhoeus', '~> 1.1', '>= 1.1.2')
   gem.add_dependency('mustache', '~> 1.0', '>= 1.0.3')
   gem.add_dependency('activesupport', '>= 4.2.0')
 
