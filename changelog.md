@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - 2017-06-04
+### Fixed 
+    - Default timeouts for post api requests
+    - Fixed Dockerfile
+### Changed
+    - Removed httpclient and instead using typheous
+### Added
+    - Using concurrent-ruby for async post requests
+    
 ## [1.1.0] - 2017-06-04
 ### Added 
     - Added support for sensitive routes

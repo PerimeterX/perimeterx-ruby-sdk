@@ -31,7 +31,8 @@ Table of Contents
 
 - Ruby version 2.3+
 - Rails version 4.2
-- [httpclient](https://rubygems.org/gems/httpclient/versions/2.8.3)
+- [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby)
+- [typhoeus](https://github.com/typhoeus/typhoeus)
 - [mustache](https://rubygems.org/gems/mustache)
 
 <a name="installation"></a> Installation
