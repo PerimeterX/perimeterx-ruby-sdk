@@ -18,6 +18,8 @@ module PxModule
       end
 
       details[:module_version] = @px_config[:sdk_name]
+      details[:block_uuid] = px_ctx.context[:uuid]
+
       px_data = {
         :type       => activity_type,
         :headers    => format_headers(px_ctx),
@@ -53,7 +55,6 @@ module PxModule
       end
 
       details = {
-        :block_uuid    => px_ctx.context[:uuid],
         :block_score   => px_ctx.context[:score],
         :block_reason  => px_ctx.context[:block_reason]
       }
