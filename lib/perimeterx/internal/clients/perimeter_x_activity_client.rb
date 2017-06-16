@@ -18,7 +18,6 @@ module PxModule
       end
 
       details[:module_version] = @px_config[:sdk_name]
-      details[:block_uuid] = px_ctx.context[:uuid]
 
       px_data = {
         :type       => activity_type,
@@ -55,8 +54,9 @@ module PxModule
       end
 
       details = {
-        :block_score   => px_ctx.context[:score],
-        :block_reason  => px_ctx.context[:block_reason]
+        :block_uuid => px_ctx.context[:uuid],
+        :block_score => px_ctx.context[:score],
+        :block_reason => px_ctx.context[:block_reason]
       }
 
       send_to_perimeterx(PxModule::BLOCK_ACTIVITY, px_ctx, details)
@@ -71,7 +71,8 @@ module PxModule
 
       details = {
         :http_version  => px_ctx.context[:http_version],
-        :http_method   => px_ctx.context[:http_method]
+        :http_method   => px_ctx.context[:http_method],
+        :client_uuid   => px_ctx.context[:uuid]
       }
 
       if (px_ctx.context.key?(:decoded_cookie))
