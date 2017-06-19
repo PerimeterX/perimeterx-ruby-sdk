@@ -48,7 +48,7 @@ module PxModule
 
         if (response.status_code == 200)
           response_body = eval(response.body)
-          if ( response_body[:status] == 0 )
+          if ( response_body[:code] == 0 )
             captcha_validated = true
           end
         end

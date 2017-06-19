@@ -36,7 +36,7 @@ RSpec.describe PxModule::PerimeterxS2SValidator, "S2S Validator Tests" do
   end
 
   it "ctx will contain block_action from captcha type" do
-    @http_client.expects(:post).returns( double("response", {:status => 200 ,:content  => "{ score: 69, uuid: 'uuid', action: 'c' }"}) )
+    @http_client.expects(:post).returns( double("response", {:code => 200 ,:body  => "{ score: 69, uuid: 'uuid', action: 'c' }"}) )
     config = PxModule::Configuration.new(@params).configuration;
     px_ctx = PxModule::PerimeterXContext.new(config, @req)
     validator = PxModule::PerimeterxS2SValidator.new(config, @http_client)
@@ -47,7 +47,7 @@ RSpec.describe PxModule::PerimeterxS2SValidator, "S2S Validator Tests" do
   end
 
   it "ctx will contain block_action from block type" do
-    @http_client.expects(:post).returns( double("response", {:status => 200 ,:content  => "{ score: 69, uuid: 'uuid', action: 'b' }"}) )
+    @http_client.expects(:post).returns( double("response", {:code => 200 ,:body  => "{ score: 69, uuid: 'uuid', action: 'b' }"}) )
     config = PxModule::Configuration.new(@params).configuration;
     px_ctx = PxModule::PerimeterXContext.new(config, @req)
     validator = PxModule::PerimeterxS2SValidator.new(config, @http_client)
@@ -59,7 +59,7 @@ RSpec.describe PxModule::PerimeterxS2SValidator, "S2S Validator Tests" do
   end
 
   it "ctx will contain block_action from block type and blocking_reason should s2s_high_score" do
-    @http_client.expects(:post).returns( double("response", {:status => 200 ,:content  => "{ score: 71, uuid: 'uuid', action: 'b' }"}) )
+    @http_client.expects(:post).returns( double("response", {:code => 200 ,:body  => "{ score: 71, uuid: 'uuid', action: 'b' }"}) )
     config = PxModule::Configuration.new(@params).configuration;
     px_ctx = PxModule::PerimeterXContext.new(config, @req)
     validator = PxModule::PerimeterxS2SValidator.new(config, @http_client)
@@ -71,7 +71,7 @@ RSpec.describe PxModule::PerimeterxS2SValidator, "S2S Validator Tests" do
   end
 
   it "ctx will contain block_action from block type and blocking_reason should be empty" do
-    @http_client.expects(:post).returns( double("response", {:status => 200 ,:content  => "{ score: 69, uuid: 'uuid', action: 'b' }"}) )
+    @http_client.expects(:post).returns( double("response", {:code => 200 ,:body  => "{ score: 69, uuid: 'uuid', action: 'b' }"}) )
     config = PxModule::Configuration.new(@params).configuration;
     px_ctx = PxModule::PerimeterXContext.new(config, @req)
     validator = PxModule::PerimeterxS2SValidator.new(config, @http_client)
@@ -83,7 +83,7 @@ RSpec.describe PxModule::PerimeterxS2SValidator, "S2S Validator Tests" do
   end
 
   it "ctx will contain block_action from challange type and have block block_action_data" do
-    @http_client.expects(:post).returns( double("response", {:status => 200 ,:content  => "{ score: 69, uuid: 'uuid', action: 'j', action_data: { body: 'challange_body' } }" } ) )
+    @http_client.expects(:post).returns( double("response", {:code => 200 ,:body  => "{ score: 69, uuid: 'uuid', action: 'j', action_data: { body: 'challange_body' } }" } ) )
     config = PxModule::Configuration.new(@params).configuration;
     px_ctx = PxModule::PerimeterXContext.new(config, @req)
     validator = PxModule::PerimeterxS2SValidator.new(config, @http_client)
