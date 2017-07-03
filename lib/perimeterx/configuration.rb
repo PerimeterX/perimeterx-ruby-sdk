@@ -16,10 +16,14 @@ module PxModule
       :challenge_enabled        => true,
       :encryption_enabled       => true,
       :blocking_score           => 70,
+      :remote_config_interval   => 60,
+      :remote_config_enabled    => false,
       :sensitive_headers        => ["http-cookie", "http-cookies"],
+      :true_ip_header           => [],
       :api_connect_timeout      => 1,
       :api_timeout              => 1,
       :max_buffer_len           => 10,
+      :checksum                 => nil,
       :send_page_activities     => false,
       :send_block_activities    => true,
       :sdk_name                 => PxModule::SDK_NAME,
@@ -31,7 +35,7 @@ module PxModule
 
     def initialize(params)
       PX_DEFAULT[:perimeterx_server_host] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
-      @configuration = PX_DEFAULT.merge(params);
+      @configuration = PX_DEFAULT.merge(params)
       @configuration[:logger] = PxLogger.new(@configuration[:debug])
     end
   end

@@ -1,8 +1,10 @@
+require 'concurrent'
 require 'perimeterx/configuration'
 require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_constants'
 require 'perimeterx/utils/px_http_client'
 require 'perimeterx/utils/px_template_factory'
+require 'perimeterx/utils/px_remote_configuration'
 require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/clients/perimeter_x_activity_client'
 require 'perimeterx/internal/validators/perimeter_x_s2s_validator'
@@ -32,7 +34,6 @@ module PxModule
         render :html => html
       end
     end
-
     return verified
   end
 
@@ -41,7 +42,7 @@ module PxModule
   end
 
 
-  # PerimtereX Module
+  # PerimeterX Module
   class PerimeterX
     @@__instance = nil
     @@mutex = Mutex.new
@@ -62,7 +63,7 @@ module PxModule
 
     def self.instance
       return @@__instance if !@@__instance.nil?
-      raise Exception.new("Please initialize perimeter x first")
+      raise Exception.new('Please initialize perimeter x first')
     end
 
 
@@ -111,6 +112,16 @@ module PxModule
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
       @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
       @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
+
+      if @px_config[:remote_config_enabled]
+        px_remote_configuration = PerimeterxRemoteConfiguration.new(@px_config,@px_http_client)
+        task = Concurrent::TimerTask.new(execution_interval: @px_config[:remote_config_interval]) do
+          px_remote_configuration.get_configuration_from_server()
+        end
+
+        task.execute
+      end
+
       @logger.debug("PerimeterX[initialize]")
     end
 

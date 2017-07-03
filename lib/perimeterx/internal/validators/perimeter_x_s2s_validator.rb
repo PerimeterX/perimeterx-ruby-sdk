@@ -61,8 +61,8 @@ module PxModule
 
       # Prepare request
       headers = {
-          "Authorization" => "Bearer #{@px_config[:auth_token]}" ,
-          "Content-Type" => "application/json"
+          "Authorization" => "Bearer #{@px_config[:auth_token]}",
+          "Content-Type" => 'application/json'
       };
 
       # Custom risk handler
@@ -75,7 +75,7 @@ module PxModule
     end
 
     def verify(px_ctx)
-      @logger.debug("PerimeterxS2SValidator[verify]")
+      @logger.debug('PerimeterxS2SValidator[verify]')
       response = send_risk_request(px_ctx)
       if (!response)
         return px_ctx
