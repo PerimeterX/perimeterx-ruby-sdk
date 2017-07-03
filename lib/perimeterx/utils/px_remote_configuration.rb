@@ -47,11 +47,14 @@ module PxModule
         @px_config[:sensitive_headers] = response_body[:sensitiveHeaders]
         @px_config[:module_enabled] = response_body[:moduleEnabled]
         @px_config[:cookie_key] = response_body[:cookieKey]
+        @px_config[:module_mode] = response_body[:moduleMode] == 'blocking' ? PxModule::ACTIVE_MODE : PxModule::MONITOR_MODE
         @px_config[:blocking_score] = response_body[:blockingScore]
         @px_config[:app_id] = response_body[:app_id]
         @px_config[:api_connect_timeout] = response_body[:connectTimeout]
         @px_config[:api_timeout] = response_body[:riskTimeout]
         @px_config[:checksum] = response_body[:checksum]
+        @px_config[:debug] = response_body[:debugMode] #currently not available
+
       end
     end
   end

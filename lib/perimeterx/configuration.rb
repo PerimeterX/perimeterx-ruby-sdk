@@ -19,7 +19,7 @@ module PxModule
       :remote_config_interval   => 60,
       :remote_config_enabled    => false,
       :sensitive_headers        => ["http-cookie", "http-cookies"],
-      :true_ip_header           => [],
+      :ip_headers               => [],
       :api_connect_timeout      => 1,
       :api_timeout              => 1,
       :max_buffer_len           => 10,
@@ -27,7 +27,7 @@ module PxModule
       :send_page_activities     => false,
       :send_block_activities    => true,
       :sdk_name                 => PxModule::SDK_NAME,
-      :debug                    => false,
+      :debug                    => true,
       :module_mode              => PxModule::ACTIVE_MODE,
       :local_proxy              => false,
       :sensitive_routes         => []
