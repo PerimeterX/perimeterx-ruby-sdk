@@ -24,7 +24,7 @@ module PxModule
       :api_timeout              => 1,
       :max_buffer_len           => 10,
       :checksum                 => nil,
-      :send_page_activities     => false,
+      :send_page_activities     => true,
       :send_block_activities    => true,
       :sdk_name                 => PxModule::SDK_NAME,
       :debug                    => false,
