@@ -16,7 +16,7 @@ module PxModule
       :challenge_enabled        => true,
       :encryption_enabled       => true,
       :blocking_score           => 70,
-      :remote_config_interval   => 60,
+      :remote_config_interval   => 5, #seconds
       :remote_config_enabled    => false,
       :sensitive_headers        => ["http-cookie", "http-cookies"],
       :ip_headers               => [],

@@ -45,9 +45,7 @@ module PxModule
       @context[:score] = 0
 
       # Take ip from custom method, if not try from ip headers
-      if px_config.key?(:px_custom_user_ip_method)
-        @context[:ip] = px_config[:px_custom_user_ip_method].call(req)
-      elsif !px_config[:ip_headers].nil?
+      if !px_config[:ip_headers].nil?
         px_config[:ip_headers].each do |ip_header|
           # go over ip_headers and try to get the ip
           if req.headers[ip_header.to_sym] and  !@context[:ip].nil?
@@ -59,6 +57,8 @@ module PxModule
             end
           end
         end
+      elsif px_config.key?(:px_custom_user_ip_method)
+        @context[:ip] = px_config[:px_custom_user_ip_method].call(req)
       end
 
       # In case ip still empty take from default
