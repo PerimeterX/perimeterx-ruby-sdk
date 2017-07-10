@@ -5,11 +5,11 @@ module PxModule
 
     def initialize(px_config, http_client)
       super(px_config, http_client)
-      @logger.debug("PerimeterxS2SValidator[initialize]")
+      @logger.debug('PerimeterxS2SValidator[initialize]')
     end
 
     def send_risk_request(px_ctx)
-      @logger.debug("PerimeterxS2SValidator[send_risk_request]: send_risk_request")
+      @logger.debug('PerimeterxS2SValidator[send_risk_request]: send_risk_request')
 
       risk_mode = PxModule::RISK_MODE_ACTIVE
       if @px_config[:module_mode] == PxModule::MONITOR_MODE
@@ -61,8 +61,8 @@ module PxModule
 
       # Prepare request
       headers = {
-          "Authorization" => "Bearer #{@px_config[:auth_token]}" ,
-          "Content-Type" => "application/json"
+          "Authorization" => "Bearer #{@px_config[:auth_token]}",
+          "Content-Type" => 'application/json'
       };
 
       # Custom risk handler
@@ -75,7 +75,7 @@ module PxModule
     end
 
     def verify(px_ctx)
-      @logger.debug("PerimeterxS2SValidator[verify]")
+      @logger.debug('PerimeterxS2SValidator[verify]')
       response = send_risk_request(px_ctx)
       if (!response)
         return px_ctx
@@ -86,7 +86,7 @@ module PxModule
       response_body = eval(response.body);
       # When success
       if (response.code == 200 && response_body.key?(:score) && response_body.key?(:action))
-        @logger.debug("PerimeterxS2SValidator[verify]: response ok")
+        @logger.debug('PerimeterxS2SValidator[verify]: response ok')
         score = response_body[:score]
         px_ctx.context[:score] = score
         px_ctx.context[:uuid] = response_body[:uuid]
@@ -102,11 +102,11 @@ module PxModule
       # When error
       if(response.code != 200)
         @logger.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
-        px_ctx.context[:uuid] = ""
-        px_ctx.context[:s2s_error_msg] = response_body[:message]
+        px_ctx.context[:uuid] = ''
+        px_ctx.context[:s2s_error_msg] = !response_body || response_body[:message].nil? ? 'unknown' : response_body[:message]
       end
 
-      @logger.debug("PerimeterxS2SValidator[verify]: done")
+      @logger.debug('PerimeterxS2SValidator[verify]: done')
       return px_ctx
     end #end method
 
