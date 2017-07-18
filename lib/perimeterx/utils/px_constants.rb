@@ -44,6 +44,6 @@ module PxModule
   HIDDEN = 'hidden'
 
   # Remote Configurations
-  REMOTE_CONFIG_SERVER = 'http://px-conf-mgmt-stg.perimeterx.net'
+  REMOTE_CONFIG_SERVER = 'https://px-conf.perimeterx.net'
   REMOTE_CONFIG_PATH = '/module'
 end
