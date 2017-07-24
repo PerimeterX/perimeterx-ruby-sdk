@@ -17,6 +17,7 @@ module PxModule
         @px_config[:additional_activity_handler].call(activity_type, px_ctx, details)
       end
 
+      debugger
       details[:module_version] = @px_config[:sdk_name]
       details[:cookie_origin] = px_ctx.context[:cookie_origin]
 
@@ -54,11 +55,11 @@ module PxModule
         return
       end
 
-      details = [
+      details = {
         :block_uuid => px_ctx.context[:uuid],
         :block_score => px_ctx.context[:score],
         :block_reason => px_ctx.context[:blocking_reason]
-      ]
+      }
 
       send_to_perimeterx(PxModule::BLOCK_ACTIVITY, px_ctx, details)
 
