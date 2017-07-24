@@ -5,15 +5,20 @@ module PxModule
 
     def self.get_template(px_ctx, px_config)
       logger = px_config[:logger]
-      if (px_config[:challenge_enabled] && px_ctx.context[:block_action] == "challenge")
-        logger.debug("PxTemplateFactory[get_template]: px challange triggered")
+      if (px_config[:challenge_enabled] && px_ctx.context[:block_action] == 'challenge')
+        logger.debug('PxTemplateFactory[get_template]: px challange triggered')
         return px_ctx.context[:block_action_data].html_safe
       end
 
-      logger.debug("PxTemplateFactory[get_template]: rendering template")
-      template_type = px_config[:captcha_enabled] ? PxModule::CAPTCHA_TEMPLATE : BLOCK_TEMPLATE
+      logger.debug('PxTemplateFactory[get_template]: rendering template')
+      template_type = px_ctx.context[:block_action] == 'captcha' ? PxModule::CAPTCHA_TEMPLATE : BLOCK_TEMPLATE
 
-      Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}"
+      template_postfix = ''
+      if px_ctx.context[:cookie_origin] == 'header'
+        template_postfix = '.mobile'
+      end
+
+      Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}#{template_postfix}#{PxModule::TEMPLATE_EXT}"
       view = Mustache.new
 
       view[PxModule::PROP_APP_ID] = px_config[:app_id]
@@ -23,6 +28,7 @@ module PxModule
       view[PxModule::PROP_CUSTOM_LOGO] = px_config[:custom_logo]
       view[PxModule::PROP_CSS_REF] = px_config[:css_ref]
       view[PxModule::PROP_JS_REF] = px_config[:js_ref]
+      view[PxModule::HOST_URL] = px_config[:perimeterx_server_host]
       view[PxModule::PROP_LOGO_VISIBILITY] = px_config[:custom_logo] ? PxModule::VISIBLE : PxModule::HIDDEN
 
       return view.render.html_safe

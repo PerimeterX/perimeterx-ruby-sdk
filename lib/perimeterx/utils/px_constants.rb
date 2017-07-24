@@ -27,8 +27,10 @@ module PxModule
   SENSITIVE_ROUTE = 'sensitive_route'
 
   # Templates
-  BLOCK_TEMPLATE = 'block.mustache'
-  CAPTCHA_TEMPLATE = 'captcha.mustache'
+  BLOCK_TEMPLATE = 'block'
+  CAPTCHA_TEMPLATE = 'captcha'
+  TEMPLATE_EXT = '.mustache'
+
 
   # Template Props
   PROP_REF_ID = :refId
@@ -39,6 +41,7 @@ module PxModule
   PROP_CUSTOM_LOGO = :customLogo
   PROP_CSS_REF = :cssRef
   PROP_JS_REF = :jsRef
+  HOST_URL = :hostUrl
 
   VISIBLE = 'visible'
   HIDDEN = 'hidden'

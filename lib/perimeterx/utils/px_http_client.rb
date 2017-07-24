@@ -64,12 +64,12 @@ module PxModule
             connecttimeout: connection_timeout
         )
         if response.timed_out?
-          @logger.warn('PerimeterxS2SValidator[verify]: request timed out')
+          @logger.warn('PxHttpClient[get]: request timed out')
           return false
         end
       ensure
         e = Time.now
-        @logger.debug("PxHttpClient[post]: runtime: #{(e-s) * 1000.0}")
+        @logger.debug("PxHttpClient[get]: runtime: #{(e-s) * 1000.0}")
       end
       return response
     end
