@@ -14,8 +14,19 @@ module PxModule
 
       @context[:px_cookie] = Hash.new
       @context[:headers] = Hash.new
+      @context[:cookie_origin] = 'cookie'
       cookies = req.cookies
-      unless cookies.empty?
+
+      # Get token from header
+      if req.headers[PxModule::TOKEN_HEADER]
+        @context[:cookie_origin] = 'header'
+        token = req.headers[PxModule::TOKEN_HEADER]
+        if token.include? ':'
+          exploded_token = token.split(':', 2)
+          cookie_sym = "v#{exploded_token[0]}".to_sym
+          @context[:px_cookie][cookie_sym] = exploded_token[1]
+        end
+      elsif !cookies.empty? # Get cookie from jar
         # Prepare hashed cookies
         cookies.each do |k, v|
           case k.to_s
@@ -69,7 +80,7 @@ module PxModule
       if req.server_protocol
           httpVer = req.server_protocol.split('/')
           if httpVer.size > 0
-              @context[:http_version] = httpVer[1];
+              @context[:http_version] = httpVer[1]
           end
       end
       @context[:http_method] = req.method

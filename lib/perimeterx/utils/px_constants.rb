@@ -45,5 +45,8 @@ module PxModule
 
   # Remote Configurations
   REMOTE_CONFIG_SERVER = 'https://px-conf.perimeterx.net'
-  REMOTE_CONFIG_PATH = '/module'
+  REMOTE_CONFIG_PATH = '/api/v1/enforcer'
+
+  # Mobile SDK
+  TOKEN_HEADER = 'X-PX-AUTHORIZATION'
 end

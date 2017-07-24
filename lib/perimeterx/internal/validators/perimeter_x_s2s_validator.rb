@@ -26,6 +26,7 @@ module PxModule
         :additional => {
           :s2s_call_reason => px_ctx.context[:s2s_call_reason],
           :module_version => @px_config[:sdk_name],
+          :cookie_origin => px_ctx.context[:cookie_origin],
           :http_method => px_ctx.context[:http_method],
           :http_version => px_ctx.context[:http_version],
           :risk_mode => risk_mode

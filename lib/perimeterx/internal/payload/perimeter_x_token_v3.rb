@@ -1,5 +1,5 @@
 module PxModule
-  class PerimeterxCookieV3 < PerimeterxCookie
+  class PerimeterxTokenV3 < PerimeterxPayload
 
     attr_accessor :px_config, :px_ctx, :cookie_hash
 
@@ -10,7 +10,7 @@ module PxModule
       @cookie_hash = hash
       @px_ctx = px_ctx
       @cookie_secret = px_config[:cookie_key]
-      @logger.debug("PerimeterxCookieV3[initialize]")
+      @logger.debug('PerimeterxTokenV3[initialize]')
     end
 
     def cookie_score
@@ -30,8 +30,7 @@ module PxModule
     end
 
     def secured?
-      hmac_string = "#{@px_cookie}#{@px_ctx.context[:user_agent]}"
-      return hmac_valid?(hmac_string, cookie_hmac)
+      return hmac_valid?(@px_cookie, cookie_hmac)
     end
   end
 end

@@ -18,6 +18,7 @@ module PxModule
       end
 
       details[:module_version] = @px_config[:sdk_name]
+      details[:cookie_origin] = px_ctx.context[:cookie_origin]
 
       px_data = {
         :type       => activity_type,

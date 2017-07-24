@@ -1,7 +1,9 @@
 require 'perimeterx/utils/px_constants'
-require 'perimeterx/internal/perimeter_x_cookie'
-require 'perimeterx/internal/perimeter_x_cookie_v1'
-require 'perimeterx/internal/perimeter_x_cookie_v3'
+require 'perimeterx/internal/payload/perimeter_x_payload'
+require 'perimeterx/internal/payload/perimeter_x_token_v1'
+require 'perimeterx/internal/payload/perimeter_x_token_v3'
+require 'perimeterx/internal/payload/perimeter_x_cookie_v1'
+require 'perimeterx/internal/payload/perimeter_x_cookie_v3'
 
 module PxModule
   class PerimeterxCookieValidator
@@ -24,7 +26,7 @@ module PxModule
         end
 
         # Deserialize cookie start
-        cookie = PerimeterxCookie.px_cookie_factory(px_ctx, @px_config)
+        cookie = PerimeterxPayload.px_cookie_factory(px_ctx, @px_config)
         if (!cookie.deserialize())
           @logger.warn("PerimeterxCookieValidator:[verify]: invalid cookie")
           px_ctx.context[:s2s_call_reason] =  PxModule::COOKIE_DECRYPTION_FAILED
@@ -55,11 +57,11 @@ module PxModule
           return false, px_ctx
         end
 		
-	if (px_ctx.context[:sensitive_route])
-	  @logger.info("PerimeterxCookieValidator:[verify]: cookie was verified but route is sensitive")
-	  px_ctx.context[:s2s_call_reason] = PxModule::SENSITIVE_ROUTE
-	  return false, px_ctx
-	end
+        if (px_ctx.context[:sensitive_route])
+          @logger.info("PerimeterxCookieValidator:[verify]: cookie was verified but route is sensitive")
+          px_ctx.context[:s2s_call_reason] = PxModule::SENSITIVE_ROUTE
+          return false, px_ctx
+        end
 
         @logger.debug("PerimeterxCookieValidator:[verify]: cookie validation passed succesfully")
 
