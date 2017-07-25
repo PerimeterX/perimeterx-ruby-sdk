@@ -1,7 +1,7 @@
 require "spec_helper"
 
 
-RSpec.describe PxModule::PerimeterxCaptchaValidator, 'Remote configuration test' do
+RSpec.describe PxModule::PerimeterxRemoteConfiguration, 'Remote configuration test' do
 
   before(:each) do
     params = {
