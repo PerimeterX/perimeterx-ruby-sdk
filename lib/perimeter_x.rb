@@ -47,7 +47,7 @@ module PxModule
               :vid => px_ctx.context[:vid],
               :appId => PerimeterX.instance.px_config[:app_id],
               :page => Base64.strict_encode64(html),
-              :collectorUrl => PerimeterX.instance.px_config[:perimeterx_server_host]
+              :collectorUrl => "https://collector-#{PerimeterX.instance.px_config[:app_id]}.perimeterx.net"
           }
           render :json => hash_json
         end

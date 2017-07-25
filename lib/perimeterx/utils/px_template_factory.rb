@@ -26,9 +26,9 @@ module PxModule
       view[PxModule::PROP_VID] = px_ctx.context[:vid]
       view[PxModule::PROP_UUID] = px_ctx.context[:uuid]
       view[PxModule::PROP_CUSTOM_LOGO] = px_config[:custom_logo]
-      view[PxModule::PROP_CSS_REF] = px_config[:css_ref]
+      view[PxModule::PROP_CSS_REF] = px_config[:css_ref]git
       view[PxModule::PROP_JS_REF] = px_config[:js_ref]
-      view[PxModule::HOST_URL] = px_config[:perimeterx_server_host]
+      view[PxModule::HOST_URL] = "https://collector-#{px_config[:app_id]}.perimeterx.net"
       view[PxModule::PROP_LOGO_VISIBILITY] = px_config[:custom_logo] ? PxModule::VISIBLE : PxModule::HIDDEN
 
       return view.render.html_safe
