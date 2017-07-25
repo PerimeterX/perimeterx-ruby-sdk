@@ -17,7 +17,7 @@ module PxModule
 
   # Module expose API
   def px_verify_request
-    verified, px_ctx = PerimeterX.instance.verify(env)
+    verified, px_ctx = PerimeterX.instance.verify(request.env)
 
     # Invalidate _pxCaptcha, can be done only on the controller level
     cookies[:_pxCaptcha] = { value: "", expires: -1.minutes.from_now }
@@ -46,7 +46,7 @@ module PxModule
               :uuid => px_ctx.context[:uuid],
               :vid => px_ctx.context[:vid],
               :appId => PerimeterX.instance.px_config[:app_id],
-              :page => Base64.encode64(html),
+              :page => Base64.strict_encode64(html),
               :collectorUrl => PerimeterX.instance.px_config[:perimeterx_server_host]
           }
           render :json => hash_json
