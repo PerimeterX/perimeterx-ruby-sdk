@@ -7,31 +7,42 @@ module PxModule
     attr_accessor :px_config
 
     def initialize(px_config, req)
-      @logger = px_config[:logger];
-      @logger.debug("PerimeterXContext[initialize] ")
+      @logger = px_config[:logger]
+      @logger.debug('PerimeterXContext[initialize]')
       @context = Hash.new
 
       @context[:px_cookie] = Hash.new
       @context[:headers] = Hash.new
+      @context[:cookie_origin] = 'cookie'
       cookies = req.cookies
-      if (!cookies.empty?)
+
+      # Get token from header
+      if req.headers[PxModule::TOKEN_HEADER]
+        @context[:cookie_origin] = 'header'
+        token = req.headers[PxModule::TOKEN_HEADER]
+        if token.include? ':'
+          exploded_token = token.split(':', 2)
+          cookie_sym = "v#{exploded_token[0]}".to_sym
+          @context[:px_cookie][cookie_sym] = exploded_token[1]
+        end
+      elsif !cookies.empty? # Get cookie from jar
         # Prepare hashed cookies
         cookies.each do |k, v|
           case k.to_s
-            when "_px3"
+            when '_px3'
               @context[:px_cookie][:v3] = v
-            when "_px"
+            when '_px'
               @context[:px_cookie][:v1] = v
-            when "_pxCaptcha"
+            when '_pxCaptcha'
               @context[:px_captcha] = v
           end
         end #end case
       end #end empty cookies
 
       req.headers.each do |k, v|
-        if (k.start_with? "HTTP_")
-          header = k.to_s.gsub("HTTP_", "")
-          header = header.gsub("_", "-").downcase
+        if (k.start_with? 'HTTP_')
+          header = k.to_s.gsub('HTTP_', '')
+          header = header.gsub('_', '-').downcase
           @context[:headers][header.to_sym] = v
         end
       end #end headers foreach
@@ -52,9 +63,9 @@ module PxModule
       end
 
       if req.server_protocol
-          httpVer = req.server_protocol.split("/")
+          httpVer = req.server_protocol.split('/')
           if httpVer.size > 0
-              @context[:http_version] = httpVer[1];
+              @context[:http_version] = httpVer[1]
           end
       end
       @context[:http_method] = req.method
@@ -65,19 +76,19 @@ module PxModule
 		sensitive_routes.each do |sensitive_route|
 			return true if uri.start_with? sensitive_route
 		end
-		return false
+    false
 	end
 
     def set_block_action_type(action)
       @context[:block_action] = case action
-        when "c"
-          "captcha"
-        when "b"
-          return "block"
-        when "j"
-          return "challenge"
+        when 'c'
+          'captcha'
+        when 'b'
+          return 'block'
+        when 'j'
+          return 'challenge'
         else
-          return "captcha"
+          return captcha
         end
     end
 

@@ -5,11 +5,11 @@ module PxModule
 
     def initialize(px_config, http_client)
       super(px_config, http_client)
-      @logger.debug("PerimeterxS2SValidator[initialize]")
+      @logger.debug('PerimeterxS2SValidator[initialize]')
     end
 
     def send_risk_request(px_ctx)
-      @logger.debug("PerimeterxS2SValidator[send_risk_request]: send_risk_request")
+      @logger.debug('PerimeterxS2SValidator[send_risk_request]: send_risk_request')
 
       risk_mode = PxModule::RISK_MODE_ACTIVE
       if @px_config[:module_mode] == PxModule::MONITOR_MODE
@@ -26,6 +26,7 @@ module PxModule
         :additional => {
           :s2s_call_reason => px_ctx.context[:s2s_call_reason],
           :module_version => @px_config[:sdk_name],
+          :cookie_origin => px_ctx.context[:cookie_origin],
           :http_method => px_ctx.context[:http_method],
           :http_version => px_ctx.context[:http_version],
           :risk_mode => risk_mode
@@ -103,7 +104,7 @@ module PxModule
       if(response.code != 200)
         @logger.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
         px_ctx.context[:uuid] = ""
-        px_ctx.context[:s2s_error_msg] = response_body[:message]
+        px_ctx.context[:s2s_error_msg] = !response_body || response_body[:message].nil? ? 'unknown' : response_body[:message]
       end
 
       @logger.debug("PerimeterxS2SValidator[verify]: done")

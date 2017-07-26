@@ -4,7 +4,7 @@ require 'openssl'
 require 'perimeterx/internal/exceptions/px_cookie_decryption_exception'
 
 module PxModule
-  class PerimeterxCookie
+  class PerimeterxPayload
     attr_accessor :px_cookie, :px_config, :px_ctx, :cookie_secret, :decoded_cookie
 
     def initialize(px_config)
@@ -13,7 +13,12 @@ module PxModule
     end
 
     def self.px_cookie_factory(px_ctx, px_config)
-      if (px_ctx.context[:px_cookie].key?(:v3))
+      if px_ctx.context[:cookie_origin] == 'header'
+        if (px_ctx.context[:px_cookie].key?(:v3))
+          return PerimeterxTokenV3.new(px_config,px_ctx)
+        end
+        return PerimeterxTokenV1.new(px_config,px_ctx)
+      elsif (px_ctx.context[:px_cookie].key?(:v3))
         return PerimeterxCookieV3.new(px_config, px_ctx)
       end
       return PerimeterxCookieV1.new(px_config, px_ctx)
@@ -131,8 +136,8 @@ module PxModule
       hmac = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, @cookie_secret, hmac_str)
       # ref: https://thisdata.com/blog/timing-attacks-against-string-comparison/
       password_correct = ActiveSupport::SecurityUtils.secure_compare(
-      ::Digest::SHA256.hexdigest(cookie_hmac),
-      ::Digest::SHA256.hexdigest(hmac)
+          ::Digest::SHA256.hexdigest(cookie_hmac),
+          ::Digest::SHA256.hexdigest(hmac)
       )
 
     end

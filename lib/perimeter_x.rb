@@ -1,3 +1,6 @@
+require 'concurrent'
+require 'json'
+require 'base64'
 require 'perimeterx/configuration'
 require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_constants'
@@ -16,23 +19,41 @@ module PxModule
     verified, px_ctx = PerimeterX.instance.verify(env)
 
     # Invalidate _pxCaptcha, can be done only on the controller level
-    cookies[:_pxCaptcha] = { value: "", expires: -1.minutes.from_now }
+    cookies[:_pxCaptcha] = {value: "", expires: -1.minutes.from_now}
 
-    if (!verified)
+    unless verified
       # In case custon block handler exists
       if (PerimeterX.instance.px_config.key?(:custom_block_handler))
-        PerimeterX.instance.px_config[:logger].debug("PxModule[px_verify_request]: custom_block_handler triggered")
+        PerimeterX.instance.px_config[:logger].debug('PxModule[px_verify_request]: custom_block_handler triggered')
         return instance_exec(px_ctx, &PerimeterX.instance.px_config[:custom_block_handler])
       else
         # Generate template
-        PerimeterX.instance.px_config[:logger].debug("PxModule[px_verify_request]: sending default block page")
+        PerimeterX.instance.px_config[:logger].debug('PxModule[px_verify_request]: sending default block page')
         html = PxTemplateFactory.get_template(px_ctx, PerimeterX.instance.px_config)
         response.headers["Content-Type"] = "text/html"
         response.status = 403
-        render :html => html
+        # Web handler
+        if px_ctx.context[:cookie_origin] == 'cookie'
+          PerimeterX.instance.px_config[:logger].debug('PxModule[px_verify_request]: web block')
+          response.headers['Content-Type'] = 'text/html'
+          render :html => html
+        else # Mobile SDK
+          PerimeterX.instance.px_config[:logger].debug('PxModule[px_verify_request]: mobile sdk block')
+          response.headers['Content-Type'] = 'application/json'
+          hash_json = {
+              :action => px_ctx.context[:block_action],
+              :uuid => px_ctx.context[:uuid],
+              :vid => px_ctx.context[:vid],
+              :appId => PerimeterX.instance.px_config[:app_id],
+              :page => Base64.strict_encode64(html),
+              :collectorUrl => "https://collector-#{PerimeterX.instance.px_config[:app_id]}.perimeterx.net"
+          }
+          render :json => hash_json
+        end
       end
     end
 
+    # Request was verified
     return verified
   end
 
@@ -41,7 +62,7 @@ module PxModule
   end
 
 
-  # PerimtereX Module
+  # PerimeterX Module
   class PerimeterX
     @@__instance = nil
     @@mutex = Mutex.new
@@ -62,7 +83,7 @@ module PxModule
 
     def self.instance
       return @@__instance if !@@__instance.nil?
-      raise Exception.new("Please initialize perimeter x first")
+      raise Exception.new('Please initialize perimeter x first')
     end
 
 
@@ -96,7 +117,7 @@ module PxModule
         end
       rescue Exception => e
         @logger.error("#{e.backtrace.first}: #{e.message} (#{e.class})")
-        e.backtrace.drop(1).map { |s| @logger.error("\t#{s}") }
+        e.backtrace.drop(1).map {|s| @logger.error("\t#{s}")}
         return true
       end
     end
@@ -130,7 +151,7 @@ module PxModule
       @px_activity_client.send_block_activity(px_ctx)
 
       # In case were in monitor mode, end here
-      if(@px_config[:module_mode] == PxModule::MONITOR_MODE)
+      if (@px_config[:module_mode] == PxModule::MONITOR_MODE)
         @logger.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
         return true
       end

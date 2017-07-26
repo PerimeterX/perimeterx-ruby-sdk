@@ -20,7 +20,7 @@ module PxModule
       :api_connect_timeout      => 1,
       :api_timeout              => 1,
       :max_buffer_len           => 10,
-      :send_page_activities     => false,
+      :send_page_activities     => true,
       :send_block_activities    => true,
       :sdk_name                 => PxModule::SDK_NAME,
       :debug                    => false,
@@ -31,7 +31,7 @@ module PxModule
 
     def initialize(params)
       PX_DEFAULT[:perimeterx_server_host] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
-      @configuration = PX_DEFAULT.merge(params);
+      @configuration = PX_DEFAULT.merge(params)
       @configuration[:logger] = PxLogger.new(@configuration[:debug])
     end
   end

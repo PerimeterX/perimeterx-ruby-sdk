@@ -15,7 +15,7 @@ module PxModule
       @logger.debug("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config[:perimeterx_server_host]}")
     end
 
-    # Runs a POST commant to Perimeter X servers
+    # Runs a POST command to Perimeter X servers
     # Params:
     # +path+:: string containing uri
     # +body+:: hash object, containing the request body, must be converted to json format
