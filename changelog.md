@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2017-06-04
+### Added
+ - Sending client_uuid on page_requested activities
+ - Supporting mobile sdk
+### Fixed
+ - Using `request.env` instead of `env`
+
 ## [1.2.0] - 2017-06-04
 ### Fixed 
     - Default timeouts for post api requests
@@ -27,3 +34,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Constants on px_constants
  - Cookie Validation flow when cookie score was over the configured threshold
  - Using symbols instead of strings for requests body
+

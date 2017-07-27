@@ -3,6 +3,7 @@ begin
 
   RSpec::Core::RakeTask.new(:spec)
 
+  task :default => :spec
   task :test => :spec
 rescue LoadError
   # no rspec available
