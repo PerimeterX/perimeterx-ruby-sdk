@@ -13,10 +13,9 @@ require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
 require 'perimeterx/internal/validators/perimeter_x_captcha_validator'
 
 module PxModule
-
   # Module expose API
   def px_verify_request
-    verified, px_ctx = PerimeterX.instance.verify(env)
+    verified, px_ctx = PerimeterX.instance.verify(request.env)
 
     # Invalidate _pxCaptcha, can be done only on the controller level
     cookies[:_pxCaptcha] = {value: "", expires: -1.minutes.from_now}
@@ -30,7 +29,7 @@ module PxModule
         # Generate template
         PerimeterX.instance.px_config[:logger].debug('PxModule[px_verify_request]: sending default block page')
         html = PxTemplateFactory.get_template(px_ctx, PerimeterX.instance.px_config)
-        response.headers["Content-Type"] = "text/html"
+        response.headers['Content-Type'] = 'text/html'
         response.status = 403
         # Web handler
         if px_ctx.context[:cookie_origin] == 'cookie'
@@ -90,12 +89,12 @@ module PxModule
     #Instance Methods
     def verify(env)
       begin
-        @logger.debug("PerimeterX[pxVerify]")
-        req = ActionDispatch::Request.new(env)
+        @logger.debug('PerimeterX[pxVerify]')
         if (!@px_config[:module_enabled])
-          @logger.warn("Module is disabled")
+          @logger.warn('Module is disabled')
           return true
         end
+        req = ActionDispatch::Request.new(env)
         px_ctx = PerimeterXContext.new(@px_config, req)
 
         # Captcha phase
@@ -132,11 +131,11 @@ module PxModule
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
       @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
       @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
-      @logger.debug("PerimeterX[initialize]")
+      @logger.debug('PerimeterX[initialize]Z')
     end
 
     private def handle_verification(px_ctx)
-      @logger.debug("PerimeterX[handle_verification]")
+      @logger.debug('PerimeterX[handle_verification]')
       @logger.debug("PerimeterX[handle_verification]: processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
 
       score = px_ctx.context[:score]
@@ -152,11 +151,11 @@ module PxModule
 
       # In case were in monitor mode, end here
       if (@px_config[:module_mode] == PxModule::MONITOR_MODE)
-        @logger.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
+        @logger.debug('PerimeterX[handle_verification]: monitor mode is on, passing request')
         return true
       end
 
-      @logger.debug("PerimeterX[handle_verification]: verification ended, the request should be blocked")
+      @logger.debug('PerimeterX[handle_verification]: verification ended, the request should be blocked')
 
       return false, px_ctx
     end
