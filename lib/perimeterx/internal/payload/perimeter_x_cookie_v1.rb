@@ -1,5 +1,5 @@
 module PxModule
-  class PerimeterxCookieV1 < PerimeterxCookie
+  class PerimeterxCookieV1 < PerimeterxPayload
 
     attr_accessor :px_config, :px_ctx
 
