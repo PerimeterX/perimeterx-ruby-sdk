@@ -61,7 +61,7 @@ On the Rails controller include the PerimeterX SDK via the before_action and cal
 class HomeController < ApplicationController
   include PxModule
 
-  before_filter :px_verify_request
+  before_action :px_verify_request
   ...
   ...
 end
