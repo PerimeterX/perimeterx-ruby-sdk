@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PerimeterX/pperimeterx-ruby-sdk.svg?branch=master)](https://travis-ci.org/PerimeterX/perimeterx-ruby-sdk)
+[![Build Status](https://travis-ci.org/PerimeterX/perimeterx-ruby-sdk.svg?branch=master)](https://travis-ci.org/PerimeterX/perimeterx-ruby-sdk)
 
 ![image](http://media.marketwire.com/attachments/201604/34215_PerimeterX_logo.jpg)
 #
