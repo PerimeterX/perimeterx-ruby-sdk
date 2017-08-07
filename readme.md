@@ -5,6 +5,8 @@
 [PerimeterX](http://www.perimeterx.com) Ruby SDK
 =============================================================
 
+> Latest stable version: [v1.3.0](https://rubygems.org/gems/perimeter_x/versions/1.3.0)
+
 Table of Contents
 -----------------
 -   [Usage](#usage)
