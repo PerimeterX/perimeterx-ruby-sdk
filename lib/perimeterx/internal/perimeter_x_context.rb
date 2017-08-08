@@ -14,6 +14,7 @@ module PxModule
       @context[:px_cookie] = Hash.new
       @context[:headers] = Hash.new
       @context[:cookie_origin] = 'cookie'
+      @context[:made_s2s_risk_api_call] = false
       cookies = req.cookies
 
       # Get token from header
