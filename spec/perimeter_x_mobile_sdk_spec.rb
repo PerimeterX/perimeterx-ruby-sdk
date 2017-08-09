@@ -149,7 +149,7 @@ RSpec.describe PxModule::PerimeterxPayload, 'Mobile SDK tests' do
 
         verified, px_ctx = validator.verify(px_ctx)
         expect(verified).to eq true
-        expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::COOKIE_HIGH_SCORE
+        expect(px_ctx.context[:blocking_reason]).to eq PxModule::COOKIE_HIGH_SCORE
       end
 
       it 'Should not pass and cookie high score' do
