@@ -9,15 +9,16 @@
 
 Table of Contents
 -----------------
--   [Usage](#usage)
+  **[Usage](#usage)**
   *   [Dependencies](#dependencies)
   *   [Installation](#installation)
   *   [Basic Usage Example](#basic-usage)
--   [Configuration](#configuration)
+  
+  **[Configuration](#configuration)**
   *   [Configuring Required Parameters](#requireied-params)
   *   [Blocking Score](#blocking-score)
+  *   [Custom Verification Action](#custom-verification-action)
   *   [Custom Block Page](#custom-block-page)
-  *   [Custom Block Action](#custom-block-action)
   *   [Enable/Disable Captcha](#captcha-support)
   *   [Extracting Real IP Address](#real-ip)
   *   [Custom URI](#custom-uri)
@@ -27,7 +28,8 @@ Table of Contents
   *   [Additional Page Activity Handler](#additional-page-activity-handler)
   *   [Monitor Only](#logging)
   *   [Debug Mode](#debug-mode)
--   [Contributing](#contributing)
+  
+  **[Contributing](#contributing)**
 
 <a name="Usage"></a>
 <a name="dependencies"></a> Dependencies
@@ -94,42 +96,46 @@ params = {
 }
 ```
 
+<a name="custom-verification-action"></a>**Custom Verification Handler**
 
+> Note: This handler replaces the now deprecated `custom_block_handler`.
 
-<a name="custom-block-action"></a>**Custom Verification Handler**
+A custom verification handler is being executed inside `px_verify_request` instead of the the default behavior and allows a user to use a custom action based on the risk score returned by PerimeterX.
 
-A custom verification handler is being executed inside ``px_verify_request`` instead of the the default behavior and allows a user to use a custom action based on the risk score returned by PerimeterX.
+When implemented, this method receives a hash variable as input which represents data from the PerimeterX context of the request (px_ctx).
 
-When implemented, this method receives  a hash variable as input which represents data from the PerimeterX context of the request (px_ctx).
+- `px_ctx.context[:score]` - contains the risk score
+- `px_ctx.context[:uuid]` - contains the request UUID
+- `px_ctx.context[:verified]` - contains indication whether the request passed verification or was blocked (inspect `px_ctx.context[:block_reason]` for block reason) 
 
-- `px_ctx[:score] ` contains the risk score
-- `px_ctx[:uuid] ` contains the request UUID
-
->> Note: to determine whether to return a captcha/block page (HTML) or block JSON payload a reference key on the context will be available:  ```px_ctx.context[:format]```
+> Note: to determine whether to return a captcha/block page (HTML) or block JSON payload a reference key on the context will be available:  ```px_ctx.context[:format]```
 
 To replace the default verification behavior, add the configuration a lambda member as shown in the example below.
-
-The method must return boolen value.
 
 ```ruby
 params = {
   :app_id => <APP_ID>,
   :auth_token => <AUTH_TOKEN>,
-  :custom_block_handler => -> (px_ctx) {
+  :custom_verification_handler => -> (px_ctx) {
     if px_ctx.context[:score] >= 60
-        # take your action and retun a message or JSON with a status code of 403 and option UUID of the request. Can return false and include action in the px_middleware method.  
+      # take your action and render an html page or JSON with applicable status code.    
+      render json: { :score => px_ctx.context[:score] }
     end
-    return true
   }
 }
 ```
 
+> Note: Unlike previous versions, the method no longer needs to return a boolean value. 
+
 **Example**
-### Serving a Custom HTML Page ###
+#### Serving a Custom HTML Page ####
 ```ruby
 
-params[:custom_block_handler] = -> (px_ctx)
-{
+params = {
+  :app_id => <APP_ID>,
+  :auth_token => <AUTH_TOKEN>,
+  ...
+  :custom_verification_handler => -> (px_ctx) {
     block_score = px_ctx.context[:score];
     block_uuid = px_ctx.context[:uuid];
     full_url = px_ctx.context[:full_url];
@@ -144,19 +150,17 @@ params[:custom_block_handler] = -> (px_ctx)
     response.headers["Content-Type"] = "text/html"
     response.status = 403
     render :html => html
-    return false
-};
-
-PxModule.configure(params)
+  }
+}
 ```
 
-<a name="real-ip"></a>** Custom User IP **
+<a name="real-ip"></a>**Custom User IP**
 
 > Note: IP extraction, according to your network setup, is very important. It is common to have a load balancer/proxy on top of your applications, in which case the PerimeterX module will send the system's internal IP as the user's. In order to properly perform processing and detection on server-to-server calls, PerimeterX module needs the real user's IP.
 
 By default the clients IP is taken from the ``REMOTE_ADDR`` header, in case the user decides to use different header or custom function that extract the header the following key should be added to the configuration
 
-*** Custom header ***
+***Custom header***
 ```ruby
 configuration = {
   "app_id" => <APP_ID>,
@@ -164,7 +168,7 @@ configuration = {
   "custom_user_ip" => <HTTP_HEADER_NAME>,
 ```
 
-*** Custom Function ***
+***Custom Function***
 > Note: the function receive as a first parameter the controller request and must return the ip at the end as string
 
 ```ruby

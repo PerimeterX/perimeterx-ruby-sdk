@@ -47,7 +47,6 @@ module PxModule
 
         if (cookie.high_score?)
           @logger.warn("PerimeterxCookieValidator:[verify]: cookie high score")
-          px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_HIGH_SCORE
           px_ctx.context[:blocking_reason] = 'cookie_high_score'
           return true, px_ctx
         end

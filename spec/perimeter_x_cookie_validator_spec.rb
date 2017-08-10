@@ -48,8 +48,8 @@ RSpec.describe PxModule::PerimeterxCookieValidator, "Cookie Validator Tests" do
     validator = PxModule::PerimeterxCookieValidator.new(config)
 
     verified, px_ctx = validator.verify(px_ctx)
-    expect(verified).to eq true 
-    expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::COOKIE_HIGH_SCORE
+    expect(verified).to eq true
+    expect(px_ctx.context[:blocking_reason]).to eq PxModule::COOKIE_HIGH_SCORE
   end
 
   it "verification failed on cookie validation" do
@@ -85,7 +85,7 @@ RSpec.describe PxModule::PerimeterxCookieValidator, "Cookie Validator Tests" do
     expect(px_ctx.context[:s2s_call_reason]).to be_nil
     expect(verified).to eq true
   end
-  
+
   it "verification passed succesfully but route is sensitive" do
     @req.cookies[:_px] = "kN5gv3OjmmzaQLuPtx7D2QHQgvzKgF2LvX/hKpipNGUR9AaCwwlPZLs0XXbAZxNb2b+iLPsEv0qpAtkamYxy6Q==:1000:gMqzmSVEOMDz6x1Nwc799ULXP/LBIOMsJZA7UuQ0Yj/4zVTT5LxwwySXP5264/Ub9k6CgcMM3587cE6Mr4S8PeFdVejI5d4hDQJC+9LTD+7mNhio8wVO5nIsnFOnMVO31dRfk9u+Xff030y34CYRTiqOjb5ENTRNGR1KDAeqSRY/y/bly7pJSfNAb6Viw8eK"
 	@params[:sensitive_routes] = ['/login']
