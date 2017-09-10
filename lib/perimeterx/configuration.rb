@@ -12,7 +12,7 @@ module PxModule
       :cookie_key               => nil,
       :auth_token               => nil,
       :module_enabled           => true,
-      :captcha_enabled          => true,
+      :captcha_provider         => "reCaptcha",
       :challenge_enabled        => true,
       :encryption_enabled       => true,
       :blocking_score           => 70,

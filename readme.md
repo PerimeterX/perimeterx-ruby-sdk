@@ -20,6 +20,7 @@ Table of Contents
   *   [Custom Verification Action](#custom-verification-action)
   *   [Custom Block Page](#custom-block-page)
   *   [Enable/Disable Captcha](#captcha-support)
+  *   [Select Captcha Provider](#captcha-provider)
   *   [Extracting Real IP Address](#real-ip)
   *   [Custom URI](#custom-uri)
   *   [Filter Sensitive Headers](#sensitive-headers)
@@ -228,6 +229,18 @@ By enabling CAPTCHA support, a CAPTCHA will be served as part of the block page,
 
 ```ruby
 params[:captcha_enabled] = false
+```
+
+<a name="captcha-provider"></a>**Select CAPTCHA Provider**
+
+The CAPTCHA part of the block page can use one of the following:
+* [reCAPTCHA](https://www.google.com/recaptcha)
+* [FunCaptcha](https://www.funcaptcha.com/)
+
+Default: 'reCaptcha'
+
+```ruby
+captchaProvider = "funCaptcha"
 ```
 
 <a name="custom-uri"></a>**Custom URI**
