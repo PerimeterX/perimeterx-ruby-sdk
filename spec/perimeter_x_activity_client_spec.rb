@@ -1,4 +1,5 @@
 require "spec_helper"
+require "base64"
 
 
 RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" do
@@ -8,7 +9,8 @@ RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" d
       :cookie_key => "PX_COOKIE_KEY",
       :auth_token => "PX_AUTH_TOKEN"
     }
-    @http_client = double("http_client", :post => double("response", {:code_code => 200, :body => "{ status: 0 }" } ) )
+    @http_client = spy("http_client", :post => double("response", {:code => 200, :body => "{ status: 0 }", :success? => true } ))
+
 
     @req = double("http_request", {
       :cookies => Hash.new,
@@ -24,26 +26,31 @@ RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" d
       })
   end
 
+  it "Should send received pxCaptcha as is and correspond to captcha_api v2" do
+    pxCookie = Base64.encode64('c:v:u')
+    @req.expects(:cookies).returns ({ :_pxCaptcha => pxCookie })
 
-  it "send should return false on captcha_enabled is false" do
-    @params[:captcha_enabled] = false
-    config = PxModule::Configuration.new(@params).configuration;
+    config = PxModule::Configuration.new(@params).configuration
     px_ctx = PxModule::PerimeterXContext.new(config, @req)
     validator = PxModule::PerimeterxCaptchaValidator.new(config, @http_client)
 
+    path = '/api/v2/risk/captcha'
+    headers =  { "Authorization" => "Bearer PX_AUTH_TOKEN", "Content-Type" => "application/json" }
+    captcha_api_post = {
+        :request => {
+            :ip => "1.2.3.4", :headers => [], :uri => "/", :captchaType => "reCaptcha"
+        },
+        :additional => {
+            :module_version => "RUBY SDK v1.3.0"
+        },
+        :pxCaptcha => pxCookie,
+        :hostname => "MockServer"
+    }
+
+    expect(@http_client).to receive(:post).with(path, captcha_api_post, headers, 1, nil)
+
     verified, px_ctx = validator.verify(px_ctx)
-    expect(verified).to be(false)
+    expect(verified).to be(true)
   end
-
-  it "send should return false on captcha_enabled is false" do
-    @req.expects(:cookies).returns ({ :_pxCaptcha => 'c:v:u' })
-    config = PxModule::Configuration.new(@params).configuration;
-    px_ctx = PxModule::PerimeterXContext.new(config, @req)
-    validator = PxModule::PerimeterxCaptchaValidator.new(config, @http_client)
-
-    verified, px_ctx = validator.verify(px_ctx)
-    expect(verified).to be(false)
-  end
-
 
 end
