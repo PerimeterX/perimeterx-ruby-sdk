@@ -20,7 +20,7 @@ module PxModule
     msg_title = 'PxModule[px_verify_request]'
 
     # In case custom verification handler is in use
-    if (px_config.key?(:custom_verification_handler))
+    if px_config.key?(:custom_verification_handler)
       px_config[:logger].debug("#{msg_title}: custom_verification_handler triggered")
       return instance_exec(px_ctx, &px_config[:custom_verification_handler])
     end
@@ -30,7 +30,7 @@ module PxModule
 
     unless px_ctx.nil? || px_ctx.context[:verified]
       # In case custom block handler exists (soon to be deprecated)
-      if (px_config.key?(:custom_block_handler))
+      if px_config.key?(:custom_block_handler)
         px_config[:logger].debug("#{msg_title}: custom_block_handler triggered")
         px_config[:logger].debug(
             "#{msg_title}: Please note that custom_block_handler is deprecated. Use custom_verification_handler instead.")
@@ -100,7 +100,7 @@ module PxModule
     def verify(env)
       begin
         @logger.debug('PerimeterX[pxVerify]')
-        if (!@px_config[:module_enabled])
+        if !@px_config[:module_enabled]
           @logger.warn('Module is disabled')
           return nil
         end
@@ -109,13 +109,13 @@ module PxModule
 
         # Captcha phase
         captcha_verified, px_ctx = @px_captcha_validator.verify(px_ctx)
-        if (captcha_verified)
+        if captcha_verified
           return handle_verification(px_ctx)
         end
 
         # Cookie phase
         cookie_verified, px_ctx = @px_cookie_validator.verify(px_ctx)
-        if (!cookie_verified)
+        if !cookie_verified
           @px_s2s_validator.verify(px_ctx)
         end
 
@@ -147,7 +147,7 @@ module PxModule
       score = px_ctx.context[:score]
       px_ctx.context[:verified] = score < @px_config[:blocking_score]
       # Case PASS request
-      if (px_ctx.context[:verified])
+      if px_ctx.context[:verified]
         @logger.debug("PerimeterX[handle_verification]: score:#{score} < blocking score, passing request")
         @px_activity_client.send_page_requested_activity(px_ctx)
         return px_ctx
@@ -157,7 +157,7 @@ module PxModule
       @px_activity_client.send_block_activity(px_ctx)
 
       # In case were in monitor mode, end here
-      if (@px_config[:module_mode] == PxModule::MONITOR_MODE)
+      if @px_config[:module_mode] == PxModule::MONITOR_MODE
         @logger.debug('PerimeterX[handle_verification]: monitor mode is on, passing request')
         return px_ctx
       end
