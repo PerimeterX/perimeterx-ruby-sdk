@@ -48,5 +48,5 @@ module PxModule
   # Mobile SDK
   TOKEN_HEADER = 'X-PX-AUTHORIZATION'
   MOBILE_SDK_CONNECTION_ERROR = 'mobile_sdk_connection_error'
-  MOBILE_SDK_PINNING_ERROR= 'mobile_sdk_pinning_error'
+  MOBILE_SDK_PINNING_ERROR = 'mobile_sdk_pinning_error'
 end
