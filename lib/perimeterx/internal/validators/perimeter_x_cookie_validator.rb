@@ -18,10 +18,18 @@ module PxModule
 
     def verify(px_ctx)
       begin
-        # Case no cookie
-        if px_ctx.context[:px_cookie].empty?
-          @logger.warn("PerimeterxCookieValidator:[verify]: cookie not found")
+        # Error cases
+        if px_ctx.context[:px_cookie].empty? || px_ctx.context[:px_cookie] == "1"
+          @logger.warn("PerimeterxCookieValidator:[verify]: no cookie")
           px_ctx.context[:s2s_call_reason] = PxModule::NO_COOKIE
+          return false, px_ctx
+        elsif px_ctx.context[:px_cookie] == "2"   # Mobile SDK connection error
+          @logger.warn("PerimeterxCookieValidator:[verify]: mobile sdk connection error")
+          px_ctx.context[:s2s_call_reason] = PxModule::MOBILE_SDK_CONNECTION_ERROR
+          return false, px_ctx
+        elsif px_ctx.context[:px_cookie] == "3"   # Mobile SDK pinning error
+          @logger.warn("PerimeterxCookieValidator:[verify]: mobile sdk pinning error")
+          px_ctx.context[:s2s_call_reason] = PxModule::MOBILE_SDK_PINNING_ERROR
           return false, px_ctx
         end
 
