@@ -68,6 +68,17 @@ RSpec.describe PxModule::PerimeterxPayload, 'Mobile SDK tests' do
 
   describe PxModule::PerimeterxCookieValidator, 'Verifying tokens' do
 
+    it 'Should not pass on empty token' do
+      @req.headers["#{PxModule::TOKEN_HEADER}"] = ""
+      config = PxModule::Configuration.new(@params).configuration
+      px_ctx = PxModule::PerimeterXContext.new(config, @req)
+      validator = PxModule::PerimeterxCookieValidator.new(config)
+
+      verified, px_ctx = validator.verify(px_ctx)
+      expect(verified).to eq false
+      expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::COOKIE_DECRYPTION_FAILED
+    end
+
     it 'Should not pass on no cookie' do
       @req.headers["#{PxModule::TOKEN_HEADER}"] = "1"
       config = PxModule::Configuration.new(@params).configuration
