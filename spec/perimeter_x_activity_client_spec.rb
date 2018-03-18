@@ -41,7 +41,7 @@ RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" d
             :ip => "1.2.3.4", :headers => [], :uri => "/", :captchaType => "reCaptcha"
         },
         :additional => {
-            :module_version => "RUBY SDK v1.3.0"
+            :module_version => "RUBY SDK v1.4.0"
         },
         :pxCaptcha => pxCookie,
         :hostname => "MockServer"

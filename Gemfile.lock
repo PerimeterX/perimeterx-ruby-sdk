@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    perimeter_x (1.3.0)
+    perimeter_x (1.4.0)
       activesupport (>= 4.2.0)
       concurrent-ruby (~> 1.0, >= 1.0.5)
       mustache (~> 1.0, >= 1.0.3)
