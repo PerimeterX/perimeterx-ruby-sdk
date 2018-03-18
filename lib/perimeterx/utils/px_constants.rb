@@ -10,7 +10,7 @@ module PxModule
 
   # Routes
   API_V1_S2S = '/api/v1/collector/s2s'
-  API_V1_CAPTCHA = '/api/v1/risk/captcha'
+  API_CAPTCHA = '/api/v2/risk/captcha'
   API_V2_RISK = '/api/v2/risk'
 
   # Activity Types
@@ -28,7 +28,6 @@ module PxModule
 
   # Templates
   BLOCK_TEMPLATE = 'block'
-  CAPTCHA_TEMPLATE = 'captcha'
   TEMPLATE_EXT = '.mustache'
 
 
@@ -48,4 +47,6 @@ module PxModule
 
   # Mobile SDK
   TOKEN_HEADER = 'X-PX-AUTHORIZATION'
+  MOBILE_SDK_CONNECTION_ERROR = 'mobile_sdk_connection_error'
+  MOBILE_SDK_PINNING_ERROR = 'mobile_sdk_pinning_error'
 end

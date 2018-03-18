@@ -14,7 +14,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
       config = PxModule::Configuration.new(@params).configuration
 
       expect(config[:module_enabled]).to eq true
-      expect(config[:captcha_enabled]).to eq true
+      expect(config[:captcha_provider]).to eq "reCaptcha"
       expect(config[:challenge_enabled]).to eq true
       expect(config[:encryption_enabled]).to eq true
       expect(config[:blocking_score]).to eq 70
@@ -31,7 +31,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
 
     it "should overide default values" do
       @params[:module_enabled] = false
-      @params[:captcha_enabled] = false
+      @params[:captcha_provider] = "funCaptcha"
       @params[:challenge_enabled] = false
       @params[:encryption_enabled] = false
       @params[:blocking_score] = 100
@@ -48,7 +48,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
       config = PxModule::Configuration.new(@params).configuration
 
       expect(config[:module_enabled]).to eq false
-      expect(config[:captcha_enabled]).to eq false
+      expect(config[:captcha_provider]).to eq "funCaptcha"
       expect(config[:challenge_enabled]).to eq false
       expect(config[:encryption_enabled]).to eq false
       expect(config[:blocking_score]).to eq 100

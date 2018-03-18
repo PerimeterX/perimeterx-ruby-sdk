@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0] - 2018-03-18
+### Fixed
+ - Incorrect assigment for s2s_call_reason
+ - Fixed empty token result correct s2s reason
+
+### Added
+ - Added support to captcha api v2
+ - Mobile sdk support for special tokens 1/2/3
+
+
 ## [1.3.0] - 2017-07-27
 ### Added
  - Sending client_uuid on page_requested activities

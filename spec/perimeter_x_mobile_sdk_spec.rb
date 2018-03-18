@@ -68,8 +68,19 @@ RSpec.describe PxModule::PerimeterxPayload, 'Mobile SDK tests' do
 
   describe PxModule::PerimeterxCookieValidator, 'Verifying tokens' do
 
+    it 'Should not pass on empty token' do
+      @req.headers["#{PxModule::TOKEN_HEADER}"] = ""
+      config = PxModule::Configuration.new(@params).configuration
+      px_ctx = PxModule::PerimeterXContext.new(config, @req)
+      validator = PxModule::PerimeterxCookieValidator.new(config)
+
+      verified, px_ctx = validator.verify(px_ctx)
+      expect(verified).to eq false
+      expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::COOKIE_DECRYPTION_FAILED
+    end
+
     it 'Should not pass on no cookie' do
-      @req.headers["#{PxModule::TOKEN_HEADER}: 1"]
+      @req.headers["#{PxModule::TOKEN_HEADER}"] = "1"
       config = PxModule::Configuration.new(@params).configuration
       px_ctx = PxModule::PerimeterXContext.new(config, @req)
       validator = PxModule::PerimeterxCookieValidator.new(config)
@@ -77,6 +88,28 @@ RSpec.describe PxModule::PerimeterxPayload, 'Mobile SDK tests' do
       verified, px_ctx = validator.verify(px_ctx)
       expect(verified).to eq false
       expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::NO_COOKIE
+    end
+
+    it 'Should not pass on connection error' do
+      @req.headers["#{PxModule::TOKEN_HEADER}"] = "2"
+      config = PxModule::Configuration.new(@params).configuration
+      px_ctx = PxModule::PerimeterXContext.new(config, @req)
+      validator = PxModule::PerimeterxCookieValidator.new(config)
+
+      verified, px_ctx = validator.verify(px_ctx)
+      expect(verified).to eq false
+      expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::MOBILE_SDK_CONNECTION_ERROR
+    end
+
+    it 'Should not pass on pinning error' do
+      @req.headers["#{PxModule::TOKEN_HEADER}"] = "3"
+      config = PxModule::Configuration.new(@params).configuration
+      px_ctx = PxModule::PerimeterXContext.new(config, @req)
+      validator = PxModule::PerimeterxCookieValidator.new(config)
+
+      verified, px_ctx = validator.verify(px_ctx)
+      expect(verified).to eq false
+      expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::MOBILE_SDK_PINNING_ERROR
     end
 
     describe PxModule::PerimeterxTokenV1, 'Token v1 tests' do
@@ -149,7 +182,7 @@ RSpec.describe PxModule::PerimeterxPayload, 'Mobile SDK tests' do
 
         verified, px_ctx = validator.verify(px_ctx)
         expect(verified).to eq true
-        expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::COOKIE_HIGH_SCORE
+        expect(px_ctx.context[:blocking_reason]).to eq PxModule::COOKIE_HIGH_SCORE
       end
 
       it 'Should not pass and cookie high score' do

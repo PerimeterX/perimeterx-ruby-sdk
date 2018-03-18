@@ -14,6 +14,7 @@ module PxModule
       @context[:px_cookie] = Hash.new
       @context[:headers] = Hash.new
       @context[:cookie_origin] = 'cookie'
+      @context[:made_s2s_risk_api_call] = false
       cookies = req.cookies
 
       # Get token from header
@@ -24,6 +25,8 @@ module PxModule
           exploded_token = token.split(':', 2)
           cookie_sym = "v#{exploded_token[0]}".to_sym
           @context[:px_cookie][cookie_sym] = exploded_token[1]
+        else  # TOKEN_HEADER exists yet there's no ':' delimiter - may indicate an error (storing original value)
+          @context[:px_cookie] = req.headers[PxModule::TOKEN_HEADER]
         end
       elsif !cookies.empty? # Get cookie from jar
         # Prepare hashed cookies

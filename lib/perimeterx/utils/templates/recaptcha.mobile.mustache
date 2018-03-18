@@ -76,6 +76,7 @@
             color: #c5c5c5;
             font-size: 70%;
         }
+
         @media (min-width:768px){
             html,body{
                 height: 100%;
@@ -83,10 +84,12 @@
         }
     </style>
     <!-- Custom CSS -->
-    {{# cssRef }}
+    {{#cssRef}}
         <link rel="stylesheet" type="text/css" href="{{cssRef}}" />
-    {{/ cssRef }}
+    {{/cssRef}}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
+
 <body>
 <section class="container">
     <div class="customer-logo-wrapper">
@@ -96,19 +99,32 @@
     </div>
     <div class="page-title-wrapper">
         <div class="page-title">
-            <h1>Access to this page has been denied.</h1>
+            <h1>Please verify you are a human</h1>
         </div>
     </div>
     <div class="content-wrapper">
         <div class="content">
             <p>
-                You have been blocked because we believe you are using automation tools to browse the website.
+                Please click "I am not a robot" to continue
+            </p>
+            <div class="g-recaptcha" data-sitekey="6Lcj-R8TAAAAABs3FrRPuQhLMbp5QrHsHufzLf7b" data-callback="handleCaptcha" data-theme="dark">
+            </div>
+            <p>
+                Access to this page has been denied because we believe you are using automation tools to browse the website.
             </p>
             <p>
-                Please note that Javascript and Cookies must be enabled on your browser to access the website.
+                This may happen as a result of the following:
             </p>
+            <ul>
+                <li>
+                    Javascript is disabled or blocked by an extension (ad blockers for example)
+                </li>
+                <li>
+                    Your browser does not support cookies
+                </li>
+            </ul>
             <p>
-                If you think you have been blocked by mistake, please contact the website administrator with the reference ID below.
+                Please make sure that Javascript and cookies are enabled on your browser and that you are not blocking them from loading.
             </p>
             <p>
                 Reference ID: #{{refId}}
@@ -125,9 +141,56 @@
         </div>
     </div>
 </section>
+<!-- Captcha -->
+<script>
+    function captchaSolved(res) {
+        window.location.href = '/px/captcha_callback?status=' + res.status;
+    }
+
+    function handleCaptcha(response) {
+        var appId = '{{appId}}';
+        var vid = '{{vid}}';
+        var uuid = '{{uuid}}';
+        var collectorUrl = '{{{hostUrl}}}';
+        var req = new XMLHttpRequest();
+        req.open('POST', collectorUrl + '/api/v1/collector/captcha');
+        req.setRequestHeader('Content-Type', 'application/json');
+        req.addEventListener('error', function() {
+            captchaSolved({
+                status: 1
+            });
+        });
+        req.addEventListener('cancel', function() {
+            captchaSolved({
+                status: 2
+            });
+        });
+        req.addEventListener('load', function() {
+            if (req.status == 200) {
+                try {
+                    var responseJSON = JSON.parse(req.responseText);
+                    return captchaSolved(responseJSON);
+                } catch (ex) {}
+            }
+            captchaSolved({
+                status: 3
+            });
+        });
+        req.send(JSON.stringify({
+            appId: appId,
+            uuid: uuid,
+            vid: vid,
+            pxCaptcha: response,
+            hostname: window.location.hostname,
+            request: {
+                url: window.location.href
+            }
+        }));
+    }
+</script>
 <!-- Custom Script -->
-{{# jsRef }}
+{{#jsRef}}
     <script src="{{jsRef}}"></script>
-{{/ jsRef }}
+{{/jsRef}}
 </body>
 </html>
