@@ -235,12 +235,11 @@ params[:captcha_enabled] = false
 
 The CAPTCHA part of the block page can use one of the following:
 * [reCAPTCHA](https://www.google.com/recaptcha)
-* [FunCaptcha](https://www.funcaptcha.com/)
 
 Default: 'reCaptcha'
 
 ```ruby
-captchaProvider = "funCaptcha"
+captchaProvider = "reCaptcha"
 ```
 
 <a name="custom-uri"></a>**Custom URI**
