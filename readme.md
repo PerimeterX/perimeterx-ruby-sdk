@@ -87,7 +87,7 @@ All parameters are obtainable via the PerimeterX Portal. (Applications and Polic
 
 <a name="blocking-score"></a>**Changing the Minimum Score for Blocking**
 
->Note:  Default blocking value: 70
+>Note:  Default blocking value: 100
 
 ```ruby
 params = {
