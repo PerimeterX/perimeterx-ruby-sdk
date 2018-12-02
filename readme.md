@@ -13,6 +13,7 @@ Table of Contents
   *   [Dependencies](#dependencies)
   *   [Installation](#installation)
   *   [Basic Usage Example](#basic-usage)
+  *   [Upgrading](#upgrade)
   
   **[Configuration](#configuration)**
   *   [Configuring Required Parameters](#requireied-params)
@@ -49,6 +50,10 @@ Install it through command line ```gem install perimeter_x```
 
 <a name=basic-usage></a> Basic Usage Example
 ----------------------------------------
+
+## <a name="upgrade"></a> Upgrading
+
+TBD
 
 ### Configuration & Initialization
 Create a configuration file at `<rails_app>/config/initializers/perimeterx.rb` and initialize PerimeterX instance on the rails application startup
