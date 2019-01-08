@@ -11,14 +11,8 @@ module PxModule
       end
 
       logger.debug('PxTemplateFactory[get_template]: rendering template')
-      template_type = px_ctx.context[:block_action] == 'captcha' ? px_config[:captcha_provider].downcase : BLOCK_TEMPLATE
 
-      template_postfix = ''
-      if px_ctx.context[:cookie_origin] == 'header'
-        template_postfix = '.mobile'
-      end
-
-      Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}#{template_postfix}#{PxModule::TEMPLATE_EXT}"
+      Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/block_template#{PxModule::TEMPLATE_EXT}"
       view = Mustache.new
 
       view[PxModule::PROP_APP_ID] = px_config[:app_id]
