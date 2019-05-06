@@ -72,7 +72,7 @@ RSpec.describe PxModule::PerimeterxCookieValidator, "Cookie Validator Tests" do
     verified, px_ctx = validator.verify(px_ctx)
     expect(verified).to eq false
     expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::COOKIE_DECRYPTION_FAILED
-    expect(px_ctx.context[:px_orig_cookie]).to eq @req.cookies[:_px]
+    expect(px_ctx.context[:px_orig_cookie]).to eq(px_ctx.context[:px_cookie])
   end
 
   it "verification passed succesfully" do
@@ -97,6 +97,17 @@ RSpec.describe PxModule::PerimeterxCookieValidator, "Cookie Validator Tests" do
     verified, px_ctx = validator.verify(px_ctx)
     expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::SENSITIVE_ROUTE 
     expect(verified).to eq false 
+  end
+
+  it "verification failed on malformed token header" do
+    @req.headers[PxModule::TOKEN_HEADER] = "SOME_MALFORMED_HEADER"
+    config = PxModule::Configuration.new(@params).configuration
+    px_ctx = PxModule::PerimeterXContext.new(config, @req)
+    validator = PxModule::PerimeterxCookieValidator.new(config)
+
+    verified, px_ctx = validator.verify(px_ctx)
+    expect(px_ctx.context[:s2s_call_reason]).to eq PxModule::COOKIE_DECRYPTION_FAILED
+    expect(verified).to eq false
   end
  
 
