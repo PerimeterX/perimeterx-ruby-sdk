@@ -16,7 +16,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
       expect(config[:module_enabled]).to eq true
       expect(config[:challenge_enabled]).to eq true
       expect(config[:encryption_enabled]).to eq true
-      expect(config[:blocking_score]).to eq 70
+      expect(config[:blocking_score]).to eq 100
       expect(config[:sensitive_headers]).to eq ["http-cookie", "http-cookies"]
       expect(config[:api_connect_timeout]).to eq 1
       expect(config[:api_timeout]).to eq 1
@@ -24,7 +24,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
       expect(config[:send_page_activities]).to eq true
       expect(config[:send_block_activities]).to eq true
       expect(config[:debug]).to eq false
-      expect(config[:module_mode]).to eq PxModule::ACTIVE_MODE
+      expect(config[:module_mode]).to eq PxModule::MONITOR_MODE
       expect(config[:local_proxy]).to eq false
     end
 
