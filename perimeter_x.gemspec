@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.bindir        = "exe"
   gem.executables   = gem.files.grep(%r{^exe/}) { |f| File.basename(f) }
   gem.require_paths = ["lib"]
-  gem.add_development_dependency "bundler", "~> 1.14"
+  gem.add_development_dependency "bundler", ">= 2.1"
   gem.add_development_dependency "rake", ">= 12.3"
 
   gem.extra_rdoc_files = ["readme.md", "changelog.md"]

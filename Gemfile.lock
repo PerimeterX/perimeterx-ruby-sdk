@@ -51,11 +51,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.14)
+  bundler (>= 2.1)
   mocha (~> 1.2, >= 1.2.1)
   perimeter_x!
   rake (>= 12.3)
   rspec (~> 3.0)
 
 BUNDLED WITH
-   1.17.2
+   2.1.4
