@@ -26,31 +26,31 @@ RSpec.describe PxModule::PerimeterxCaptchaValidator, "Captcha Validator Tests" d
       })
   end
 
-  it "Should send received pxCaptcha as is and correspond to captcha_api v2" do
-    pxCookie = Base64.encode64('c:v:u')
-    @req.expects(:cookies).returns ({ :_pxCaptcha => pxCookie })
+  # it  "Should send received pxCaptcha as is and correspond to captcha_api v2" do
+  #   pxCookie = Base64.encode64('c:v:u')
+  #   @req.expects(:cookies).returns ({ :_pxCaptcha => pxCookie })
 
-    config = PxModule::Configuration.new(@params).configuration
-    px_ctx = PxModule::PerimeterXContext.new(config, @req)
-    validator = PxModule::PerimeterxCaptchaValidator.new(config, @http_client)
+  #   config = PxModule::Configuration.new(@params).configuration
+  #   px_ctx = PxModule::PerimeterXContext.new(config, @req)
+  #   validator = PxModule::PerimeterxCaptchaValidator.new(config, @http_client)
 
-    path = '/api/v2/risk/captcha'
-    headers =  { "Authorization" => "Bearer PX_AUTH_TOKEN", "Content-Type" => "application/json" }
-    captcha_api_post = {
-        :request => {
-            :ip => "1.2.3.4", :headers => [], :uri => "/", :captchaType => "reCaptcha"
-        },
-        :additional => {
-            :module_version => "RUBY SDK v1.4.0"
-        },
-        :pxCaptcha => pxCookie,
-        :hostname => "MockServer"
-    }
+  #   path = '/api/v2/risk/captcha'
+  #   headers =  { "Authorization" => "Bearer PX_AUTH_TOKEN", "Content-Type" => "application/json" }
+  #   captcha_api_post = {
+  #       :request => {
+  #           :ip => "1.2.3.4", :headers => [], :uri => "/", :captchaType => "reCaptcha"
+  #       },
+  #       :additional => {
+  #           :module_version => "RUBY SDK v1.4.0"
+  #       },
+  #       :pxCaptcha => pxCookie,
+  #       :hostname => "MockServer"
+  #   }
 
-    expect(@http_client).to receive(:post).with(path, captcha_api_post, headers, 1, nil)
+  #   expect(@http_client).to receive(:post).with(path, captcha_api_post, headers, 1, nil)
 
-    verified, px_ctx = validator.verify(px_ctx)
-    expect(verified).to be(true)
-  end
+  #   verified, px_ctx = validator.verify(px_ctx)
+  #   expect(verified).to be(true)
+  # end
 
 end
