@@ -12,10 +12,9 @@ module PxModule
       :cookie_key               => nil,
       :auth_token               => nil,
       :module_enabled           => true,
-      :captcha_provider         => "reCaptcha",
       :challenge_enabled        => true,
       :encryption_enabled       => true,
-      :blocking_score           => 70,
+      :blocking_score           => 100,
       :sensitive_headers        => ["http-cookie", "http-cookies"],
       :api_connect_timeout      => 1,
       :api_timeout              => 1,
@@ -24,7 +23,7 @@ module PxModule
       :send_block_activities    => true,
       :sdk_name                 => PxModule::SDK_NAME,
       :debug                    => false,
-      :module_mode              => PxModule::ACTIVE_MODE,
+      :module_mode              => PxModule::MONITOR_MODE,
       :local_proxy              => false,
       :sensitive_routes         => []
     }
