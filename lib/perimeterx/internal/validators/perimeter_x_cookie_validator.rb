@@ -83,6 +83,7 @@ module PxModule
 
         @logger.debug("PerimeterxCookieValidator:[verify]: cookie validation passed succesfully")
 
+        px_ctx.context[:pass_reason] = 'cookie'
         return true, px_ctx
       rescue Exception => e
         @logger.error("PerimeterxCookieValidator:[verify]: exception while verifying cookie => #{e.message}")

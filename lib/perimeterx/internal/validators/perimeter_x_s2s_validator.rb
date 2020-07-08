@@ -79,6 +79,7 @@ module PxModule
       @logger.debug("PerimeterxS2SValidator[verify]")
       response = send_risk_request(px_ctx)
       if (!response)
+        px_ctx.context[:pass_reason] = "s2s_timeout"
         return px_ctx
       end
       px_ctx.context[:made_s2s_risk_api_call] = true
@@ -97,12 +98,15 @@ module PxModule
           px_ctx.context[:blocking_reason] = 'challenge'
         elsif (score >= @px_config[:blocking_score])
           px_ctx.context[:blocking_reason] = 's2s_high_score'
+        else
+          px_ctx.context[:pass_reason] = 's2s'
         end #end challange or blocking score
       end #end success response
 
       # When error
       if(response.code != 200)
         @logger.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
+        px_ctx.context[:pass_reason] = 'request_failed'
         px_ctx.context[:uuid] = ""
         px_ctx.context[:s2s_error_msg] = !response_body || response_body[:message].nil? ? 'unknown' : response_body[:message]
       end

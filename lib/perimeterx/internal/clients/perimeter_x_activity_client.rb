@@ -76,7 +76,8 @@ module PxModule
       details = {
         :http_version  => px_ctx.context[:http_version],
         :http_method   => px_ctx.context[:http_method],
-        :client_uuid   => px_ctx.context[:uuid]
+        :client_uuid   => px_ctx.context[:uuid],
+        :pass_reason  => px_ctx.context[:pass_reason]
       }
 
       if (px_ctx.context.key?(:decoded_cookie))
