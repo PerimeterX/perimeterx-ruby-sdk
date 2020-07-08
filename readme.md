@@ -138,13 +138,13 @@ params = {
   ...
   :custom_verification_handler => -> (px_ctx) {
     block_score = px_ctx.context[:score];
-    block_uuid = px_ctx.context[:uuid];
+    client_uuid = px_ctx.context[:uuid];
     full_url = px_ctx.context[:full_url];
 
     html = "<html>
             <body>
             <div>Access to #{full_url} has been blocked.</div>    
-            <div>Block reference - #{block_uuid} </div>
+            <div>Block reference - #{client_uuid} </div>
             <div>Block score - #{block_score} </div>
             </body>
             </html>".html_safe
