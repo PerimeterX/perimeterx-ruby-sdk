@@ -55,6 +55,8 @@ module PxModule
       end
 
       details = {
+        :http_version  => px_ctx.context[:http_version],
+        :http_method   => px_ctx.context[:http_method],
         :client_uuid => px_ctx.context[:uuid],
         :block_score => px_ctx.context[:score],
         :block_reason => px_ctx.context[:blocking_reason],
