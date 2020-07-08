@@ -22,7 +22,8 @@ Gem::Specification.new do |gem|
   gem.bindir        = "exe"
   gem.executables   = gem.files.grep(%r{^exe/}) { |f| File.basename(f) }
   gem.require_paths = ["lib"]
-  gem.add_development_dependency "bundler", "~> 1.14"
+
+  gem.add_development_dependency "bundler", ">= 2.1"
   gem.add_development_dependency "rake", "~> 13.0"
 
   gem.extra_rdoc_files = ["readme.md", "changelog.md"]
@@ -33,7 +34,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('concurrent-ruby', '~> 1.0', '>= 1.0.5')
   gem.add_dependency('typhoeus', '~> 1.1', '>= 1.1.2')
   gem.add_dependency('mustache', '~> 1.0', '>= 1.0.3')
-  gem.add_dependency('activesupport', '>= 4.2.0')
+  gem.add_dependency('activesupport', '>= 5.2.4.3')
 
   gem.add_development_dependency 'rspec', '~> 3.0'
   gem.add_development_dependency 'mocha', '~> 1.2', '>= 1.2.1'

@@ -14,7 +14,7 @@ module PxModule
           :ip => px_ctx.context[:ip],
           :headers => format_headers(px_ctx),
           :uri => px_ctx.context[:uri],
-          :captchaType => @px_config[:captcha_provider]
+          :captchaType => 'reCaptcha'
         },
         :additional => {
           :module_version => @px_config[:sdk_name]

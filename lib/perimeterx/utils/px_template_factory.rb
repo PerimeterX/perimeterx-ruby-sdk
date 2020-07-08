@@ -11,7 +11,7 @@ module PxModule
       end
 
       logger.debug('PxTemplateFactory[get_template]: rendering template')
-      template_type = px_ctx.context[:block_action] == 'captcha' ? px_config[:captcha_provider].downcase : BLOCK_TEMPLATE
+      template_type = px_ctx.context[:block_action] == 'captcha' ? 'recaptcha' : BLOCK_TEMPLATE
 
       template_postfix = ''
       if px_ctx.context[:cookie_origin] == 'header'
