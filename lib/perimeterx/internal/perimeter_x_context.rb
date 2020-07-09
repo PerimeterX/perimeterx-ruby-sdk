@@ -37,8 +37,6 @@ module PxModule
               @context[:px_cookie][:v3] = v
             when '_px'
               @context[:px_cookie][:v1] = v
-            when '_pxCaptcha'
-              @context[:px_captcha] = v
           end
         end #end case
       end #end empty cookies
