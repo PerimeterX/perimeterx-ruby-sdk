@@ -1,3 +1,5 @@
+require "spec_helper"
+
 RSpec.describe PxModule::PerimeterxCookieValidator, "Cookie Validator Tests" do
   before(:each) do
     @params = {
