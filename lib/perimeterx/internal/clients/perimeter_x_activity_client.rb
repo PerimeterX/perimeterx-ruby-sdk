@@ -49,7 +49,7 @@ module PxModule
 
     def send_block_activity(px_ctx)
       @logger.debug("PerimeterxActivitiesClients[send_block_activity]")
-      if (!@px_config[:send_page_acitivites])
+      if (!@px_config[:send_block_activities])
         @logger.debug("PerimeterxActivitiesClients[send_block_activity]: sending activites is disabled")
         return
       end
@@ -73,7 +73,7 @@ module PxModule
 
     def send_page_requested_activity(px_ctx)
       @logger.debug("PerimeterxActivitiesClients[send_page_requested_activity]")
-      if (!@px_config[:send_page_acitivites])
+      if (!@px_config[:send_page_activities])
         return
       end
 
