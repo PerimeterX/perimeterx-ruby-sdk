@@ -11,12 +11,15 @@ module PxModule
       end
 
       logger.debug('PxTemplateFactory[get_template]: rendering template')
-      template_type = px_ctx.context[:block_action] == 'captcha' ? 'recaptcha' : BLOCK_TEMPLATE
+      template_type = CHALLENGE_TEMPLATE
 
       template_postfix = ''
       if px_ctx.context[:cookie_origin] == 'header'
         template_postfix = '.mobile'
       end
+
+      action = px_ctx.context[:block_action][0,1]
+      isMobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
 
       Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}#{template_postfix}#{PxModule::TEMPLATE_EXT}"
       view = Mustache.new
@@ -28,8 +31,11 @@ module PxModule
       view[PxModule::PROP_CUSTOM_LOGO] = px_config[:custom_logo]
       view[PxModule::PROP_CSS_REF] = px_config[:css_ref]
       view[PxModule::PROP_JS_REF] = px_config[:js_ref]
-      view[PxModule::HOST_URL] = "https://collector-#{px_config[:app_id]}.perimeterx.net"
+      view[PxModule::PROP_HOST_URL] = "https://collector-#{px_config[:app_id]}.perimeterx.net"
       view[PxModule::PROP_LOGO_VISIBILITY] = px_config[:custom_logo] ? PxModule::VISIBLE : PxModule::HIDDEN
+      view[PxModule::PROP_BLOCK_SCRIPT] = "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{isMobile}"
+      view[PxModule::PROP_JS_CLIENT_SRC] = "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js";
+      view[PxModule::PROP_FIRST_PARTY_ENABLED] = false
 
       return view.render.html_safe
     end

@@ -68,9 +68,9 @@ module PxModule
 
       # Custom risk handler
       if (risk_mode == PxModule::ACTIVE_MODE && @px_config.key?(:custom_risk_handler))
-        response = @px_config[:custom_risk_handler].call(PxModule::API_V2_RISK, request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
+        response = @px_config[:custom_risk_handler].call(PxModule::API_V3_RISK, request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
       else
-        response = @http_client.post(PxModule::API_V2_RISK , request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
+        response = @http_client.post(PxModule::API_V3_RISK , request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
       end
       return response
     end
