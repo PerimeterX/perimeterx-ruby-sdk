@@ -67,11 +67,19 @@ module PxModule
       };
 
       # Custom risk handler
+      risk_start = Time.now
       if (risk_mode == PxModule::ACTIVE_MODE && @px_config.key?(:custom_risk_handler))
         response = @px_config[:custom_risk_handler].call(PxModule::API_V2_RISK, request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
       else
         response = @http_client.post(PxModule::API_V2_RISK , request_body, headers, @px_config[:api_timeout], @px_config[:api_timeout_connection])
       end
+
+      # Set risk_rtt
+      if(response)
+        risk_end = Time.now
+        px_ctx.context[:risk_rtt] = (risk_end-risk_start)*1000
+      end
+
       return response
     end
 

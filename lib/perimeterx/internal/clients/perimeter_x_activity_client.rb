@@ -63,6 +63,10 @@ module PxModule
         :simulated_block => @px_config[:module_mode] == PxModule::MONITOR_MODE
       }
 
+      if (px_ctx.context.key?(:risk_rtt))
+        details[:risk_rtt] = px_ctx.context[:risk_rtt]
+      end
+
       send_to_perimeterx(PxModule::BLOCK_ACTIVITY, px_ctx, details)
 
     end
@@ -86,6 +90,10 @@ module PxModule
 
       if (px_ctx.context.key?(:cookie_hmac))
         details[:px_cookie_hmac] = px_ctx.context[:cookie_hmac]
+      end
+
+      if (px_ctx.context.key?(:risk_rtt))
+        details[:risk_rtt] = px_ctx.context[:risk_rtt]
       end
 
       send_to_perimeterx(PxModule::PAGE_REQUESTED_ACTIVITY, px_ctx, details)
