@@ -89,6 +89,8 @@ module PxModule
           return 'block'
         when 'j'
           return 'challenge'
+        when 'r'
+          return 'rate_limit'
         else
           return captcha
         end
