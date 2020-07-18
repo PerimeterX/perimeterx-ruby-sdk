@@ -24,7 +24,7 @@ module PxModule
       return instance_exec(px_ctx, &px_config[:custom_verification_handler])
     end
 
-    unless px_ctx.nil? || px_ctx.context[:verified] ||  px_config[:module_mode] == PxModule::MONITOR_MODE
+    unless px_ctx.nil? || px_ctx.context[:verified] || px_config[:module_mode] == PxModule::MONITOR_MODE
       # In case custom block handler exists (soon to be deprecated)
       if px_config.key?(:custom_block_handler)
         px_config[:logger].debug("#{msg_title}: custom_block_handler triggered")
