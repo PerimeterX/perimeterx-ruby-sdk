@@ -17,6 +17,21 @@ module PxModule
       @context[:made_s2s_risk_api_call] = false
       cookies = req.cookies
 
+      # Get IP from header/custom function
+      if px_config[:ip_headers].length() > 0
+        px_config[:ip_headers].each do |ip_header|
+          if req.headers[ip_header]
+            @context[:ip]  = req.headers[ip_header]
+          end
+        end
+      elsif px_config[:ip_header_function] != nil
+        @context[:ip] = px_config[:ip_header_function].call(req)
+      end
+
+      if @context[:ip] == nil
+        @context[:ip] = req.ip
+      end
+
       # Get token from header
       if req.headers[PxModule::TOKEN_HEADER]
         @context[:cookie_origin] = 'header'
@@ -55,14 +70,6 @@ module PxModule
       @context[:full_url] = req.original_url
       @context[:format] = req.format.symbol
       @context[:score] = 0
-
-      if px_config.key?(:custom_user_ip)
-        @context[:ip] = req.headers[px_config[:custom_user_ip]]
-      elsif px_config.key?(:px_custom_user_ip_method)
-        @context[:ip] = px_config[:px_custom_user_ip_method].call(req)
-      else
-        @context[:ip] = req.ip
-      end
 
       if req.server_protocol
           httpVer = req.server_protocol.split('/')
