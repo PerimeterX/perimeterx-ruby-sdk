@@ -47,6 +47,7 @@ module PxModule
         cookie = PerimeterxPayload.px_cookie_factory(px_ctx, @px_config)
         if !cookie.deserialize()
           @logger.warn("PerimeterxCookieValidator:[verify]: invalid cookie")
+          px_ctx.context[:px_orig_cookie] = px_ctx.get_px_cookie
           px_ctx.context[:s2s_call_reason] =  PxModule::COOKIE_DECRYPTION_FAILED
           return false, px_ctx
         end

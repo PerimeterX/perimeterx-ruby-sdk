@@ -67,6 +67,10 @@ module PxModule
         details[:risk_rtt] = px_ctx.context[:risk_rtt]
       end
 
+      if (px_ctx.context.key?(:px_orig_cookie))
+        details[:px_orig_cookie] = px_ctx.context[:px_orig_cookie]
+      end
+
       send_to_perimeterx(PxModule::BLOCK_ACTIVITY, px_ctx, details)
 
     end
@@ -86,6 +90,10 @@ module PxModule
 
       if (px_ctx.context.key?(:decoded_cookie))
         details[:px_cookie] = px_ctx.context[:decoded_cookie]
+      end
+
+      if (px_ctx.context.key?(:px_orig_cookie))
+        details[:px_orig_cookie] = px_ctx.context[:px_orig_cookie]
       end
 
       if (px_ctx.context.key?(:cookie_hmac))
