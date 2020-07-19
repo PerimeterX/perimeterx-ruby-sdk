@@ -26,7 +26,9 @@ module PxModule
       :module_mode              => PxModule::MONITOR_MODE,
       :local_proxy              => false,
       :sensitive_routes         => [],
-      :whitelist_routes       => []
+      :whitelist_routes       => [],
+      :ip_headers               => [],
+      :ip_header_function       => nil
     }
 
     def initialize(params)

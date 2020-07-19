@@ -11,7 +11,6 @@ require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/clients/perimeter_x_activity_client'
 require 'perimeterx/internal/validators/perimeter_x_s2s_validator'
 require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
-require 'perimeterx/internal/validators/perimeter_x_captcha_validator'
 
 module PxModule
   # Module expose API
@@ -26,10 +25,7 @@ module PxModule
       return instance_exec(px_ctx, &px_config[:custom_verification_handler])
     end
 
-    # Invalidate _pxCaptcha, can be done only on the controller level
-    cookies[:_pxCaptcha] = {value: "", expires: -1.minutes.from_now}
-
-    unless px_ctx.nil? || px_ctx.context[:verified] ||  px_config[:module_mode] == PxModule::MONITOR_MODE
+    unless px_ctx.nil? || px_ctx.context[:verified] || px_config[:module_mode] == PxModule::MONITOR_MODE
       # In case custom block handler exists (soon to be deprecated)
       if px_config.key?(:custom_block_handler)
         px_config[:logger].debug("#{msg_title}: custom_block_handler triggered")
@@ -39,14 +35,44 @@ module PxModule
       else
         # Generate template
         px_config[:logger].debug("#{msg_title}: sending default block page")
-        html = PxTemplateFactory.get_template(px_ctx, px_config)
-        response.headers['Content-Type'] = 'text/html'
         response.status = 403
+
+        is_mobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
+        action = px_ctx.context[:block_action][0,1]
+
+        px_template_object = {
+          block_script: "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{is_mobile}",
+          js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js"
+        }
+
+        html = PxTemplateFactory.get_template(px_ctx, px_config, px_template_object)
+
         # Web handler
         if px_ctx.context[:cookie_origin] == 'cookie'
-          px_config[:logger].debug('#{msg_title}: web block')
-          response.headers['Content-Type'] = 'text/html'
-          render :html => html
+
+          accept_header_value = request.headers['accept'] || request.headers['content-type'];
+          is_json_response = px_ctx.context[:block_action] != 'rate_limit' && accept_header_value && accept_header_value.split(',').select {|e| e.downcase.include? 'application/json'}.length > 0;
+
+          if (is_json_response)
+            px_config[:logger].debug("#{msg_title}: advanced blocking response response")
+            response.headers['Content-Type'] = 'application/json'
+
+            hash_json = {
+                :appId => px_config[:app_id],
+                :jsClientSrc => px_template_object[:js_client_src],
+                :firstPartyEnabled => false,
+                :uuid => px_ctx.context[:uuid],
+                :vid => px_ctx.context[:vid],
+                :hostUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net",
+                :blockScript => px_template_object[:block_script],
+            }
+
+            render :json => hash_json
+          else
+            px_config[:logger].debug('#{msg_title}: web block')
+            response.headers['Content-Type'] = 'text/html'
+            render :html => html
+          end
         else # Mobile SDK
           px_config[:logger].debug("#{msg_title}: mobile sdk block")
           response.headers['Content-Type'] = 'application/json'
@@ -122,12 +148,6 @@ module PxModule
         # create context
         px_ctx = PerimeterXContext.new(@px_config, req)
 
-        # Captcha phase
-        captcha_verified, px_ctx = @px_captcha_validator.verify(px_ctx)
-        if captcha_verified
-          return handle_verification(px_ctx)
-        end
-
         # Cookie phase
         cookie_verified, px_ctx = @px_cookie_validator.verify(px_ctx)
         if !cookie_verified
@@ -151,8 +171,7 @@ module PxModule
 
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
       @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
-      @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
-      @logger.debug('PerimeterX[initialize]Z')
+      @logger.debug('PerimeterX[initialize]')
     end
 
     private def handle_verification(px_ctx)

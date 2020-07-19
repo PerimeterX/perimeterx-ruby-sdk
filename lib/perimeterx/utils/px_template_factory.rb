@@ -3,7 +3,7 @@ require 'perimeterx/utils/px_constants'
 module PxModule
   module PxTemplateFactory
 
-    def self.get_template(px_ctx, px_config)
+    def self.get_template(px_ctx, px_config, px_template_object)
       logger = px_config[:logger]
       if (px_config[:challenge_enabled] && px_ctx.context[:block_action] == 'challenge')
         logger.debug('PxTemplateFactory[get_template]: px challange triggered')
@@ -11,7 +11,7 @@ module PxModule
       end
 
       logger.debug('PxTemplateFactory[get_template]: rendering template')
-      template_type = px_ctx.context[:block_action] == 'captcha' ? 'recaptcha' : BLOCK_TEMPLATE
+      template_type = CHALLENGE_TEMPLATE
 
       template_postfix = ''
       if px_ctx.context[:cookie_origin] == 'header'
@@ -28,8 +28,11 @@ module PxModule
       view[PxModule::PROP_CUSTOM_LOGO] = px_config[:custom_logo]
       view[PxModule::PROP_CSS_REF] = px_config[:css_ref]
       view[PxModule::PROP_JS_REF] = px_config[:js_ref]
-      view[PxModule::HOST_URL] = "https://collector-#{px_config[:app_id]}.perimeterx.net"
+      view[PxModule::PROP_HOST_URL] = "https://collector-#{px_config[:app_id]}.perimeterx.net"
       view[PxModule::PROP_LOGO_VISIBILITY] = px_config[:custom_logo] ? PxModule::VISIBLE : PxModule::HIDDEN
+      view[PxModule::PROP_BLOCK_SCRIPT] = px_template_object[:block_script]
+      view[PxModule::PROP_JS_CLIENT_SRC] = px_template_object[:js_client_src]
+      view[PxModule::PROP_FIRST_PARTY_ENABLED] = false
 
       return view.render.html_safe
     end
