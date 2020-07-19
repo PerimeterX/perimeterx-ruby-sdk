@@ -29,6 +29,7 @@ Table of Contents
   *   [Additional Page Activity Handler](#additional-page-activity-handler)
   *   [Monitor Only](#logging)
   *   [Debug Mode](#debug-mode)
+  *   [Whitelist Routes](#whitelist-routes)
   
   **[Contributing](#contributing)**
 
@@ -138,13 +139,13 @@ params = {
   ...
   :custom_verification_handler => -> (px_ctx) {
     block_score = px_ctx.context[:score];
-    block_uuid = px_ctx.context[:uuid];
+    client_uuid = px_ctx.context[:uuid];
     full_url = px_ctx.context[:full_url];
 
     html = "<html>
             <body>
             <div>Access to #{full_url} has been blocked.</div>    
-            <div>Block reference - #{block_uuid} </div>
+            <div>Block reference - #{client_uuid} </div>
             <div>Block score - #{block_score} </div>
             </body>
             </html>".html_safe
@@ -303,6 +304,16 @@ Default: false
 Enables debug logging mode to STDOUT
 ```ruby
   params[:debug] = true
+```
+
+<a name="whitelist-routes"></a>**Whitelist Routes**
+Default: []
+An array of route prefixes and/or regular expressions that are always whitelisted and not validated by PerimeterX.
+A string value of a path will be treated as a prefix.
+A regexp value of a path will be treated as is.
+
+```ruby
+  params[:whitelist_routes] = ["/example", /\A\/example\z/]
 ```
 
 <a name="contributing"></a># Contributing #
