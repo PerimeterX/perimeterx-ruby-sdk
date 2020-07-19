@@ -1,6 +1,7 @@
 require 'concurrent'
 require 'json'
 require 'base64'
+require 'uri'
 require 'perimeterx/configuration'
 require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_constants'
@@ -99,12 +100,26 @@ module PxModule
     #Instance Methods
     def verify(env)
       begin
+
+        # check module_enabled 
         @logger.debug('PerimeterX[pxVerify]')
         if !@px_config[:module_enabled]
           @logger.warn('Module is disabled')
           return nil
         end
+
         req = ActionDispatch::Request.new(env)
+        
+        # filter whitelist routes
+        url_path = URI.parse(req.original_url).path
+        if url_path && !url_path.empty?
+          if check_whitelist_routes(px_config[:whitelist_routes], url_path)
+            @logger.debug("PerimeterX[pxVerify]: whitelist route: #{url_path}")
+            return nil
+          end
+        end
+        
+        # create context
         px_ctx = PerimeterXContext.new(@px_config, req)
 
         # Captcha phase
@@ -165,6 +180,18 @@ module PxModule
       @logger.debug('PerimeterX[handle_verification]: verification ended, the request should be blocked')
 
       return px_ctx
+    end
+
+    private def check_whitelist_routes(whitelist_routes, path)
+      whitelist_routes.each do |whitelist_route|
+        if whitelist_route.is_a?(Regexp) && path.match(whitelist_route)
+          return true
+        end
+        if whitelist_route.is_a?(String) && path.start_with?(whitelist_route)
+          return true
+        end
+      end
+      false
     end
 
     private_class_method :new
