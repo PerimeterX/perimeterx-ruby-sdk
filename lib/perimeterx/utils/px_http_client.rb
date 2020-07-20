@@ -12,7 +12,7 @@ module PxModule
     def initialize(px_config)
       @px_config = px_config
       @logger = px_config[:logger]
-      @logger.debug("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config[:perimeterx_server_host]}")
+      @logger.debug("PxHttpClient[initialize]: HTTP client is being initilized with base_uri: #{px_config[:backend_url]}")
     end
 
     # Runs a POST command to Perimeter X servers
@@ -28,7 +28,7 @@ module PxModule
       begin
         @logger.debug("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
         response = Typhoeus.post(
-            "#{px_config[:perimeterx_server_host]}#{path}",
+            "#{px_config[:backend_url]}#{path}",
             headers: headers,
             body: body.to_json,
             timeout: api_timeout,
