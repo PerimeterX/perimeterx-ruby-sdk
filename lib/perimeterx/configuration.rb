@@ -33,7 +33,7 @@ module PxModule
     }
 
     def initialize(params)
-      PX_DEFAULT[:perimeterx_server_host] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
+      PX_DEFAULT[:backend_url] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
       @configuration = PX_DEFAULT.merge(params)
       @configuration[:logger] = PxLogger.new(@configuration[:debug])
     end
