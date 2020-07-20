@@ -25,7 +25,7 @@ module PxModule
       return instance_exec(px_ctx, &px_config[:custom_verification_handler])
     end
 
-    unless px_ctx.nil? || px_ctx.context[:verified] || px_config[:module_mode] == PxModule::MONITOR_MODE
+    unless px_ctx.nil? || px_ctx.context[:verified] || (px_config[:module_mode] == PxModule::MONITOR_MODE && !px_ctx.context[:should_bypass_monitor])
       # In case custom block handler exists (soon to be deprecated)
       if px_config.key?(:custom_block_handler)
         px_config[:logger].debug("#{msg_title}: custom_block_handler triggered")
@@ -179,6 +179,8 @@ module PxModule
       @logger.debug("PerimeterX[handle_verification]: processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
 
       score = px_ctx.context[:score]
+      px_ctx.context[:should_bypass_monitor] = @px_config[:bypass_monitor_header] && px_ctx.context[:headers][@px_config[:bypass_monitor_header].to_sym] == '1';
+
       px_ctx.context[:verified] = score < @px_config[:blocking_score]
       # Case PASS request
       if px_ctx.context[:verified]
@@ -191,8 +193,8 @@ module PxModule
       @px_activity_client.send_block_activity(px_ctx)
 
       # In case were in monitor mode, end here
-      if @px_config[:module_mode] == PxModule::MONITOR_MODE
-        @logger.debug('PerimeterX[handle_verification]: monitor mode is on, passing request')
+      if @px_config[:module_mode] == PxModule::MONITOR_MODE && !px_ctx.context[:should_bypass_monitor]
+        @logger.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
         return px_ctx
       end
 
