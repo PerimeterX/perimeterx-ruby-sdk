@@ -33,9 +33,13 @@ module PxModule
             "#{msg_title}: Please note that custom_block_handler is deprecated. Use custom_verification_handler instead.")
         return instance_exec(px_ctx, &px_config[:custom_block_handler])
       else
-        # Generate template
-        px_config[:logger].debug("#{msg_title}: sending default block page")
-        response.status = 403
+        if px_ctx.context[:block_action]== 'rate_limit'
+          px_config[:logger].debug("#{msg_title}: sending rate limit page")
+          response.status = 429
+        else
+          px_config[:logger].debug("#{msg_title}: sending default block page")
+          response.status = 403
+        end
 
         is_mobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
         action = px_ctx.context[:block_action][0,1]

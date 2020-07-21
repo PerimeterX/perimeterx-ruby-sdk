@@ -10,16 +10,17 @@ module PxModule
         return px_ctx.context[:block_action_data].html_safe
       end
 
-      logger.debug('PxTemplateFactory[get_template]: rendering template')
-      template_type = CHALLENGE_TEMPLATE
+      view = Mustache.new
 
-      template_postfix = ''
-      if px_ctx.context[:cookie_origin] == 'header'
-        template_postfix = '.mobile'
+      if (px_ctx.context[:block_action] == 'rate_limit')
+        logger.debug('PxTemplateFactory[get_template]: rendering ratelimit template')
+        template_type = RATELIMIT_TEMPLATE
+      else
+        logger.debug('PxTemplateFactory[get_template]: rendering template')
+        template_type = CHALLENGE_TEMPLATE
       end
 
-      Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}#{template_postfix}#{PxModule::TEMPLATE_EXT}"
-      view = Mustache.new
+      Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}#{PxModule::TEMPLATE_EXT}"
 
       view[PxModule::PROP_APP_ID] = px_config[:app_id]
       view[PxModule::PROP_REF_ID] = px_ctx.context[:uuid]

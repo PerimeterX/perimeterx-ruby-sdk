@@ -28,6 +28,7 @@ module PxModule
   # Templates
   CHALLENGE_TEMPLATE = 'block_template'
   TEMPLATE_EXT = '.mustache'
+  RATELIMIT_TEMPLATE = 'ratelimit'
 
 
   # Template Props
