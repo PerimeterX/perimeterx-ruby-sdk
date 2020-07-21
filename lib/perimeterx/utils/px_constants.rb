@@ -55,4 +55,7 @@ module PxModule
   TOKEN_HEADER = 'X-PX-AUTHORIZATION'
   MOBILE_SDK_CONNECTION_ERROR = 'mobile_sdk_connection_error'
   MOBILE_SDK_PINNING_ERROR = 'mobile_sdk_pinning_error'
+
+  # Regular Expressions
+  VID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 end

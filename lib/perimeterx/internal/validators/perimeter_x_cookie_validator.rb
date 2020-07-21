@@ -54,9 +54,14 @@ module PxModule
         px_ctx.context[:decoded_cookie] = cookie.decoded_cookie
         px_ctx.context[:score] = cookie.cookie_score()
         px_ctx.context[:uuid] = cookie.decoded_cookie[:u]
-        px_ctx.context[:vid] = cookie.decoded_cookie[:v]
         px_ctx.context[:block_action] = px_ctx.set_block_action_type(cookie.cookie_block_action())
         px_ctx.context[:cookie_hmac] = cookie.cookie_hmac()
+
+        vid = cookie.decoded_cookie[:v]
+        if vid.is_a?(String) && vid.match(PxModule::VID_REGEX)
+          px_ctx.context[:vid_source] = "risk_cookie"
+          px_ctx.context[:vid] = vid
+        end
 
         if cookie.expired?
           @logger.warn("PerimeterxCookieValidator:[verify]: cookie expired")
