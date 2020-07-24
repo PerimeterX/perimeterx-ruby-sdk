@@ -77,7 +77,7 @@ module PxModule
       # Set risk_rtt
       if(response)
         risk_end = Time.now
-        px_ctx.context[:risk_rtt] = (risk_end-risk_start)*1000
+        px_ctx.context[:risk_rtt] = ((risk_end-risk_start)*1000).round
       end
 
       return response
@@ -95,7 +95,7 @@ module PxModule
       # From here response should be valid, if success or error
       response_body = eval(response.body);
       # When success
-      if (response.code == 200 && response_body.key?(:score) && response_body.key?(:action))
+      if (response.code == 200 && response_body.key?(:score) && response_body.key?(:action) && response_body.key?(:status) && response_body[:status] == 0 )
         @logger.debug("PerimeterxS2SValidator[verify]: response ok")
         score = response_body[:score]
         px_ctx.context[:score] = score
@@ -112,10 +112,11 @@ module PxModule
       end #end success response
 
       # When error
-      if(response.code != 200)
-        @logger.warn("PerimeterxS2SValidator[verify]: bad response, return code #{response.code}")
+      risk_error_status = response_body && response_body.key?(:status) && response_body[:status] == -1
+      if(response.code != 200 || risk_error_status)
+        @logger.warn("PerimeterxS2SValidator[verify]: bad response, returned code #{response.code} #{risk_error_status ? "risk status: -1" : ""}")
         px_ctx.context[:pass_reason] = 'request_failed'
-        px_ctx.context[:uuid] = ""
+        px_ctx.context[:uuid] = (!response_body || response_body[:uuid].nil?)? "" : response_body[:uuid]
         px_ctx.context[:s2s_error_msg] = !response_body || response_body[:message].nil? ? 'unknown' : response_body[:message]
       end
 
