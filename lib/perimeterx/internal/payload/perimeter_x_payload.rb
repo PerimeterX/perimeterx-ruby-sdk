@@ -108,6 +108,9 @@ module PxModule
         px_cookie = px_cookie.gsub(' ', '+')
         salt, iterations, cipher_text = px_cookie.split(':')
         iterations = iterations.to_i
+        if (iterations > @px_config[:risk_cookie_max_iterations] || iterations < 500)
+          return
+        end
         salt = Base64.decode64(salt)
         cipher_text = Base64.decode64(cipher_text)
         digest = OpenSSL::Digest::SHA256.new

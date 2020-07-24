@@ -10,8 +10,7 @@ module PxModule
 
   # Routes
   API_V1_S2S = '/api/v1/collector/s2s'
-  API_CAPTCHA = '/api/v2/risk/captcha'
-  API_V2_RISK = '/api/v2/risk'
+  API_V3_RISK = '/api/v3/risk'
 
   # Activity Types
   BLOCK_ACTIVITY = 'block'
@@ -27,8 +26,9 @@ module PxModule
   SENSITIVE_ROUTE = 'sensitive_route'
 
   # Templates
-  BLOCK_TEMPLATE = 'block'
+  CHALLENGE_TEMPLATE = 'block_template'
   TEMPLATE_EXT = '.mustache'
+  RATELIMIT_TEMPLATE = 'ratelimit'
 
 
   # Template Props
@@ -40,7 +40,14 @@ module PxModule
   PROP_CUSTOM_LOGO = :customLogo
   PROP_CSS_REF = :cssRef
   PROP_JS_REF = :jsRef
-  HOST_URL = :hostUrl
+  PROP_BLOCK_SCRIPT = :blockScript
+  PROP_JS_CLIENT_SRC = :jsClientSrc
+  PROP_HOST_URL = :hostUrl
+  PROP_FIRST_PARTY_ENABLED = :firstPartyEnabled
+
+  # Hosts
+  CLIENT_HOST = 'client.px-cloud.net'
+  CAPTCHA_HOST = 'captcha.px-cloud.net'
 
   VISIBLE = 'visible'
   HIDDEN = 'hidden'
@@ -49,4 +56,7 @@ module PxModule
   TOKEN_HEADER = 'X-PX-AUTHORIZATION'
   MOBILE_SDK_CONNECTION_ERROR = 'mobile_sdk_connection_error'
   MOBILE_SDK_PINNING_ERROR = 'mobile_sdk_pinning_error'
+
+  # Regular Expressions
+  VID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 end

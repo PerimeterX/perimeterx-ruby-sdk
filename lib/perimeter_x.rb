@@ -1,6 +1,7 @@
 require 'concurrent'
 require 'json'
 require 'base64'
+require 'uri'
 require 'perimeterx/configuration'
 require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_constants'
@@ -10,7 +11,6 @@ require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/clients/perimeter_x_activity_client'
 require 'perimeterx/internal/validators/perimeter_x_s2s_validator'
 require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
-require 'perimeterx/internal/validators/perimeter_x_captcha_validator'
 
 module PxModule
   # Module expose API
@@ -25,10 +25,7 @@ module PxModule
       return instance_exec(px_ctx, &px_config[:custom_verification_handler])
     end
 
-    # Invalidate _pxCaptcha, can be done only on the controller level
-    cookies[:_pxCaptcha] = {value: "", expires: -1.minutes.from_now}
-
-    unless px_ctx.nil? || px_ctx.context[:verified]
+    unless px_ctx.nil? || px_ctx.context[:verified] || (px_config[:module_mode] == PxModule::MONITOR_MODE && !px_ctx.context[:should_bypass_monitor])
       # In case custom block handler exists (soon to be deprecated)
       if px_config.key?(:custom_block_handler)
         px_config[:logger].debug("#{msg_title}: custom_block_handler triggered")
@@ -36,16 +33,50 @@ module PxModule
             "#{msg_title}: Please note that custom_block_handler is deprecated. Use custom_verification_handler instead.")
         return instance_exec(px_ctx, &px_config[:custom_block_handler])
       else
-        # Generate template
-        px_config[:logger].debug("#{msg_title}: sending default block page")
-        html = PxTemplateFactory.get_template(px_ctx, px_config)
-        response.headers['Content-Type'] = 'text/html'
-        response.status = 403
+        if px_ctx.context[:block_action]== 'rate_limit'
+          px_config[:logger].debug("#{msg_title}: sending rate limit page")
+          response.status = 429
+        else
+          px_config[:logger].debug("#{msg_title}: sending default block page")
+          response.status = 403
+        end
+
+        is_mobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
+        action = px_ctx.context[:block_action][0,1]
+
+        px_template_object = {
+          block_script: "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{is_mobile}",
+          js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js"
+        }
+
+        html = PxTemplateFactory.get_template(px_ctx, px_config, px_template_object)
+
         # Web handler
         if px_ctx.context[:cookie_origin] == 'cookie'
-          px_config[:logger].debug('#{msg_title}: web block')
-          response.headers['Content-Type'] = 'text/html'
-          render :html => html
+
+          accept_header_value = request.headers['accept'] || request.headers['content-type'];
+          is_json_response = px_ctx.context[:block_action] != 'rate_limit' && accept_header_value && accept_header_value.split(',').select {|e| e.downcase.include? 'application/json'}.length > 0;
+
+          if (is_json_response)
+            px_config[:logger].debug("#{msg_title}: advanced blocking response response")
+            response.headers['Content-Type'] = 'application/json'
+
+            hash_json = {
+                :appId => px_config[:app_id],
+                :jsClientSrc => px_template_object[:js_client_src],
+                :firstPartyEnabled => false,
+                :uuid => px_ctx.context[:uuid],
+                :vid => px_ctx.context[:vid],
+                :hostUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net",
+                :blockScript => px_template_object[:block_script],
+            }
+
+            render :json => hash_json
+          else
+            px_config[:logger].debug('#{msg_title}: web block')
+            response.headers['Content-Type'] = 'text/html'
+            render :html => html
+          end
         else # Mobile SDK
           px_config[:logger].debug("#{msg_title}: mobile sdk block")
           response.headers['Content-Type'] = 'application/json'
@@ -99,19 +130,27 @@ module PxModule
     #Instance Methods
     def verify(env)
       begin
+
+        # check module_enabled 
         @logger.debug('PerimeterX[pxVerify]')
         if !@px_config[:module_enabled]
           @logger.warn('Module is disabled')
           return nil
         end
-        req = ActionDispatch::Request.new(env)
-        px_ctx = PerimeterXContext.new(@px_config, req)
 
-        # Captcha phase
-        captcha_verified, px_ctx = @px_captcha_validator.verify(px_ctx)
-        if captcha_verified
-          return handle_verification(px_ctx)
+        req = ActionDispatch::Request.new(env)
+        
+        # filter whitelist routes
+        url_path = URI.parse(req.original_url).path
+        if url_path && !url_path.empty?
+          if check_whitelist_routes(px_config[:whitelist_routes], url_path)
+            @logger.debug("PerimeterX[pxVerify]: whitelist route: #{url_path}")
+            return nil
+          end
         end
+        
+        # create context
+        px_ctx = PerimeterXContext.new(@px_config, req)
 
         # Cookie phase
         cookie_verified, px_ctx = @px_cookie_validator.verify(px_ctx)
@@ -136,8 +175,7 @@ module PxModule
 
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
       @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)
-      @px_captcha_validator = PerimeterxCaptchaValidator.new(@px_config, @px_http_client)
-      @logger.debug('PerimeterX[initialize]Z')
+      @logger.debug('PerimeterX[initialize]')
     end
 
     private def handle_verification(px_ctx)
@@ -145,6 +183,8 @@ module PxModule
       @logger.debug("PerimeterX[handle_verification]: processing ended - score:#{px_ctx.context[:score]}, uuid:#{px_ctx.context[:uuid]}")
 
       score = px_ctx.context[:score]
+      px_ctx.context[:should_bypass_monitor] = @px_config[:bypass_monitor_header] && px_ctx.context[:headers][@px_config[:bypass_monitor_header].to_sym] == '1';
+
       px_ctx.context[:verified] = score < @px_config[:blocking_score]
       # Case PASS request
       if px_ctx.context[:verified]
@@ -157,14 +197,26 @@ module PxModule
       @px_activity_client.send_block_activity(px_ctx)
 
       # In case were in monitor mode, end here
-      if @px_config[:module_mode] == PxModule::MONITOR_MODE
-        @logger.debug('PerimeterX[handle_verification]: monitor mode is on, passing request')
+      if @px_config[:module_mode] == PxModule::MONITOR_MODE && !px_ctx.context[:should_bypass_monitor]
+        @logger.debug("PerimeterX[handle_verification]: monitor mode is on, passing request")
         return px_ctx
       end
 
       @logger.debug('PerimeterX[handle_verification]: verification ended, the request should be blocked')
 
       return px_ctx
+    end
+
+    private def check_whitelist_routes(whitelist_routes, path)
+      whitelist_routes.each do |whitelist_route|
+        if whitelist_route.is_a?(Regexp) && path.match(whitelist_route)
+          return true
+        end
+        if whitelist_route.is_a?(String) && path.start_with?(whitelist_route)
+          return true
+        end
+      end
+      false
     end
 
     private_class_method :new

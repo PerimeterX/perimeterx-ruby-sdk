@@ -49,16 +49,27 @@ module PxModule
 
     def send_block_activity(px_ctx)
       @logger.debug("PerimeterxActivitiesClients[send_block_activity]")
-      if (!@px_config[:send_page_acitivites])
+      if (!@px_config[:send_block_activities])
         @logger.debug("PerimeterxActivitiesClients[send_block_activity]: sending activites is disabled")
         return
       end
 
       details = {
-        :block_uuid => px_ctx.context[:uuid],
+        :http_version  => px_ctx.context[:http_version],
+        :http_method   => px_ctx.context[:http_method],
+        :client_uuid => px_ctx.context[:uuid],
         :block_score => px_ctx.context[:score],
-        :block_reason => px_ctx.context[:blocking_reason]
+        :block_reason => px_ctx.context[:blocking_reason],
+        :simulated_block => @px_config[:module_mode] == PxModule::MONITOR_MODE
       }
+
+      if (px_ctx.context.key?(:risk_rtt))
+        details[:risk_rtt] = px_ctx.context[:risk_rtt]
+      end
+
+      if (px_ctx.context.key?(:px_orig_cookie))
+        details[:px_orig_cookie] = px_ctx.context[:px_orig_cookie]
+      end
 
       send_to_perimeterx(PxModule::BLOCK_ACTIVITY, px_ctx, details)
 
@@ -66,22 +77,31 @@ module PxModule
 
     def send_page_requested_activity(px_ctx)
       @logger.debug("PerimeterxActivitiesClients[send_page_requested_activity]")
-      if (!@px_config[:send_page_acitivites])
+      if (!@px_config[:send_page_activities])
         return
       end
 
       details = {
         :http_version  => px_ctx.context[:http_version],
         :http_method   => px_ctx.context[:http_method],
-        :client_uuid   => px_ctx.context[:uuid]
+        :client_uuid   => px_ctx.context[:uuid],
+        :pass_reason  => px_ctx.context[:pass_reason]
       }
 
       if (px_ctx.context.key?(:decoded_cookie))
         details[:px_cookie] = px_ctx.context[:decoded_cookie]
       end
 
+      if (px_ctx.context.key?(:px_orig_cookie))
+        details[:px_orig_cookie] = px_ctx.context[:px_orig_cookie]
+      end
+
       if (px_ctx.context.key?(:cookie_hmac))
         details[:px_cookie_hmac] = px_ctx.context[:cookie_hmac]
+      end
+
+      if (px_ctx.context.key?(:risk_rtt))
+        details[:risk_rtt] = px_ctx.context[:risk_rtt]
       end
 
       send_to_perimeterx(PxModule::PAGE_REQUESTED_ACTIVITY, px_ctx, details)
