@@ -1,4 +1,5 @@
 require 'perimeterx/utils/px_logger'
+require 'perimeterx/utils/px_constants'
 
 module PxModule
   class PerimeterXContext
@@ -52,6 +53,11 @@ module PxModule
               @context[:px_cookie][:v3] = v
             when '_px'
               @context[:px_cookie][:v1] = v
+            when '_pxvid'
+              if v.is_a?(String) && v.match(PxModule::VID_REGEX)
+                @context[:vid_source] = "vid_cookie"
+                @context[:vid] = v
+              end
           end
         end #end case
       end #end empty cookies
