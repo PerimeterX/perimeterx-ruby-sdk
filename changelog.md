@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Added support for bypass monitor header
  - Added support for extracting vid from _pxvid cookie
  - Added support for rate limit
+ - Added risk_cookie_max_iterations configuration
 
 ### Fixed
  - Updated dependencies
