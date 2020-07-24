@@ -19,14 +19,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Updated dependencies
- - Update sample site dockerfile
+ - Updated sample site dockerfile
  - Fixed monitor mode
  - Fixed send_page_activities and send_block_activities configurations
  - Updated risk to v3
  - Refactored ip header extraction
  - Renamed block_uuid field to client_uuid
  - Renamed perimeterx_server_host configuration to backend_url
- - Pass the request if risk_response.status is -1
+ - Updated risk_response handling: pass the request if risk_response.status is -1
+ - Forcing http header values to be utf8
 
 ## [1.4.0] - 2018-03-18
 ### Fixed
