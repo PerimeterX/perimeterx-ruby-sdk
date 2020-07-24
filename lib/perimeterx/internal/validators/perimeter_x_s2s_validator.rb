@@ -77,7 +77,7 @@ module PxModule
       # Set risk_rtt
       if(response)
         risk_end = Time.now
-        px_ctx.context[:risk_rtt] = (risk_end-risk_start)*1000
+        px_ctx.context[:risk_rtt] = ((risk_end-risk_start)*1000).round
       end
 
       return response
