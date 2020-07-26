@@ -5,7 +5,7 @@
 [PerimeterX](http://www.perimeterx.com) Ruby SDK
 =============================================================
 
-> Latest stable version: [v1.3.0](https://rubygems.org/gems/perimeter_x/versions/1.3.0)
+> Latest stable version: [v2.0.0](https://rubygems.org/gems/perimeter_x/versions/2.0.0)
 
 Table of Contents
 -----------------
@@ -308,6 +308,7 @@ Enables debug logging mode to STDOUT
 
 <a name="whitelist-routes"></a>**Whitelist Routes**
 Default: []
+
 An array of route prefixes and/or regular expressions that are always whitelisted and not validated by PerimeterX.
 A string value of a path will be treated as a prefix.
 A regexp value of a path will be treated as is.
