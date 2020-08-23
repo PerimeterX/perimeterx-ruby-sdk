@@ -3,9 +3,10 @@ require 'perimeterx/utils/px_constants'
 
 module PxModule
   class Configuration
+    @@basic_config = nil
+    @@mutex = Mutex.new
 
     attr_accessor :configuration
-    attr_accessor :PX_DEFAULT
 
     PX_DEFAULT = {
       :app_id                       => nil,
@@ -33,9 +34,20 @@ module PxModule
       :risk_cookie_max_iterations   => 5000
     }
 
+    def self.set_basic_config(basic_config)
+      if @@basic_config.nil?
+        @@mutex.synchronize {          
+          @@basic_config = PX_DEFAULT.merge(basic_config)
+      }
+      end
+    end
+
     def initialize(params)
-      PX_DEFAULT[:backend_url] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
-      @configuration = PX_DEFAULT.merge(params)
+      if ! @@basic_config.is_a?(Hash)
+        raise Exception.new('Please initialize PerimeterX first')
+      end
+      @configuration = @@basic_config.merge(params)
+      @configuration[:backend_url] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
       @configuration[:logger] = PxLogger.new(@configuration[:debug])
     end
   end

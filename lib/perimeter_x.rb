@@ -14,9 +14,11 @@ require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
 
 module PxModule
   # Module expose API
-  def px_verify_request
-    px_ctx = PerimeterX.instance.verify(request.env)
-    px_config = PerimeterX.instance.px_config
+  def px_verify_request(request_config={})    
+    px_instance = PerimeterX.new(request_config)
+    px_ctx = px_instance.verify(request.env)
+    px_config = px_instance.px_config
+
     msg_title = 'PxModule[px_verify_request]'
 
     # In case custom verification handler is in use
@@ -97,35 +99,22 @@ module PxModule
     return px_ctx.nil? ? true : px_ctx.context[:verified]
   end
 
-  def self.configure(params)
-    @px_instance = PerimeterX.configure(params)
+  def self.configure(basic_config)
+    PerimeterX.set_basic_config(basic_config)
   end
 
 
   # PerimeterX Module
   class PerimeterX
-    @@__instance = nil
-    @@mutex = Mutex.new
 
     attr_reader :px_config
     attr_accessor :px_http_client
     attr_accessor :px_activity_client
 
     #Static methods
-    def self.configure(params)
-      return true if @@__instance
-      @@mutex.synchronize {
-        return @@__instance if @@__instance
-        @@__instance = new(params)
-      }
-      return true
+    def self.set_basic_config(basic_config)
+      Configuration.set_basic_config(basic_config)
     end
-
-    def self.instance
-      return @@__instance if !@@__instance.nil?
-      raise Exception.new('Please initialize perimeter x first')
-    end
-
 
     #Instance Methods
     def verify(env)
@@ -166,8 +155,9 @@ module PxModule
       end
     end
 
-    private def initialize(params)
-      @px_config = Configuration.new(params).configuration
+    def initialize(request_config)
+
+      @px_config = Configuration.new(request_config).configuration
       @logger = @px_config[:logger]
       @px_http_client = PxHttpClient.new(@px_config)
 
@@ -219,6 +209,5 @@ module PxModule
       false
     end
 
-    private_class_method :new
   end
 end
