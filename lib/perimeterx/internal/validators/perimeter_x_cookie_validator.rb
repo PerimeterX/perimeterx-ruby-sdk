@@ -31,16 +31,14 @@ module PxModule
           elsif px_ctx.context[:px_cookie].to_s =~ /^\d{1,4}$/
             @logger.warn("PerimeterxCookieValidator:[verify]: Mobile SDK Error Received")
             px_ctx.context[:s2s_call_reason] = PxModule::MOBILE_SDK_ERROR_MESSAGE + px_ctx.context[:px_cookie]
-            if px_ctx.context[:headers][PxModule::ORIGINAL_TOKEN_HEADER]
-              token = force_utf8(px_ctx.context[:headers][PxModule::ORIGINAL_TOKEN_HEADER])
-              @logger.warn("the contents of token are #{token}")
+            if px_ctx.context[:headers][PxModule::ORIGINAL_TOKEN_HEADER.downcase.to_sym]
+              token = force_utf8(px_ctx.context[:headers][PxModule::ORIGINAL_TOKEN_HEADER.downcase.to_sym])
               if token.include? ':'
                 exploded_token = token.split(':', 2)
                 cookie_sym = "v#{exploded_token[0]}".to_sym
-                @logger.warn("I made it to here and token version is #{cookie_sym}")
                 px_ctx.context[:px_cookie][cookie_sym] = exploded_token[1]
               else
-                px_ctx.context[:px_cookie] = force_utf8(px_ctx.context[:headers][PxModule::ORIGINAL_TOKEN_HEADER])
+                px_ctx.context[:px_cookie] = force_utf8(px_ctx.context[:headers][PxModule::ORIGINAL_TOKEN_HEADER.downcase.to_sym])
               end
             else
               return false, px_ctx
