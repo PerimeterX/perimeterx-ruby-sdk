@@ -18,7 +18,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
       expect(config[:encryption_enabled]).to eq true
       expect(config[:blocking_score]).to eq 100
       expect(config[:sensitive_headers]).to eq ["http-cookie", "http-cookies"]
-      expect(config[:api_connect_timeout]).to eq 1
+      expect(config[:api_timeout_connection]).to eq 1
       expect(config[:api_timeout]).to eq 1
       expect(config[:max_buffer_len]).to eq 10
       expect(config[:send_page_activities]).to eq true
@@ -34,7 +34,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
       @params[:encryption_enabled] = false
       @params[:blocking_score] = 100
       @params[:sensitive_headers] = ["http-cookie", "http-cookies","http-px"]
-      @params[:api_connect_timeout] = 1
+      @params[:api_timeout_connection] = 1
       @params[:api_timeout] = 1
       @params[:max_buffer_len] = 1
       @params[:send_page_activities] = true
@@ -50,7 +50,7 @@ RSpec.describe PxModule::Configuration, "User Configuration verification" do
       expect(config[:encryption_enabled]).to eq false
       expect(config[:blocking_score]).to eq 100
       expect(config[:sensitive_headers]).to eq ["http-cookie", "http-cookies","http-px"]
-      expect(config[:api_connect_timeout]).to eq 1
+      expect(config[:api_timeout_connection]).to eq 1
       expect(config[:api_timeout]).to eq 1
       expect(config[:max_buffer_len]).to eq 1
       expect(config[:send_page_activities]).to eq true
