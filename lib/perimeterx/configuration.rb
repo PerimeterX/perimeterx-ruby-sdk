@@ -1,5 +1,6 @@
 require 'perimeterx/utils/px_logger'
 require 'perimeterx/utils/px_constants'
+require 'perimeterx/internal/validators/hash_schema_validator'
 
 module PxModule
   class Configuration
@@ -34,6 +35,38 @@ module PxModule
       :risk_cookie_max_iterations   => 5000
     }
 
+    CONFIG_SCHEMA = {
+      :app_id                       => {types: [String], required: true},
+      :cookie_key                   => {types: [String], required: true},
+      :auth_token                   => {types: [String], required: true},
+      :module_enabled               => {types: [FalseClass, TrueClass], required: false},
+      :challenge_enabled            => {types: [FalseClass, TrueClass], required: false},
+      :encryption_enabled           => {types: [FalseClass, TrueClass], required: false},
+      :blocking_score               => {types: [Integer], required: false},
+      :sensitive_headers            => {types: [Array], allowed_element_types: [String], required: false},
+      :api_connect_timeout          => {types: [Integer, Float], required: false},
+      :api_timeout                  => {types: [Integer, Float], required: false},
+      :max_buffer_len               => {types: [Integer], required: false},
+      :send_page_activities         => {types: [FalseClass, TrueClass], required: false},
+      :send_block_activities        => {types: [FalseClass, TrueClass], required: false},
+      :sdk_name                     => {types: [String], required: false},
+      :debug                        => {types: [FalseClass, TrueClass], required: false},
+      :module_mode                  => {types: [Integer], required: false},
+      :local_proxy                  => {types: [FalseClass, TrueClass], required: false},
+      :sensitive_routes             => {types: [Array], allowed_element_types: [String], required: false},
+      :whitelist_routes             => {types: [Array], allowed_element_types: [String, Regexp], required: false},
+      :ip_headers                   => {types: [Array], allowed_element_types: [String], required: false},
+      :ip_header_function           => {types: [Proc], required: false},
+      :bypass_monitor_header        => {types: [FalseClass, TrueClass], required: false},
+      :risk_cookie_max_iterations   => {types: [Integer], required: false},
+      :custom_verification_handler  => {types: [Proc], required: false},
+      :additional_activity_handler  => {types: [Proc], required: false},
+      :custom_logo                  => {types: [String], required: false},
+      :css_ref                      => {types: [String], required: false},
+      :js_ref                       => {types: [String], required: false},
+      :custom_uri                   => {types: [Proc], required: false}
+    }
+
     def self.set_basic_config(basic_config)
       if @@basic_config.nil?
         @@mutex.synchronize {          
@@ -44,9 +77,13 @@ module PxModule
 
     def initialize(params)
       if ! @@basic_config.is_a?(Hash)
-        raise Exception.new('Please initialize PerimeterX first')
+        raise Exception.new('PerimeterX: Please initialize PerimeterX first')
       end
+      
+      # merge request configuration into the basic configuration
       @configuration = @@basic_config.merge(params)
+      validate_hash_schema(@configuration, CONFIG_SCHEMA)
+      
       @configuration[:backend_url] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
       @configuration[:logger] = PxLogger.new(@configuration[:debug])
     end
