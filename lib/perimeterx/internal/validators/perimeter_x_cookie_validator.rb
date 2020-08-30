@@ -18,31 +18,12 @@ module PxModule
 
     def verify(px_ctx)
       begin
-        # Mobile Error cases
-        if px_ctx.context[:cookie_origin] == 'header'
-          if px_ctx.context[:px_cookie].to_s.empty?
-            @logger.warn("PerimeterxCookieValidator:[verify]: Empty token value - decryption failed")
-            px_ctx.context[:s2s_call_reason] = PxModule::COOKIE_DECRYPTION_FAILED
-            return false, px_ctx
-          elsif px_ctx.context[:px_cookie] == "1"
-            @logger.warn("PerimeterxCookieValidator:[verify]: no cookie")
-            px_ctx.context[:s2s_call_reason] = PxModule::NO_COOKIE
-            return false, px_ctx
-          elsif px_ctx.context[:px_cookie] == "2"   # Mobile SDK connection error
-            @logger.warn("PerimeterxCookieValidator:[verify]: mobile sdk connection error")
-            px_ctx.context[:s2s_call_reason] = PxModule::MOBILE_SDK_CONNECTION_ERROR
-            return false, px_ctx
-          elsif px_ctx.context[:px_cookie] == "3"   # Mobile SDK pinning error
-            @logger.warn("PerimeterxCookieValidator:[verify]: mobile sdk pinning error")
-            px_ctx.context[:s2s_call_reason] = PxModule::MOBILE_SDK_PINNING_ERROR
-            return false, px_ctx
-          end
-        elsif px_ctx.context[:px_cookie].empty?
+        if px_ctx.context[:px_cookie].empty?
           @logger.warn("PerimeterxCookieValidator:[verify]: no cookie")
           px_ctx.context[:s2s_call_reason] = PxModule::NO_COOKIE
           return false, px_ctx
         end
-
+        
         # Deserialize cookie start
         cookie = PerimeterxPayload.px_cookie_factory(px_ctx, @px_config)
         if !cookie.deserialize()

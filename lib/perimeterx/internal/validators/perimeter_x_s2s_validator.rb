@@ -32,6 +32,12 @@ module PxModule
           :risk_mode => risk_mode
         }
       }
+
+      #Override s2s_call_reason in case of mobile error
+      if !px_ctx.context[:mobile_error].nil?
+        request_body[:additional][:s2s_call_reason] = "mobile_error_#{px_ctx.context[:mobile_error]}"
+      end
+
       #Check for hmac
       @logger.debug("px_ctx cookie_hmac key = #{px_ctx.context.key?(:cookie_hmac)}, value is: #{px_ctx.context[:cookie_hmac]}")
       if px_ctx.context.key?(:cookie_hmac)
