@@ -53,6 +53,8 @@ module PxModule
 
         html = PxTemplateFactory.get_template(px_ctx, px_config, px_template_object)
 
+        # Web handler
+        if px_ctx.context[:cookie_origin] == 'cookie'
 
           accept_header_value = request.headers['accept'] || request.headers['content-type'];
           is_json_response = px_ctx.context[:block_action] != 'rate_limit' && accept_header_value && accept_header_value.split(',').select {|e| e.downcase.include? 'application/json'}.length > 0;
@@ -77,6 +79,19 @@ module PxModule
             response.headers['Content-Type'] = 'text/html'
             render :html => html
           end
+        else # Mobile SDK
+          px_config[:logger].debug("#{msg_title}: mobile sdk block")
+          response.headers['Content-Type'] = 'application/json'
+          hash_json = {
+              :action => px_ctx.context[:block_action],
+              :uuid => px_ctx.context[:uuid],
+              :vid => px_ctx.context[:vid],
+              :appId => px_config[:app_id],
+              :page => Base64.strict_encode64(html),
+              :collectorUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net"
+          }
+          render :json => hash_json
+        end
       end
     end
 
@@ -129,6 +144,9 @@ module PxModule
         # Cookie phase
         cookie_verified, px_ctx = @px_cookie_validator.verify(px_ctx)
         if !cookie_verified
+          if !px_ctx.context[:mobile_error].nil?
+            px_ctx.context[:s2s_call_reason] = "mobile_error_#{px_ctx.context[:mobile_error]}"
+          end
           @px_s2s_validator.verify(px_ctx)
         end
 
