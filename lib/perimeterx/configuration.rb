@@ -80,7 +80,7 @@ module PxModule
       @configuration = @@basic_config.merge(params)
       validate_hash_schema(@configuration, CONFIG_SCHEMA)
       
-      @configuration[:backend_url] = "https://sapi-#{params[:app_id].downcase}.perimeterx.net"
+      @configuration[:backend_url] = "https://sapi-#{@configuration[:app_id].downcase}.perimeterx.net"
       @configuration[:logger] = PxLogger.new(@configuration[:debug])
     end
   end
