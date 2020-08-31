@@ -11,10 +11,12 @@ require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/clients/perimeter_x_activity_client'
 require 'perimeterx/internal/validators/perimeter_x_s2s_validator'
 require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
+require 'perimeterx/internal/exceptions/px_config_exception'
 
 module PxModule
   # Module expose API
   def px_verify_request(request_config={})    
+  begin
     px_instance = PerimeterX.new(request_config)
     px_ctx = px_instance.verify(request.env)
     px_config = px_instance.px_config
@@ -97,6 +99,15 @@ module PxModule
 
     # Request was verified
     return px_ctx.nil? ? true : px_ctx.context[:verified]
+    
+  rescue PxConfigurationException
+    raise
+  rescue Exception => e
+    error_logger = PxLogger.new(true)
+    error_logger.error("#{e.backtrace.first}: #{e.message} (#{e.class})")
+    e.backtrace.drop(1).map {|s| error_logger.error("\t#{s}")}
+    return nil
+  end
   end
 
   def self.configure(basic_config)

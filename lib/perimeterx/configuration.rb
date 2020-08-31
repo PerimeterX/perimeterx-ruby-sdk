@@ -73,7 +73,7 @@ module PxModule
 
     def initialize(params)
       if ! @@basic_config.is_a?(Hash)
-        raise Exception.new('PerimeterX: Please initialize PerimeterX first')
+        raise PxConfigurationException.new('PerimeterX: Please initialize PerimeterX first')
       end
       
       # merge request configuration into the basic configuration
