@@ -37,12 +37,16 @@ module PxModule
       if req.headers[PxModule::TOKEN_HEADER]
         @context[:cookie_origin] = 'header'
         token = force_utf8(req.headers[PxModule::TOKEN_HEADER])
-        if token.include? ':'
-          exploded_token = token.split(':', 2)
-          cookie_sym = "v#{exploded_token[0]}".to_sym
-          @context[:px_cookie][cookie_sym] = exploded_token[1]
-        else  # TOKEN_HEADER exists yet there's no ':' delimiter - may indicate an error (storing original value)
-          @context[:px_cookie] = force_utf8(req.headers[PxModule::TOKEN_HEADER])
+        if token.match(PxModule::MOBILE_TOKEN_V3_REGEX)
+          @context[:px_cookie][:v3] = token[2..-1]
+        elsif token.match(PxModule::MOBILE_ERROR_REGEX)
+          @context[:mobile_error] = token
+          if req.headers[PxModule::ORIGINAL_TOKEN_HEADER]
+            token = force_utf8(req.headers[PxModule::ORIGINAL_TOKEN_HEADER])
+            if token.match(PxModule::MOBILE_TOKEN_V3_REGEX)
+              @context[:px_cookie][:v3] = token[2..-1]
+            end
+          end
         end
       elsif !cookies.empty? # Get cookie from jar
         # Prepare hashed cookies

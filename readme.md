@@ -1,11 +1,11 @@
 [![Build Status](https://travis-ci.org/PerimeterX/perimeterx-ruby-sdk.svg?branch=master)](https://travis-ci.org/PerimeterX/perimeterx-ruby-sdk)
 
-![image](http://media.marketwire.com/attachments/201604/34215_PerimeterX_logo.jpg)
+![image](https://storage.googleapis.com/perimeterx-logos/primary_logo_red_cropped.png)
 #
 [PerimeterX](http://www.perimeterx.com) Ruby SDK
 =============================================================
 
-> Latest stable version: [v2.0.0](https://rubygems.org/gems/perimeter_x/versions/2.0.0)
+> Latest stable version: [v2.1.0](https://rubygems.org/gems/perimeter_x)
 
 Table of Contents
 -----------------
@@ -30,6 +30,7 @@ Table of Contents
   *   [Monitor Only](#logging)
   *   [Debug Mode](#debug-mode)
   *   [Whitelist Routes](#whitelist-routes)
+  *   [Update Configuration on Runtime](#update-config)
   
   **[Contributing](#contributing)**
 
@@ -315,6 +316,35 @@ A regexp value of a path will be treated as is.
 
 ```ruby
   params[:whitelist_routes] = ["/example", /\A\/example\z/]
+```
+
+<a name="update-config"></a>**Update Configuration on Runtime**
+
+As mentioned before, PerimeterX Module should be configured in `<rails_app>/config/initializers/perimeterx.rb`.
+However, it is possible to override configuration options on each request.
+To do so, send the configuration options as an argument when calling to `px_verify_request` as described in the following example.
+Notice that in case of an invalid argument, the module will raise an error. Therefore, when using this feature, make sure to wrap the call to `px_verify_request` with begin and rescue. It is highly recommended to log the error message to follow such errors.
+
+```ruby
+class HomeController < ApplicationController
+  include PxModule
+
+
+  before_action do call_perimeterx_verify_request end
+
+  def call_perimeterx_verify_request
+    params = {
+    :blocking_score => 70,
+    :module_mode => 2
+    }
+    begin
+      px_verify_request(params) 
+    rescue StandardError => e
+      # $stdout.write(e.message)
+    end
+  end
+
+end
 ```
 
 <a name="contributing"></a># Contributing #
