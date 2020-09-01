@@ -26,12 +26,22 @@ module PxModule
         :additional => {
           :s2s_call_reason => px_ctx.context[:s2s_call_reason],
           :module_version => @px_config[:sdk_name],
-          :cookie_origin => px_ctx.context[:cookie_origin],
           :http_method => px_ctx.context[:http_method],
           :http_version => px_ctx.context[:http_version],
           :risk_mode => risk_mode
         }
       }
+
+      #Check for cookie_origin
+      if !px_ctx.context[:px_cookie].empty?
+        request_body[:additional][:cookie_origin] = px_ctx.context[:cookie_origin]
+      end
+
+      #Override s2s_call_reason in case of mobile error
+      if !px_ctx.context[:mobile_error].nil?
+        request_body[:additional][:s2s_call_reason] = "mobile_error_#{px_ctx.context[:mobile_error]}"
+      end
+
       #Check for hmac
       @logger.debug("px_ctx cookie_hmac key = #{px_ctx.context.key?(:cookie_hmac)}, value is: #{px_ctx.context[:cookie_hmac]}")
       if px_ctx.context.key?(:cookie_hmac)

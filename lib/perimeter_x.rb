@@ -11,121 +11,121 @@ require 'perimeterx/internal/perimeter_x_context'
 require 'perimeterx/internal/clients/perimeter_x_activity_client'
 require 'perimeterx/internal/validators/perimeter_x_s2s_validator'
 require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
+require 'perimeterx/internal/exceptions/px_config_exception'
 
 module PxModule
   # Module expose API
-  def px_verify_request
-    px_ctx = PerimeterX.instance.verify(request.env)
-    px_config = PerimeterX.instance.px_config
-    msg_title = 'PxModule[px_verify_request]'
+  def px_verify_request(request_config={})    
+    begin
+      px_instance = PerimeterX.new(request_config)
+      px_ctx = px_instance.verify(request.env)
+      px_config = px_instance.px_config
 
-    # In case custom verification handler is in use
-    if px_config.key?(:custom_verification_handler)
-      px_config[:logger].debug("#{msg_title}: custom_verification_handler triggered")
-      return instance_exec(px_ctx, &px_config[:custom_verification_handler])
-    end
+      msg_title = 'PxModule[px_verify_request]'
 
-    unless px_ctx.nil? || px_ctx.context[:verified] || (px_config[:module_mode] == PxModule::MONITOR_MODE && !px_ctx.context[:should_bypass_monitor])
-      # In case custom block handler exists (soon to be deprecated)
-      if px_config.key?(:custom_block_handler)
-        px_config[:logger].debug("#{msg_title}: custom_block_handler triggered")
-        px_config[:logger].debug(
-            "#{msg_title}: Please note that custom_block_handler is deprecated. Use custom_verification_handler instead.")
-        return instance_exec(px_ctx, &px_config[:custom_block_handler])
-      else
-        if px_ctx.context[:block_action]== 'rate_limit'
-          px_config[:logger].debug("#{msg_title}: sending rate limit page")
-          response.status = 429
+      # In case custom verification handler is in use
+      if px_config.key?(:custom_verification_handler)
+        px_config[:logger].debug("#{msg_title}: custom_verification_handler triggered")
+        return instance_exec(px_ctx, &px_config[:custom_verification_handler])
+      end
+
+      unless px_ctx.nil? || px_ctx.context[:verified] || (px_config[:module_mode] == PxModule::MONITOR_MODE && !px_ctx.context[:should_bypass_monitor])
+        # In case custom block handler exists (soon to be deprecated)
+        if px_config.key?(:custom_block_handler)
+          px_config[:logger].debug("#{msg_title}: custom_block_handler triggered")
+          px_config[:logger].debug(
+              "#{msg_title}: Please note that custom_block_handler is deprecated. Use custom_verification_handler instead.")
+          return instance_exec(px_ctx, &px_config[:custom_block_handler])
         else
-          px_config[:logger].debug("#{msg_title}: sending default block page")
-          response.status = 403
-        end
+          if px_ctx.context[:block_action]== 'rate_limit'
+            px_config[:logger].debug("#{msg_title}: sending rate limit page")
+            response.status = 429
+          else
+            px_config[:logger].debug("#{msg_title}: sending default block page")
+            response.status = 403
+          end
 
-        is_mobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
-        action = px_ctx.context[:block_action][0,1]
+          is_mobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
+          action = px_ctx.context[:block_action][0,1]
 
-        px_template_object = {
-          block_script: "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{is_mobile}",
-          js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js"
-        }
+          px_template_object = {
+            block_script: "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{is_mobile}",
+            js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js"
+          }
 
-        html = PxTemplateFactory.get_template(px_ctx, px_config, px_template_object)
+          html = PxTemplateFactory.get_template(px_ctx, px_config, px_template_object)
 
-        # Web handler
-        if px_ctx.context[:cookie_origin] == 'cookie'
+          # Web handler
+          if px_ctx.context[:cookie_origin] == 'cookie'
 
-          accept_header_value = request.headers['accept'] || request.headers['content-type'];
-          is_json_response = px_ctx.context[:block_action] != 'rate_limit' && accept_header_value && accept_header_value.split(',').select {|e| e.downcase.include? 'application/json'}.length > 0;
+            accept_header_value = request.headers['accept'] || request.headers['content-type'];
+            is_json_response = px_ctx.context[:block_action] != 'rate_limit' && accept_header_value && accept_header_value.split(',').select {|e| e.downcase.include? 'application/json'}.length > 0;
 
-          if (is_json_response)
-            px_config[:logger].debug("#{msg_title}: advanced blocking response response")
+            if (is_json_response)
+              px_config[:logger].debug("#{msg_title}: advanced blocking response response")
+              response.headers['Content-Type'] = 'application/json'
+
+              hash_json = {
+                  :appId => px_config[:app_id],
+                  :jsClientSrc => px_template_object[:js_client_src],
+                  :firstPartyEnabled => false,
+                  :uuid => px_ctx.context[:uuid],
+                  :vid => px_ctx.context[:vid],
+                  :hostUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net",
+                  :blockScript => px_template_object[:block_script],
+              }
+
+              render :json => hash_json
+            else
+              px_config[:logger].debug('#{msg_title}: web block')
+              response.headers['Content-Type'] = 'text/html'
+              render :html => html
+            end
+          else # Mobile SDK
+            px_config[:logger].debug("#{msg_title}: mobile sdk block")
             response.headers['Content-Type'] = 'application/json'
-
             hash_json = {
-                :appId => px_config[:app_id],
-                :jsClientSrc => px_template_object[:js_client_src],
-                :firstPartyEnabled => false,
+                :action => px_ctx.context[:block_action],
                 :uuid => px_ctx.context[:uuid],
                 :vid => px_ctx.context[:vid],
-                :hostUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net",
-                :blockScript => px_template_object[:block_script],
+                :appId => px_config[:app_id],
+                :page => Base64.strict_encode64(html),
+                :collectorUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net"
             }
-
             render :json => hash_json
-          else
-            px_config[:logger].debug('#{msg_title}: web block')
-            response.headers['Content-Type'] = 'text/html'
-            render :html => html
           end
-        else # Mobile SDK
-          px_config[:logger].debug("#{msg_title}: mobile sdk block")
-          response.headers['Content-Type'] = 'application/json'
-          hash_json = {
-              :action => px_ctx.context[:block_action],
-              :uuid => px_ctx.context[:uuid],
-              :vid => px_ctx.context[:vid],
-              :appId => px_config[:app_id],
-              :page => Base64.strict_encode64(html),
-              :collectorUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net"
-          }
-          render :json => hash_json
         end
       end
-    end
 
-    # Request was verified
-    return px_ctx.nil? ? true : px_ctx.context[:verified]
+      # Request was verified
+      return px_ctx.nil? ? true : px_ctx.context[:verified]
+      
+    rescue PxConfigurationException
+      raise
+    rescue Exception => e
+      error_logger = PxLogger.new(true)
+      error_logger.error("#{e.backtrace.first}: #{e.message} (#{e.class})")
+      e.backtrace.drop(1).map {|s| error_logger.error("\t#{s}")}
+      return nil
+    end
   end
 
-  def self.configure(params)
-    @px_instance = PerimeterX.configure(params)
+  def self.configure(basic_config)
+    PerimeterX.set_basic_config(basic_config)
   end
 
 
   # PerimeterX Module
   class PerimeterX
-    @@__instance = nil
-    @@mutex = Mutex.new
 
     attr_reader :px_config
     attr_accessor :px_http_client
     attr_accessor :px_activity_client
 
     #Static methods
-    def self.configure(params)
-      return true if @@__instance
-      @@mutex.synchronize {
-        return @@__instance if @@__instance
-        @@__instance = new(params)
-      }
-      return true
+    def self.set_basic_config(basic_config)
+      Configuration.set_basic_config(basic_config)
     end
-
-    def self.instance
-      return @@__instance if !@@__instance.nil?
-      raise Exception.new('Please initialize perimeter x first')
-    end
-
 
     #Instance Methods
     def verify(env)
@@ -155,6 +155,9 @@ module PxModule
         # Cookie phase
         cookie_verified, px_ctx = @px_cookie_validator.verify(px_ctx)
         if !cookie_verified
+          if !px_ctx.context[:mobile_error].nil?
+            px_ctx.context[:s2s_call_reason] = "mobile_error_#{px_ctx.context[:mobile_error]}"
+          end
           @px_s2s_validator.verify(px_ctx)
         end
 
@@ -166,8 +169,9 @@ module PxModule
       end
     end
 
-    private def initialize(params)
-      @px_config = Configuration.new(params).configuration
+    def initialize(request_config)
+
+      @px_config = Configuration.new(request_config).configuration
       @logger = @px_config[:logger]
       @px_http_client = PxHttpClient.new(@px_config)
 
@@ -219,6 +223,5 @@ module PxModule
       false
     end
 
-    private_class_method :new
   end
 end
