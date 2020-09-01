@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] - 2020-09-01
+### Added
+ - Added option to set a different px configuration on each request
+ - Added types validation on configuration fields
+
+### Fixed
+ - New cookie logic for mobile requests
+ - Renamed api_connect_timeout to api_timeout_conncection on default configuration
+ - Removed unsapported configuration fields: max_buffer_len and local_proxy
+ - Send cookie_origin only if there is a cookie
+
 ## [2.0.0] - 2020-07-24
 ### Added
  - Added fields to Block Activity: simulated_block, http_version, http_method, risk_rtt, px_orig_cookie
