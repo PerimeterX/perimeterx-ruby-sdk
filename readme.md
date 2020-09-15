@@ -357,14 +357,15 @@ To enable first party on your enforcer, add the following routes to your `config
   post '/:appid_postfix/xhr/:all', to: 'home#index', constraints: { appid_postfix: /XXXXXXXX/, all:/.*/  }  
 ```
 
-Notice that all occurences of `XXXXXXXX` should be replaced with your px_app_id without the PX prefix. For example: 2H4seK9L
-In case you are using more than 1 px_app_id, provide all of them with a `|` sign between them. For example:  2H4seK9L|9bMs6K94|Lc5kPMNx
+Notice that all occurences of `XXXXXXXX` should be replaced with your px_app_id without the "PX" prefix. For example, if your px_app_id is `PX2H4seK9L`, reeplace `XXXXXXXX` with `2H4seK9L`.
+In case you are using more than one px_app_id, provide all of them with a `|` sign between them. For example:  2H4seK9L|9bMs6K94|Lc5kPMNx
 
-To disable first_party, you can set `first_party_enabled` to false in your configuration.
-The default value of this field is true.
+
+First Party configuration:
+Default: true
 
 ```ruby
-params[:first_party_enabled] = false
+  params[:first_party_enabled] = false
 ```
 
 

@@ -13,7 +13,7 @@ module PxModule
             ]
         end
 
-        def get_first_party_response(req)
+        def send_first_party_request(req)
             uri = URI.parse(req.original_url)
             url_path = uri.path
             
@@ -114,10 +114,7 @@ module PxModule
         end
 
         def is_first_party_request(req)
-            if get_first_party_request_type(req) != -1
-                return true
-            end
-            return false
+            return get_first_party_request_type(req) != -1
         end
 
         def get_response_content_type(req)

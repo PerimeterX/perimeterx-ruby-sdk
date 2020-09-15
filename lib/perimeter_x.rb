@@ -135,7 +135,7 @@ module PxModule
     
     if px_config[:first_party_enabled]
       # first party enabled - proxy response
-      fp_response = fp.get_first_party_response(req)
+      fp_response = fp.send_first_party_request(req)
       response.status = fp_response.code
       fp_response.to_hash.each do |header_name, header_value_arr| 
         if header_name!="content-length"
@@ -146,7 +146,7 @@ module PxModule
       render res_type => fp_response.body
     else
       # first party disabled - return empty response
-      response.status = "200"
+      response.status = 200
       res_type = fp.get_response_content_type(req)
       render res_type => ""
     end
