@@ -12,13 +12,23 @@ require 'perimeterx/internal/clients/perimeter_x_activity_client'
 require 'perimeterx/internal/validators/perimeter_x_s2s_validator'
 require 'perimeterx/internal/validators/perimeter_x_cookie_validator'
 require 'perimeterx/internal/exceptions/px_config_exception'
+require 'perimeterx/internal/first_party/px_first_party'
 
 module PxModule
   # Module expose API
   def px_verify_request(request_config={})    
     begin
       px_instance = PerimeterX.new(request_config)
-      px_ctx = px_instance.verify(request.env)
+      req = ActionDispatch::Request.new(request.env)
+
+      # handle first party requests
+      if px_instance.first_party.is_first_party_request(req)
+        render_first_party_response(req, px_instance)
+        return true
+      end
+
+      # verify request
+      px_ctx = px_instance.verify(req)
       px_config = px_instance.px_config
 
       msg_title = 'PxModule[px_verify_request]'
@@ -46,12 +56,21 @@ module PxModule
           end
 
           is_mobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
-          action = px_ctx.context[:block_action][0,1]
+          action = px_ctx.context[:block_action][0,1]          
 
-          px_template_object = {
+          if px_config[:first_party_enabled]
+            px_template_object = {
+            js_client_src:  "/#{px_config[:app_id][2..-1]}/init.js",
+            block_script: "/#{px_config[:app_id][2..-1]}/captcha/#{px_config[:app_id]}/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{is_mobile}",
+            host_url: "/#{px_config[:app_id][2..-1]}/xhr"
+            }
+          else
+            px_template_object = {
+            js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js",
             block_script: "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{is_mobile}",
-            js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js"
-          }
+            host_url: "https://collector-#{px_config[:app_id]}.perimeterx.net"
+            }
+          end
 
           html = PxTemplateFactory.get_template(px_ctx, px_config, px_template_object)
 
@@ -68,7 +87,7 @@ module PxModule
               hash_json = {
                   :appId => px_config[:app_id],
                   :jsClientSrc => px_template_object[:js_client_src],
-                  :firstPartyEnabled => false,
+                  :firstPartyEnabled => px_ctx.context[:first_party_enabled],
                   :uuid => px_ctx.context[:uuid],
                   :vid => px_ctx.context[:vid],
                   :hostUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net",
@@ -110,6 +129,29 @@ module PxModule
     end
   end
 
+  def render_first_party_response(req, px_instance)
+    fp = px_instance.first_party
+    px_config = px_instance.px_config
+    
+    if px_config[:first_party_enabled]
+      # first party enabled - proxy response
+      fp_response = fp.send_first_party_request(req)
+      response.status = fp_response.code
+      fp_response.to_hash.each do |header_name, header_value_arr| 
+        if header_name!="content-length"
+          response.headers[header_name] = header_value_arr[0]
+        end
+      end
+      res_type = fp.get_response_content_type(req)
+      render res_type => fp_response.body
+    else
+      # first party disabled - return empty response
+      response.status = 200
+      res_type = fp.get_response_content_type(req)
+      render res_type => ""
+    end
+  end
+
   def self.configure(basic_config)
     PerimeterX.set_basic_config(basic_config)
   end
@@ -119,6 +161,7 @@ module PxModule
   class PerimeterX
 
     attr_reader :px_config
+    attr_reader :first_party
     attr_accessor :px_http_client
     attr_accessor :px_activity_client
 
@@ -128,7 +171,7 @@ module PxModule
     end
 
     #Instance Methods
-    def verify(env)
+    def verify(req)
       begin
 
         # check module_enabled 
@@ -137,13 +180,11 @@ module PxModule
           @logger.warn('Module is disabled')
           return nil
         end
-
-        req = ActionDispatch::Request.new(env)
         
         # filter whitelist routes
         url_path = URI.parse(req.original_url).path
         if url_path && !url_path.empty?
-          if check_whitelist_routes(px_config[:whitelist_routes], url_path)
+          if check_whitelist_routes(px_config[:whitelist_routes], url_path) 
             @logger.debug("PerimeterX[pxVerify]: whitelist route: #{url_path}")
             return nil
           end
@@ -176,6 +217,7 @@ module PxModule
       @px_http_client = PxHttpClient.new(@px_config)
 
       @px_activity_client = PerimeterxActivitiesClient.new(@px_config, @px_http_client)
+      @first_party = FirstPartyManager.new(@px_config, @px_http_client, @logger)
 
       @px_cookie_validator = PerimeterxCookieValidator.new(@px_config)
       @px_s2s_validator = PerimeterxS2SValidator.new(@px_config, @px_http_client)

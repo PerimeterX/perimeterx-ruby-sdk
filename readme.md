@@ -31,6 +31,7 @@ Table of Contents
   *   [Debug Mode](#debug-mode)
   *   [Whitelist Routes](#whitelist-routes)
   *   [Update Configuration on Runtime](#update-config)
+  *   [First Party](#first-party)
   
   **[Contributing](#contributing)**
 
@@ -346,6 +347,27 @@ class HomeController < ApplicationController
 
 end
 ```
+
+<a name="first-party"></a>**First Party**
+To enable first party on your enforcer, add the following routes to your `config/routes.rb` file:
+
+```ruby
+  get '/:appid_postfix/init.js', to: 'home#index', constraints: { appid_postfix: /XXXXXXXX/ }
+  get '/:appid_postfix/captcha/:all', to: 'home#index', constraints: { appid_postfix: /XXXXXXXX/, all:/.*/ }
+  post '/:appid_postfix/xhr/:all', to: 'home#index', constraints: { appid_postfix: /XXXXXXXX/, all:/.*/  }  
+```
+
+Notice that all occurences of `XXXXXXXX` should be replaced with your px_app_id without the "PX" prefix. For example, if your px_app_id is `PX2H4seK9L`, reeplace `XXXXXXXX` with `2H4seK9L`.
+In case you are using more than one px_app_id, provide all of them with a `|` sign between them. For example:  2H4seK9L|9bMs6K94|Lc5kPMNx
+
+
+First Party configuration:
+Default: true
+
+```ruby
+  params[:first_party_enabled] = false
+```
+
 
 <a name="contributing"></a># Contributing #
 ------------------------------

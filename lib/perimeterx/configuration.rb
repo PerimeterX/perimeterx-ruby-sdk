@@ -30,7 +30,8 @@ module PxModule
       :ip_headers                   => [],
       :ip_header_function           => nil,
       :bypass_monitor_header        => nil,
-      :risk_cookie_max_iterations   => 5000
+      :risk_cookie_max_iterations   => 5000,
+      :first_party_enabled          => true
     }
 
     CONFIG_SCHEMA = {
@@ -60,7 +61,9 @@ module PxModule
       :custom_logo                  => {types: [String], required: false},
       :css_ref                      => {types: [String], required: false},
       :js_ref                       => {types: [String], required: false},
-      :custom_uri                   => {types: [Proc], required: false}
+      :custom_uri                   => {types: [Proc], required: false},
+      :first_party_enabled          => {types: [FalseClass, TrueClass], required: false}
+
     }
 
     def self.set_basic_config(basic_config)

@@ -46,8 +46,8 @@ module PxModule
   PROP_FIRST_PARTY_ENABLED = :firstPartyEnabled
 
   # Hosts
-  CLIENT_HOST = 'client.px-cloud.net'
-  CAPTCHA_HOST = 'captcha.px-cloud.net'
+  CLIENT_HOST = 'client.perimeterx.net'
+  CAPTCHA_HOST = 'captcha.px-cdn.net'
 
   VISIBLE = 'visible'
   HIDDEN = 'hidden'
