@@ -19,8 +19,6 @@ Table of Contents
   *   [Blocking Score](#blocking-score)
   *   [Custom Verification Action](#custom-verification-action)
   *   [Custom Block Page](#custom-block-page)
-  *   [Enable/Disable Captcha](#captcha-support)
-  *   [Select Captcha Provider](#captcha-provider)
   *   [Extracting Real IP Address](#real-ip)
   *   [Custom URI](#custom-uri)
   *   [Filter Sensitive Headers](#sensitive-headers)
@@ -225,26 +223,6 @@ Default mode: PxModule::ACTIVE_MODE
 params[:module_mode] = PxModule::MONITOR_MODE
 ```
 
-<a name="captcha-support"></a>**Enable/Disable CAPTCHA on the block page**
-Default mode: enabled
-
-By enabling CAPTCHA support, a CAPTCHA will be served as part of the block page, giving real users the ability to identify as a human. By solving the CAPTCHA, the user's score is then cleaned up and the user is allowed to continue normal use.
-
-```ruby
-params[:captcha_enabled] = false
-```
-
-<a name="captcha-provider"></a>**Select CAPTCHA Provider**
-
-The CAPTCHA part of the block page can use one of the following:
-* [reCAPTCHA](https://www.google.com/recaptcha)
-
-Default: 'reCaptcha'
-
-```ruby
-captchaProvider = "reCaptcha"
-```
-
 <a name="custom-uri"></a>**Custom URI**
 
 Default: 'REQUEST_URI'
@@ -326,10 +304,11 @@ However, it is possible to override configuration options on each request.
 To do so, send the configuration options as an argument when calling to `px_verify_request` as described in the following example.
 Notice that in case of an invalid argument, the module will raise an error. Therefore, when using this feature, make sure to wrap the call to `px_verify_request` with begin and rescue. It is highly recommended to log the error message to follow such errors.
 
+Usage example:
+
 ```ruby
 class HomeController < ApplicationController
   include PxModule
-
 
   before_action do call_perimeterx_verify_request end
 
@@ -349,6 +328,7 @@ end
 ```
 
 <a name="first-party"></a>**First Party**
+
 To enable first party on your enforcer, add the following routes to your `config/routes.rb` file:
 
 ```ruby
@@ -357,11 +337,13 @@ To enable first party on your enforcer, add the following routes to your `config
   post '/:appid_postfix/xhr/:all', to: 'home#index', constraints: { appid_postfix: /XXXXXXXX/, all:/.*/  }  
 ```
 
-Notice that all occurences of `XXXXXXXX` should be replaced with your px_app_id without the "PX" prefix. For example, if your px_app_id is `PX2H4seK9L`, reeplace `XXXXXXXX` with `2H4seK9L`.
+Notice that all occurences of `XXXXXXXX` should be replaced with your px_app_id without the "PX" prefix. For example, if your px_app_id is `PX2H4seK9L`, replace `XXXXXXXX` with `2H4seK9L`.
+
 In case you are using more than one px_app_id, provide all of them with a `|` sign between them. For example:  2H4seK9L|9bMs6K94|Lc5kPMNx
 
 
 First Party configuration:
+
 Default: true
 
 ```ruby
