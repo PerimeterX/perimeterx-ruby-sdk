@@ -54,7 +54,7 @@ module PxModule
       :whitelist_routes             => {types: [Array], allowed_element_types: [String, Regexp], required: false},
       :ip_headers                   => {types: [Array], allowed_element_types: [String], required: false},
       :ip_header_function           => {types: [Proc], required: false},
-      :bypass_monitor_header        => {types: [FalseClass, TrueClass], required: false},
+      :bypass_monitor_header        => {types: [String], required: false},
       :risk_cookie_max_iterations   => {types: [Integer], required: false},
       :custom_verification_handler  => {types: [Proc], required: false},
       :additional_activity_handler  => {types: [Proc], required: false},
