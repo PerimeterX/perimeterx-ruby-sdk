@@ -31,6 +31,7 @@ Table of Contents
   *   [Update Configuration on Runtime](#update-config)
   *   [First Party](#first-party)
   
+  **[Additional Information](#additional-information)**
   **[Contributing](#contributing)**
 
 <a name="Usage"></a>
@@ -350,8 +351,12 @@ Default: true
   params[:first_party_enabled] = false
 ```
 
+<a name="additional_information"></a> Additional Information 
+------------------------------
+### URI Delimiters
+PerimeterX processes URI paths with general- and sub-delimiters according to RFC 3986. General delimiters (e.g., `?`, `#`) are used to separate parts of the URI. Sub-delimiters (e.g., `$`, `&`) are not used to split the URI as they are considered valid characters in the URI path.
 
-<a name="contributing"></a># Contributing #
+<a name="contributing"></a> Contributing
 ------------------------------
 The following steps are welcome when contributing to our project.
 ###Fork/Clone
