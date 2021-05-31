@@ -1,0 +1,26 @@
+{
+    "version": "2.2.1",
+    "supported_features": [
+        "additional_activity_handler",
+        "advanced_blocking_response",
+        "batching_activities",
+        "block_activity",
+        "block_page_captcha",
+        "cookie_v3",
+        "css_ref",
+        "custom_logo",
+        "debug_mode",
+        "first_party",
+        "ip_headers",
+        "js_ref",
+        "mobile",
+        "module_enable_disable",
+        "monitor_mode",
+        "page_requested",
+        "pxvid",
+        "risk_api",
+        "sensitive_headers",
+        "sensitive_routes",
+        "whitelist_routes"
+    ]
+}
