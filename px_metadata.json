@@ -6,6 +6,7 @@
         "batched_activities",
         "block_activity",
         "block_page_captcha",
+        "block_page_rate_limit",
         "bypass_monitor_header",
         "client_ip_extraction",
         "cookie_v3",
