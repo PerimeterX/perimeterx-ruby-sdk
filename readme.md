@@ -186,19 +186,6 @@ configuration = {
 ```
 <a name="custom-block-page"></a>**Customizing Default Block Pages**
 
-Adding a custom logo to the blocking page is by providing the `params` a key `custom_logo` , the logo will be displayed at the top div of the the block page The logo's `max-heigh` property would be `150px` and width would be set to `auto`
-
-The key custom_logo expects a valid URL address such as https://s.perimeterx.net/logo.png
-
-```ruby
-params = [
-    :app_id => 'APP_ID',
-    :cookie_key => 'COOKIE_SECRET',
-    :auth_token => 'AUTH_TOKEN',
-    :custom_logo => 'LOGO_URL'
-];
-```
-
 **Custom JS/CSS**
 The block page can be modified with a custom CSS by adding to the `params` the key `css_ref` and providing a valid URL to the css In addition there is also the option to add a custom JS file by adding `js_ref` key to the pxConfig and providing the JS file that will be loaded with the block page, this key also expects a valid URL
 
