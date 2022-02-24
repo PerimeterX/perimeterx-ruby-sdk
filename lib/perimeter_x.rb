@@ -64,13 +64,15 @@ module PxModule
             px_template_object = {
             js_client_src:  "/#{px_config[:app_id][2..-1]}/init.js",
             block_script: "/#{px_config[:app_id][2..-1]}/captcha/#{px_config[:app_id]}#{block_script_uri}",
-            host_url: "/#{px_config[:app_id][2..-1]}/xhr"
+            host_url: "/#{px_config[:app_id][2..-1]}/xhr",
+            alt_block_script: alt_block_script
             }
           else
             px_template_object = {
             js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js",
             block_script: "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}#{block_script_uri}",
-            host_url: "https://collector-#{px_config[:app_id]}.perimeterx.net"
+            host_url: "https://collector-#{px_config[:app_id]}.perimeterx.net",
+            alt_block_script: alt_block_script
             }
           end
 
@@ -94,6 +96,7 @@ module PxModule
                   :vid => px_ctx.context[:vid],
                   :hostUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net",
                   :blockScript => px_template_object[:block_script],
+                  :altBlockScript => px_template_object[:alt_block_script]
               }
 
               render :json => hash_json
