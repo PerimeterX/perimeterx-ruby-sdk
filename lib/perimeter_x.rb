@@ -58,21 +58,20 @@ module PxModule
           is_mobile = px_ctx.context[:cookie_origin] == 'header' ? '1' : '0'
           action = px_ctx.context[:block_action][0,1]
           block_script_uri = "/captcha.js?a=#{action}&u=#{px_ctx.context[:uuid]}&v=#{px_ctx.context[:vid]}&m=#{is_mobile}"
-          alt_block_script = "//#{PxModule::ALT_CAPTCHA_HOST}/#{px_config[:app_id]}#{block_script_uri}",
 
           if px_config[:first_party_enabled]
             px_template_object = {
             js_client_src:  "/#{px_config[:app_id][2..-1]}/init.js",
             block_script: "/#{px_config[:app_id][2..-1]}/captcha/#{px_config[:app_id]}#{block_script_uri}",
             host_url: "/#{px_config[:app_id][2..-1]}/xhr",
-            alt_block_script: alt_block_script
+            alt_block_script: "//#{PxModule::ALT_CAPTCHA_HOST}/#{px_config[:app_id]}#{block_script_uri}"
             }
           else
             px_template_object = {
             js_client_src: "//#{PxModule::CLIENT_HOST}/#{px_config[:app_id]}/main.min.js",
             block_script: "//#{PxModule::CAPTCHA_HOST}/#{px_config[:app_id]}#{block_script_uri}",
             host_url: "https://collector-#{px_config[:app_id]}.perimeterx.net",
-            alt_block_script: alt_block_script
+            alt_block_script: "//#{PxModule::ALT_CAPTCHA_HOST}/#{px_config[:app_id]}#{block_script_uri}"
             }
           end
 

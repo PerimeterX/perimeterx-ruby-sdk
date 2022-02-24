@@ -6,7 +6,7 @@ module PxModule
     def self.get_template(px_ctx, px_config, px_template_object)
       logger = px_config[:logger]
       if (px_config[:challenge_enabled] && px_ctx.context[:block_action] == 'challenge')
-        logger.debug('PxTemplateFactory[get_template]: px challange triggered')
+        logger.debug('PxTemplateFactory[get_template]: px challenge triggered')
         return px_ctx.context[:block_action_data].html_safe
       end
 
