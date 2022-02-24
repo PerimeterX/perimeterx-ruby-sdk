@@ -41,6 +41,7 @@ module PxModule
   PROP_CSS_REF = :cssRef
   PROP_JS_REF = :jsRef
   PROP_BLOCK_SCRIPT = :blockScript
+  PROP_ALT_BLOCK_SCRIPT = :altBlockScript
   PROP_JS_CLIENT_SRC = :jsClientSrc
   PROP_HOST_URL = :hostUrl
   PROP_FIRST_PARTY_ENABLED = :firstPartyEnabled
@@ -48,6 +49,7 @@ module PxModule
   # Hosts
   CLIENT_HOST = 'client.perimeterx.net'
   CAPTCHA_HOST = 'captcha.px-cdn.net'
+  ALT_CAPTCHA_HOST = 'captcha.px-cloud.net'
 
   VISIBLE = 'visible'
   HIDDEN = 'hidden'
