@@ -58,6 +58,7 @@ module PxModule
       :risk_cookie_max_iterations   => {types: [Integer], required: false},
       :custom_verification_handler  => {types: [Proc], required: false},
       :additional_activity_handler  => {types: [Proc], required: false},
+      :custom_logo                  => {types: [String], required: false},
       :css_ref                      => {types: [String], required: false},
       :js_ref                       => {types: [String], required: false},
       :custom_uri                   => {types: [Proc], required: false},

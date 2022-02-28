@@ -36,6 +36,8 @@ module PxModule
   PROP_APP_ID = :appId
   PROP_VID = :vid
   PROP_UUID = :uuid
+  PROP_LOGO_VISIBILITY = :logoVisibility
+  PROP_CUSTOM_LOGO = :customLogo
   PROP_CSS_REF = :cssRef
   PROP_JS_REF = :jsRef
   PROP_BLOCK_SCRIPT = :blockScript
