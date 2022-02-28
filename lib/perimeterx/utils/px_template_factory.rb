@@ -29,7 +29,6 @@ module PxModule
       view[PxModule::PROP_CSS_REF] = px_config[:css_ref]
       view[PxModule::PROP_JS_REF] = px_config[:js_ref]
       view[PxModule::PROP_HOST_URL] = px_template_object[:host_url]
-      view[PxModule::PROP_LOGO_VISIBILITY] = px_config[:custom_logo] ? PxModule::VISIBLE : PxModule::HIDDEN
       view[PxModule::PROP_BLOCK_SCRIPT] = px_template_object[:block_script]
       view[PxModule::PROP_ALT_BLOCK_SCRIPT] = px_template_object[:alt_block_script]
       view[PxModule::PROP_JS_CLIENT_SRC] = px_template_object[:js_client_src]
