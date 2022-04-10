@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0] - 2022-04-10
+
+### Added
+
+- Custom logo in block JSON response
+
+### Changed
+
+- Updated block page to use new template
+
 ## [2.2.1] - 2020-09-27
 ### Fixed
  - bypass_monitor_header type validation
