@@ -92,6 +92,8 @@ module PxModule
                   :vid => px_ctx.context[:vid],
                   :hostUrl => "https://collector-#{px_config[:app_id]}.perimeterx.net",
                   :blockScript => px_template_object[:block_script],
+                  :altBlockScript => px_template_object[:alt_block_script],
+                  :customLogo => px_config[:custom_logo]
               }
 
               render :json => hash_json
