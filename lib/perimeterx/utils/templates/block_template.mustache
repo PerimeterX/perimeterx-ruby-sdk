@@ -14,16 +14,16 @@
         window._pxVid = '{{vid}}';
         window._pxUuid = '{{uuid}}';
         window._pxAppId = '{{appId}}';
-        window._pxCustomLogo = '{{customLogo}}';
-        window._pxHostUrl = '{{hostUrl}}';
-        window._pxJsClientSrc = '{{jsClientSrc}}';
+        window._pxCustomLogo = '{{{customLogo}}}';
+        window._pxHostUrl = '{{{hostUrl}}}';
+        window._pxJsClientSrc = '{{{jsClientSrc}}}';
         window._pxFirstPartyEnabled = {{firstPartyEnabled}};
         var script = document.createElement('script');
-        script.src = '{{blockScript}}';
+        script.src = '{{{blockScript}}}';
         document.head.appendChild(script);
         script.onerror = function () {
             script = document.createElement('script');
-            script.src = '{{altBlockScript}}';
+            script.src = '{{{altBlockScript}}}';
             script.onerror = window._pxDisplayErrorMessage;
             document.head.appendChild(script);
         };
