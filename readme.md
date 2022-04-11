@@ -5,7 +5,7 @@
 [PerimeterX](http://www.perimeterx.com) Ruby SDK
 =============================================================
 
-> Latest stable version: [v2.3.0](https://rubygems.org/gems/perimeter_x)
+> Latest stable version: [v2.3.1](https://rubygems.org/gems/perimeter_x)
 
 Table of Contents
 -----------------
