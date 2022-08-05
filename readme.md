@@ -215,14 +215,14 @@ params = [
 > Note: Custom logo/js/css can be added together
 
 <a name="logging"></a>**No Blocking, Monitor Only**
-Default mode: PxModule::ACTIVE_MODE
+Default mode: PxModule::MONITOR_MODE
 
 - PxModule::ACTIVE_MODE - Module blocks users crossing the predefined block threshold. Server-to-server requests are sent synchronously.
 
-- PxModule::$MONITOR_MODE - Module does not block users crossing the predefined block threshold. The `custom_block_handler` function will be eval'd in case one is supplied, upon crossing the defined block threshold.
+- PxModule::MONITOR_MODE - Module does not block users crossing the predefined block threshold. The `custom_block_handler` function will be eval'd in case one is supplied, upon crossing the defined block threshold.
 
 ```ruby
-params[:module_mode] = PxModule::MONITOR_MODE
+params[:module_mode] = PxModule::ACTIVE_MODE
 ```
 
 <a name="custom-uri"></a>**Custom URI**
