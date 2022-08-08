@@ -161,14 +161,15 @@ params = {
 
 > Note: IP extraction, according to your network setup, is very important. It is common to have a load balancer/proxy on top of your applications, in which case the PerimeterX module will send the system's internal IP as the user's. In order to properly perform processing and detection on server-to-server calls, PerimeterX module needs the real user's IP.
 
-By default the clients IP is taken from the ``REMOTE_ADDR`` header, in case the user decides to use different header or custom function that extract the header the following key should be added to the configuration
+By default the clients IP is taken from the `REMOTE_ADDR` header, in case the user decides to use different header or custom function that extract the header the following key should be added to the configuration.
 
 ***Custom header***
+> Note: If there are multiple headers configured, the module will evaluate the headers in order and use the first value it finds.
 ```ruby
 configuration = {
   "app_id" => <APP_ID>,
   "auth_token" => <AUTH_TOKEN>,
-  "custom_user_ip" => <HTTP_HEADER_NAME>,
+  "ip_headers" => [<HTTP_HEADER_NAME>, <BACKUP_HTTP_HEADER_NAME>],
 ```
 
 ***Custom Function***
@@ -178,7 +179,7 @@ configuration = {
 configuration = {
   "app_id" => <APP_ID>,
   "auth_token" => <AUTH_TOKEN>,
-  "custom_user_ip_method" => -> (req) {
+  "ip_header_function" => -> (req) {
     # Method body
     return "1.2.3.4"
   }
@@ -214,14 +215,14 @@ params = [
 > Note: Custom logo/js/css can be added together
 
 <a name="logging"></a>**No Blocking, Monitor Only**
-Default mode: PxModule::ACTIVE_MODE
+Default mode: PxModule::MONITOR_MODE
 
 - PxModule::ACTIVE_MODE - Module blocks users crossing the predefined block threshold. Server-to-server requests are sent synchronously.
 
-- PxModule::$MONITOR_MODE - Module does not block users crossing the predefined block threshold. The `custom_block_handler` function will be eval'd in case one is supplied, upon crossing the defined block threshold.
+- PxModule::MONITOR_MODE - Module does not block users crossing the predefined block threshold. The `custom_block_handler` function will be eval'd in case one is supplied, upon crossing the defined block threshold.
 
 ```ruby
-params[:module_mode] = PxModule::MONITOR_MODE
+params[:module_mode] = PxModule::ACTIVE_MODE
 ```
 
 <a name="custom-uri"></a>**Custom URI**
