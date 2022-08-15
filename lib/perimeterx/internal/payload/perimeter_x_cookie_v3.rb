@@ -22,7 +22,7 @@ module PxModule
     end
 
     def valid_format?(cookie)
-      return cookie.key?(:t) && cookie.key?(:s) && cookie.key?(:u) && cookie.key?(:u) && cookie.key?(:a)
+      return cookie.key?(:t) && cookie.key?(:s) && cookie.key?(:u) && cookie.key?(:a)
     end
 
     def cookie_block_action

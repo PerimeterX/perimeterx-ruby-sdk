@@ -1,5 +1,6 @@
 require 'base64'
 require 'openssl'
+require 'json'
 require 'perimeterx/internal/exceptions/px_cookie_decryption_exception'
 
 module PxModule
@@ -122,7 +123,7 @@ module PxModule
         cipher.iv = iv
         plaintext = cipher.update(cipher_text) + cipher.final
 
-        return eval(plaintext)
+        return JSON.parse(plaintext, symbolize_names: true)
       rescue Exception => e
         @logger.debug("PerimeterxCookie[decrypt]: Cookie decrypt fail #{e.message}")
         raise PxCookieDecryptionException.new("Cookie decrypt fail => #{e.message}");
@@ -130,7 +131,7 @@ module PxModule
     end
 
     def decode(px_cookie)
-      return eval(Base64.decode64(px_cookie))
+      return JSON.parse(Base64.decode64(px_cookie), symbolize_names: true)
     end
 
 
