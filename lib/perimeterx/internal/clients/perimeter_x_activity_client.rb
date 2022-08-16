@@ -63,6 +63,7 @@ module PxModule
         :client_uuid => px_ctx.context[:uuid],
         :block_score => px_ctx.context[:score],
         :block_reason => px_ctx.context[:blocking_reason],
+        :block_action => px_ctx.context[:block_action],
         :simulated_block => @px_config[:module_mode] == PxModule::MONITOR_MODE
       }
 
