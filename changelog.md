@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.2] - 2022-xx-xx
+
+### Changed
+
+- Removed dependency on Active Support
+- Replaced `eval()` calls with `JSON.parse()` for improved security
+- Small spec alignment changes (risk_api and block activities)
+
 ## [2.3.1] - 2022-04-11
 
 ### Fixed

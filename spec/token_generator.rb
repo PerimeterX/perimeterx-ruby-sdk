@@ -1,4 +1,3 @@
-require 'active_support/security_utils'
 require 'base64'
 require 'openssl'
 require 'json'
