@@ -1,3 +1,4 @@
+require 'json'
 require 'perimeterx/internal/clients/perimeter_x_risk_client'
 
 module PxModule
@@ -20,7 +21,6 @@ module PxModule
         :request => {
           :ip      => px_ctx.context[:ip],
           :headers => format_headers(px_ctx),
-          :uri     => px_ctx.context[:uri],
           :url     => px_ctx.context[:full_url]
         },
         :additional => {
@@ -103,7 +103,7 @@ module PxModule
       px_ctx.context[:made_s2s_risk_api_call] = true
 
       # From here response should be valid, if success or error
-      response_body = eval(response.body);
+      response_body = JSON.parse(response.body, symbolize_names: true);
       # When success
       if (response.code == 200 && response_body.key?(:score) && response_body.key?(:action) && response_body.key?(:status) && response_body[:status] == 0 )
         @logger.debug("PerimeterxS2SValidator[verify]: response ok")

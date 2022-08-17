@@ -1,6 +1,6 @@
-require 'active_support/security_utils'
 require 'base64'
 require 'openssl'
+require 'json'
 require 'perimeterx/internal/exceptions/px_cookie_decryption_exception'
 
 module PxModule
@@ -123,7 +123,7 @@ module PxModule
         cipher.iv = iv
         plaintext = cipher.update(cipher_text) + cipher.final
 
-        return eval(plaintext)
+        return JSON.parse(plaintext, symbolize_names: true)
       rescue Exception => e
         @logger.debug("PerimeterxCookie[decrypt]: Cookie decrypt fail #{e.message}")
         raise PxCookieDecryptionException.new("Cookie decrypt fail => #{e.message}");
@@ -131,18 +131,26 @@ module PxModule
     end
 
     def decode(px_cookie)
-      return eval(Base64.decode64(px_cookie))
+      return JSON.parse(Base64.decode64(px_cookie), symbolize_names: true)
     end
 
 
     def hmac_valid?(hmac_str, cookie_hmac)
       hmac = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, @cookie_secret, hmac_str)
-      # ref: https://thisdata.com/blog/timing-attacks-against-string-comparison/
-      password_correct = ActiveSupport::SecurityUtils.secure_compare(
-          ::Digest::SHA256.hexdigest(cookie_hmac),
-          ::Digest::SHA256.hexdigest(hmac)
-      )
+      password_correct = secure_compare(hmac, cookie_hmac)
+    end
 
+    def secure_compare(a, b)
+      # https://github.com/rails/rails/blob/main/activesupport/lib/active_support/security_utils.rb
+      if (a.bytesize != b.bytesize)
+        return false
+      end
+
+      l = a.unpack "C#{a.bytesize}"
+
+      res = 0
+      b.each_byte { |byte| res |= byte ^ l.shift }
+      res == 0
     end
   end
 end
