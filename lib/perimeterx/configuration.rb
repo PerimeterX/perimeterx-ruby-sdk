@@ -31,7 +31,9 @@ module PxModule
       :ip_header_function           => nil,
       :bypass_monitor_header        => nil,
       :risk_cookie_max_iterations   => 5000,
-      :first_party_enabled          => true
+      :first_party_enabled          => true,
+      :max_buffer_len               => 10,
+      :local_proxy                  => false
     }
 
     CONFIG_SCHEMA = {
@@ -62,7 +64,9 @@ module PxModule
       :css_ref                      => {types: [String], required: false},
       :js_ref                       => {types: [String], required: false},
       :custom_uri                   => {types: [Proc], required: false},
-      :first_party_enabled          => {types: [FalseClass, TrueClass], required: false}
+      :first_party_enabled          => {types: [FalseClass, TrueClass], required: false},
+      :max_buffer_len               => {types: [Integer], required: false},
+      :local_proxy                  => {types: [FalseClass, TrueClass], required: false}
 
     }
 
