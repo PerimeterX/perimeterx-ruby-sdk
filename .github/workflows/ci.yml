@@ -1,6 +1,15 @@
 name: ci
 on: pull_request
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup ruby
+        uses: actions/setup-ruby@v1
+      - name: Run linter
+        run: rake lint
   unit-test:
     runs-on: ubuntu-latest
     steps:
