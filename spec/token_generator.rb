@@ -41,9 +41,9 @@ module TokenGenerator
     j = JSON.generate(d)
 
     salt, enc = encrypt(k, j)
-    b64_s = Base64.encode64(salt)
+    b64_s = Base64.encode64(salt).gsub(/\s+/, "")
 
-    c = "#{b64_s}:1000:#{Base64.encode64(enc)}"
+    c = "#{b64_s}:1000:#{Base64.encode64(enc).gsub(/\s+/, "")}"
     unless h
       h = hmac(k, c)
     end
