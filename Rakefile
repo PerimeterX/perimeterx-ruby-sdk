@@ -7,7 +7,7 @@ begin
   RSpec::Core::RakeTask.new(:spec)
   RuboCop::RakeTask.new(:lint)
 
-  task default: :spec
+  task default: :test
   task test: :spec
 rescue LoadError
   # no rspec available
