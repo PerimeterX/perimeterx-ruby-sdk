@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'perimeterx/utils/px_logger'
 require 'typhoeus'
 require 'concurrent'
@@ -7,8 +9,7 @@ module PxModule
   class PxHttpClient
     include Concurrent::Async
 
-    attr_accessor :px_config
-    attr_accessor :px_client
+    attr_accessor :px_config, :px_client
 
     def initialize(px_config)
       @px_config = px_config
@@ -27,13 +28,13 @@ module PxModule
     def post(path, body, headers, api_timeout = 1, connection_timeout = 1)
       s = Time.now
       begin
-        @logger.debug("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json()}} body: {#{body.to_json()}} ")
+        @logger.debug("PxHttpClient[post]: posting to #{path} headers {#{headers.to_json}} body: {#{body.to_json}} ")
         response = Typhoeus.post(
-            "#{px_config[:backend_url]}#{path}",
-            headers: headers,
-            body: body.to_json,
-            timeout: api_timeout,
-            connecttimeout: connection_timeout
+          "#{px_config[:backend_url]}#{path}",
+          headers: headers,
+          body: body.to_json,
+          timeout: api_timeout,
+          connecttimeout: connection_timeout
         )
         if response.timed_out?
           @logger.warn('PerimeterxS2SValidator[verify]: request timed out')
@@ -41,66 +42,62 @@ module PxModule
         end
       ensure
         e = Time.now
-        @logger.debug("PxHttpClient[post]: runtime: #{(e-s) * 1000.0}")
+        @logger.debug("PxHttpClient[post]: runtime: #{(e - s) * 1000.0}")
       end
-      return response
+      response
     end
-
 
     def post_xhr(url, body, headers)
       s = Time.now
       begin
-        @logger.debug("PxHttpClient[post]: sending xhr post request to #{url} with headers {#{headers.to_json()}}")
-        
-        #set url
+        @logger.debug("PxHttpClient[post]: sending xhr post request to #{url} with headers {#{headers.to_json}}")
+
+        # set url
         uri = URI(url)
         req = Net::HTTP::Post.new(uri)
-        
+
         # set body
-        req.body=body
-        
+        req.body = body
+
         # set headers
         headers.each do |key, value|
           req[key] = value
         end
-        
-        # send request   
-        response = Net::HTTP.start(uri.hostname, uri.port) {|http|
-          http.request(req)
-        }
 
+        # send request
+        response = Net::HTTP.start(uri.hostname, uri.port) do |http|
+          http.request(req)
+        end
       ensure
         e = Time.now
-        @logger.debug("PxHttpClient[get]: runtime: #{(e-s) * 1000.0}")
+        @logger.debug("PxHttpClient[get]: runtime: #{(e - s) * 1000.0}")
       end
-      return response
+      response
     end
-
 
     def get(url, headers)
       s = Time.now
       begin
-        @logger.debug("PxHttpClient[get]: sending get request to #{url} with headers {#{headers.to_json()}}")
-        
-        #set url
+        @logger.debug("PxHttpClient[get]: sending get request to #{url} with headers {#{headers.to_json}}")
+
+        # set url
         uri = URI(url)
         req = Net::HTTP::Get.new(uri)
-        
+
         # set headers
         headers.each do |key, value|
           req[key] = value
         end
-        
-        # send request   
-        response = Net::HTTP.start(uri.hostname, uri.port) {|http|
+
+        # send request
+        response = Net::HTTP.start(uri.hostname, uri.port) do |http|
           http.request(req)
-        }
-        
+        end
       ensure
         e = Time.now
-        @logger.debug("PxHttpClient[get]: runtime: #{(e-s) * 1000.0}")
+        @logger.debug("PxHttpClient[get]: runtime: #{(e - s) * 1000.0}")
       end
-      return response
+      response
     end
   end
 end

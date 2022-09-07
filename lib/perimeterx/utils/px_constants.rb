@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'perimeterx/version'
 
 module PxModule
@@ -30,7 +32,6 @@ module PxModule
   TEMPLATE_EXT = '.mustache'
   RATELIMIT_TEMPLATE = 'ratelimit'
 
-
   # Template Props
   PROP_REF_ID = :refId
   PROP_APP_ID = :appId
@@ -58,7 +59,7 @@ module PxModule
   ORIGINAL_TOKEN_HEADER = 'X-PX-ORIGINAL-TOKEN'
 
   # Regular Expressions
-  VID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
-  MOBILE_TOKEN_V3_REGEX = /\A3:(.*)\z/ 
-  MOBILE_ERROR_REGEX = /\A[0-9]\z/           
+  VID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.freeze
+  MOBILE_TOKEN_V3_REGEX = /\A3:(.*)\z/.freeze
+  MOBILE_ERROR_REGEX = /\A[0-9]\z/.freeze
 end

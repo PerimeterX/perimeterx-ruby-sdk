@@ -1,18 +1,19 @@
+# frozen_string_literal: true
+
 require 'mustache'
 require 'perimeterx/utils/px_constants'
 module PxModule
   module PxTemplateFactory
-
     def self.get_template(px_ctx, px_config, px_template_object)
       logger = px_config[:logger]
-      if (px_config[:challenge_enabled] && px_ctx.context[:block_action] == 'challenge')
+      if px_config[:challenge_enabled] && px_ctx.context[:block_action] == 'challenge'
         logger.debug('PxTemplateFactory[get_template]: px challenge triggered')
         return px_ctx.context[:block_action_data].html_safe
       end
 
       view = Mustache.new
 
-      if (px_ctx.context[:block_action] == 'rate_limit')
+      if px_ctx.context[:block_action] == 'rate_limit'
         logger.debug('PxTemplateFactory[get_template]: rendering ratelimit template')
         template_type = RATELIMIT_TEMPLATE
       else
@@ -20,7 +21,7 @@ module PxModule
         template_type = CHALLENGE_TEMPLATE
       end
 
-      Mustache.template_file =  "#{File.dirname(__FILE__) }/templates/#{template_type}#{PxModule::TEMPLATE_EXT}"
+      Mustache.template_file = "#{File.dirname(__FILE__)}/templates/#{template_type}#{PxModule::TEMPLATE_EXT}"
 
       view[PxModule::PROP_APP_ID] = px_config[:app_id]
       view[PxModule::PROP_VID] = px_ctx.context[:vid]
@@ -34,7 +35,7 @@ module PxModule
       view[PxModule::PROP_JS_CLIENT_SRC] = px_template_object[:js_client_src]
       view[PxModule::PROP_FIRST_PARTY_ENABLED] = px_ctx.context[:first_party_enabled]
 
-      return view.render.html_safe
+      view.render.html_safe
     end
-  end #end class
-end #end module
+  end
+end
