@@ -7,15 +7,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup ruby
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+          bundler-cache: true
       - name: Run linter
-        run: rake lint
+        run: bundle exec rake lint
   unit-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup ruby
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+          bundler-cache: true
       - name: Run unit tests
-        run: rake test
+        run: bundle exec rake test
