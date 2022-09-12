@@ -33,7 +33,7 @@ RSpec.describe PxModule::PerimeterxS2SValidator, 'S2S Validator Tests' do
     validator = PxModule::PerimeterxS2SValidator.new(@config, http_client)
 
     px_ctx = validator.verify(px_ctx)
-    expect(px_ctx).to eq px_ctx
+    expect(px_ctx.context[:pass_reason]).to eq 's2s_timeout'
   end
 
   it 'ctx will contain block_action from captcha type' do
